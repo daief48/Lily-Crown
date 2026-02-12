@@ -50,7 +50,7 @@ class BlogCrudController extends CrudController
 
         CRUD::field('title')->type('text');
         CRUD::field('slug')->type('text')->hint('Will be automatically generated if left empty');
-        CRUD::field('content')->type('ckeditor');
+        CRUD::field('content')->type('textarea');
         CRUD::field('thumbnail')->type('text')->hint('Thumbnail image URL');
     }
 

@@ -1,0 +1,112 @@
+/* 
+  Luxury "Royal" Design System for Lily Crown Admin
+  Inspired by frontend_lily_crown
+*/
+
+:root {
+    --heritage-gold: #996515;
+    --emerald-royal: #064E3B;
+    --deep-maroon: #4C0519;
+    --muslin-cream: #FDFBF7;
+    --luxury-black: #121212;
+    --gold-accent: #D4AF37;
+    --rose-gold: #B76E79;
+}
+
+/* Global Styles */
+body.layout-fixed .main-sidebar {
+    background-color: var(--luxury-black) !important;
+}
+
+.content-wrapper {
+    background-color: var(--muslin-cream) !important;
+}
+
+/* Sidebar Styling */
+.sidebar-dark-primary .nav-sidebar>.nav-item>.nav-link.active,
+.sidebar-light-primary .nav-sidebar>.nav-item>.nav-link.active {
+    background-color: var(--heritage-gold) !important;
+    color: #fff !important;
+}
+
+.brand-link {
+    background-color: var(--luxury-black) !important;
+    border-bottom: 1px solid rgba(153, 101, 21, 0.2) !important;
+    color: var(--heritage-gold) !important;
+}
+
+.brand-link .brand-text {
+    font-weight: 700 !important;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    background: linear-gradient(to right, #996515, #D4AF37, #996515);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Navbar (Glassmorphism) */
+.main-header {
+    background: rgba(253, 251, 247, 0.8) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(153, 101, 21, 0.1) !important;
+}
+
+/* Cards & Containers */
+.card {
+    border: none !important;
+    border-radius: 12px !important;
+    box-shadow: 0 10px 30px rgba(6, 78, 59, 0.05) !important;
+    background-color: #fff !important;
+}
+
+.card-header {
+    background-color: transparent !important;
+    border-bottom: 1px solid rgba(153, 101, 21, 0.1) !important;
+}
+
+.card-title {
+    color: var(--emerald-royal);
+    font-weight: 700;
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--emerald-royal) !important;
+    border-color: var(--emerald-royal) !important;
+    box-shadow: 0 4px 14px 0 rgba(6, 78, 59, 0.2) !important;
+}
+
+.btn-primary:hover {
+    background-color: #054032 !important;
+    transform: translateY(-1px);
+}
+
+.btn-info {
+    background-color: var(--heritage-gold) !important;
+    border-color: var(--heritage-gold) !important;
+}
+
+/* Tables */
+.table thead th {
+    border-top: none;
+    background-color: rgba(153, 101, 21, 0.05);
+    color: var(--heritage-gold);
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--luxury-black);
+}
+
+::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, #996515, #D4AF37, #996515);
+    border-radius: 5px;
+}

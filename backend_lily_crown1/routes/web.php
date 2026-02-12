@@ -1,0 +1,20 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
+    Route::resource('categories', App\Http\Controllers\Admin\CategoryController::class);
+    Route::resource('products', App\Http\Controllers\Admin\ProductController::class);
+    Route::resource('blogs', App\Http\Controllers\Admin\BlogController::class);
+    Route::resource('orders', App\Http\Controllers\Admin\OrderController::class);
+    Route::resource('subscribers', App\Http\Controllers\Admin\SubscriberController::class);
+    Route::resource('settings', App\Http\Controllers\Admin\SiteSettingController::class);
+});

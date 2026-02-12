@@ -58,13 +58,8 @@ class ProductCrudController extends CrudController
         CRUD::field('badge')->type('text');
         CRUD::field('image')->type('text')->hint('Main product image URL');
         
-        CRUD::field('gallery')->type('repeatable')->fields([
-            ['name' => 'url', 'type' => 'text', 'label' => 'Image URL']
-        ])->new_item_label('Add Image');
-
-        CRUD::field('details')->type('repeatable')->fields([
-            ['name' => 'info', 'type' => 'text', 'label' => 'Detail Info']
-        ])->new_item_label('Add Detail');
+        CRUD::field('gallery')->type('textarea')->hint('Enter image URLs as a JSON array');
+        CRUD::field('details')->type('textarea')->hint('Enter product details as a JSON object');
     }
 
     /**
