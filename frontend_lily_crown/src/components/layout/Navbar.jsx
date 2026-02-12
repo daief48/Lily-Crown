@@ -60,7 +60,7 @@ export function Navbar() {
     return (
         <nav
             className={cn(
-                "fixed top-0 w-full z-[100] transition-all duration-500 min-h-[70px] md:min-h-[90px] flex items-center",
+                "fixed top-0 w-full z-50 transition-all duration-500 min-h-[70px] md:min-h-[90px] flex items-center",
                 isScrolled ? "bg-white shadow-xl py-2 md:py-3 border-b border-heritage-gold/10" : "bg-white/80 backdrop-blur-sm py-4 md:py-6"
             )}
         >

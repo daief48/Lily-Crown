@@ -22,6 +22,7 @@ return new class extends Migration
             $table->string('image')->nullable();
             $table->json('gallery')->nullable();
             $table->json('details')->nullable();
+            $table->boolean('is_trending')->default(false);
             $table->timestamps();
         });
     }

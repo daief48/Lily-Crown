@@ -103,7 +103,7 @@ export function BlogPreview() {
                                 <div className="absolute inset-0 bg-emerald-royal/10 group-hover:bg-transparent transition-colors duration-500"></div>
                                 <div className="absolute top-4 left-4">
                                     <span className="bg-white/90 backdrop-blur-sm text-emerald-royal text-[9px] uppercase font-bold px-3 py-1.5 tracking-widest rounded-full shadow-sm">
-                                        {blog.category}
+                                        {blog.category?.name || (typeof blog.category === 'string' ? blog.category : '')}
                                     </span>
                                 </div>
                             </Link>

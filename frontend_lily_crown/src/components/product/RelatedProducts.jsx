@@ -7,8 +7,10 @@ import { motion } from "framer-motion";
 
 export function RelatedProducts({ currentProductId, category }) {
     // Filter products by category, excluding the current product
+    const categoryName = typeof category === 'object' && category !== null ? category.name : category;
+
     const related = products
-        .filter((p) => p.category === category && p.id !== currentProductId)
+        .filter((p) => p.category === categoryName && p.id !== parseInt(currentProductId))
         .slice(0, 4);
 
     if (related.length === 0) return null;

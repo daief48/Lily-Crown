@@ -83,7 +83,7 @@ export default function BlogPost() {
 
                     <div className="space-y-6 mb-12">
                         <div className="flex items-center gap-4 text-[10px] uppercase tracking-[0.3em] text-heritage-gold font-bold">
-                            <span className="bg-heritage-gold/10 px-3 py-1 rounded-full">{blog.category}</span>
+                            <span className="bg-heritage-gold/10 px-3 py-1 rounded-full">{blog.category?.name || (typeof blog.category === 'string' ? blog.category : '')}</span>
                             <span className="flex items-center gap-1.5"><Calendar size={12} /> {blog.date}</span>
                             <span className="flex items-center gap-1.5"><Clock size={12} /> 6 Min Read</span>
                         </div>
@@ -134,7 +134,7 @@ export default function BlogPost() {
                                     <Image src={story.image} alt={story.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
                                 </div>
                                 <div className="space-y-3">
-                                    <span className="text-heritage-gold text-[9px] uppercase font-bold tracking-widest">{story.category}</span>
+                                    <span className="text-heritage-gold text-[9px] uppercase font-bold tracking-widest">{story.category?.name || (typeof story.category === 'string' ? story.category : '')}</span>
                                     <h3 className="text-xl font-serif text-emerald-royal group-hover:text-heritage-gold transition-colors leading-tight">
                                         {story.title}
                                     </h3>

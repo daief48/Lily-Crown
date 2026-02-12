@@ -53,7 +53,7 @@ export default function CartPage() {
 
                                     <div className="flex-1 text-center sm:text-left w-full">
                                         <h3 className="text-xl font-serif text-emerald-royal">{item.name}</h3>
-                                        <p className="text-xs text-emerald-royal/50 uppercase tracking-widest mb-2">{item.category}</p>
+                                        <p className="text-xs text-emerald-royal/50 uppercase tracking-widest mb-2">{item.category?.name || (typeof item.category === 'string' ? item.category : '')}</p>
                                         <div className="text-lg font-bold text-heritage-gold">৳ {(item.price || 0).toLocaleString()}</div>
                                     </div>
 
@@ -107,10 +107,13 @@ export default function CartPage() {
                                     </div>
                                 </div>
 
-                                <button className="w-full py-4 bg-heritage-gold text-white uppercase tracking-widest text-xs font-bold hover:bg-emerald-royal transition-all shadow-lg flex items-center justify-center gap-2 group">
+                                <Link
+                                    href="/checkout"
+                                    className="w-full py-4 bg-heritage-gold text-white uppercase tracking-widest text-xs font-bold hover:bg-emerald-royal transition-all shadow-lg flex items-center justify-center gap-2 group"
+                                >
                                     Checkout Now
                                     <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                                </button>
+                                </Link>
 
                                 <p className="text-[10px] text-center text-emerald-royal/40 mt-4 italic">
                                     Secure Checkout • Free Returns within 30 days

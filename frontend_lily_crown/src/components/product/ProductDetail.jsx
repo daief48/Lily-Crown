@@ -1,21 +1,49 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingBag, Heart, ChevronLeft, ChevronRight, Star, ShieldCheck, Truck, RefreshCw } from "lucide-react";
+import { ShoppingBag, Heart, ChevronLeft, ChevronRight, Star, ShieldCheck, Truck, RefreshCw, X, ZoomIn } from "lucide-react";
 import { useStore } from "@/context/StoreContext";
 import { getOptimizedImage } from "@/lib/utils";
 
 export function ProductDetail({ product }) {
     const { addToCart, toggleWishlist, wishlistItems } = useStore();
     const [activeImage, setActiveImage] = useState(0);
+    const [isLightboxOpen, setIsLightboxOpen] = useState(false);
+    const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+    const [isHovering, setIsHovering] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
+
+    useEffect(() => {
+        if (isLightboxOpen) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "unset";
+        }
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, [isLightboxOpen]);
+
     const isWishlisted = wishlistItems.has(product.id);
 
     if (!product) return null;
 
     const nextImage = () => setActiveImage((prev) => (prev + 1) % product.gallery.length);
     const prevImage = () => setActiveImage((prev) => (prev - 1 + product.gallery.length) % product.gallery.length);
+
+    const handleMouseMove = (e) => {
+        const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
+        const x = ((e.pageX - left - window.scrollX) / width) * 100;
+        const y = ((e.pageY - top - window.scrollY) / height) * 100;
+        setMousePos({ x, y });
+    };
 
     return (
         <section className="pt-24 md:pt-32 pb-16 md:pb-24 bg-muslin-cream">
@@ -25,25 +53,53 @@ export function ProductDetail({ product }) {
                     {/* Left: Image Gallery */}
                     <div className="space-y-4 w-full">
                         <div className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl nakshi-border group">
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={activeImage}
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    exit={{ opacity: 0 }}
-                                    transition={{ duration: 0.5 }}
-                                    className="h-full w-full"
-                                >
-                                    <Image
-                                        src={getOptimizedImage(product.gallery[activeImage])}
-                                        alt={product.name}
-                                        fill
-                                        sizes="(max-width: 768px) 100vw, 50vw"
-                                        className="object-cover"
-                                        priority
-                                    />
-                                </motion.div>
-                            </AnimatePresence>
+                            <div
+                                className="h-full w-full cursor-zoom-in relative overflow-hidden"
+                                onMouseMove={handleMouseMove}
+                                onMouseEnter={() => setIsHovering(true)}
+                                onMouseLeave={() => setIsHovering(false)}
+                                onClick={() => {
+                                    console.log("Image clicked, opening lightbox");
+                                    setIsLightboxOpen(true);
+                                }}
+                            >
+                                <AnimatePresence mode="wait">
+                                    <motion.div
+                                        key={activeImage}
+                                        initial={{ opacity: 0 }}
+                                        animate={{
+                                            opacity: 1,
+                                            scale: isHovering ? 2 : 1,
+                                            x: isHovering ? `${50 - mousePos.x}%` : 0,
+                                            y: isHovering ? `${50 - mousePos.y}%` : 0,
+                                        }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{
+                                            opacity: { duration: 0.5 },
+                                            scale: { type: "tween", ease: "easeOut", duration: 0.2 },
+                                            x: { type: "tween", ease: "easeOut", duration: 0.2 },
+                                            y: { type: "tween", ease: "easeOut", duration: 0.2 }
+                                        }}
+                                        className="h-full w-full"
+                                    >
+                                        <Image
+                                            src={getOptimizedImage(product.gallery[activeImage])}
+                                            alt={product.name}
+                                            fill
+                                            sizes="(max-width: 768px) 100vw, 50vw"
+                                            className="object-cover"
+                                            priority
+                                        />
+                                    </motion.div>
+                                </AnimatePresence>
+
+                                {/* Zoom Hint Icon */}
+                                {!isHovering && (
+                                    <div className="absolute bottom-4 right-4 p-2 bg-white/80 backdrop-blur-sm rounded-full text-emerald-royal shadow-lg opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <ZoomIn size={20} />
+                                    </div>
+                                )}
+                            </div>
 
                             {/* Navigation Arrows - Optimized for Touch */}
                             <button
@@ -77,6 +133,8 @@ export function ProductDetail({ product }) {
 
                     {/* Right: Product Details */}
                     <div className="space-y-6 md:space-y-10 px-2 lg:px-0">
+
+
                         <motion.div
                             initial={{ opacity: 0, x: 20 }}
                             animate={{ opacity: 1, x: 0 }}
@@ -84,7 +142,7 @@ export function ProductDetail({ product }) {
                         >
                             <div className="flex items-center gap-2">
                                 <span className="text-heritage-gold text-[10px] md:text-xs uppercase tracking-[0.3em] font-bold">
-                                    {product.category?.name || product.category}
+                                    {product.category?.name || (typeof product.category === 'string' ? product.category : '')}
                                 </span>
                                 {product.badge && (
                                     <>
@@ -176,9 +234,73 @@ export function ProductDetail({ product }) {
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
-        </section>
+
+            {/* Lightbox Modal - Using Portal correctly */}
+            {
+                isMounted && createPortal(
+                    <AnimatePresence>
+                        {isLightboxOpen && (
+                            <motion.div
+                                key="lightbox-modal"
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                exit={{ opacity: 0 }}
+                                className="fixed inset-0 z-[100000] bg-black/95 flex items-center justify-center p-4 md:p-10"
+                                onClick={() => setIsLightboxOpen(false)}
+                            >
+                                {/* Close Button */}
+                                <button
+                                    onClick={(e) => { e.stopPropagation(); setIsLightboxOpen(false); }}
+                                    className="absolute top-10 right-10 text-white/70 hover:text-white transition-colors z-[100001] p-4 bg-white/10 rounded-full backdrop-blur-md"
+                                >
+                                    <X size={32} />
+                                </button>
+
+                                <div className="relative w-full h-full flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+                                    <motion.div
+                                        initial={{ scale: 0.9, opacity: 0 }}
+                                        animate={{ scale: 1, opacity: 1 }}
+                                        exit={{ scale: 0.9, opacity: 0 }}
+                                        className="relative w-full h-full max-w-5xl"
+                                    >
+                                        <Image
+                                            src={getOptimizedImage(product.gallery[activeImage])}
+                                            alt={product.name}
+                                            fill
+                                            className="object-contain"
+                                            priority
+                                        />
+                                    </motion.div>
+
+                                    {/* Lightbox Controls */}
+                                    <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 flex justify-between px-4 md:px-0 pointer-events-none">
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); prevImage(); }}
+                                            className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all pointer-events-auto"
+                                        >
+                                            <ChevronLeft size={32} />
+                                        </button>
+                                        <button
+                                            onClick={(e) => { e.stopPropagation(); nextImage(); }}
+                                            className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-all pointer-events-auto"
+                                        >
+                                            <ChevronRight size={32} />
+                                        </button>
+                                    </div>
+
+                                    {/* Counter */}
+                                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/50 font-serif tracking-widest text-sm">
+                                        {activeImage + 1} / {product.gallery.length}
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>,
+                    document.body
+                )
+            }
+        </section >
     );
 }

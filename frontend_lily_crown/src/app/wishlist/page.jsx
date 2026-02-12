@@ -79,7 +79,7 @@ export default function WishlistPage() {
 
                                 <div className="p-6 text-center">
                                     <h3 className="text-lg font-serif text-emerald-royal">{product.name}</h3>
-                                    <p className="text-[10px] uppercase tracking-widest text-emerald-royal/50 my-2">{product.category}</p>
+                                    <p className="text-[10px] uppercase tracking-widest text-emerald-royal/50 my-2">{product.category?.name || (typeof product.category === 'string' ? product.category : '')}</p>
                                     <p className="text-heritage-gold font-bold">৳ {product.price.toLocaleString()}</p>
                                 </div>
                             </motion.div>

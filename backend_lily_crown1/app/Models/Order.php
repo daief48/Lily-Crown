@@ -9,9 +9,14 @@ class Order extends Model
     protected $fillable = [
         'customer_name',
         'customer_email',
+        'phone',
+        'address',
+        'city',
         'total',
         'status',
         'items',
+        'payment_method',
+        'payment_status',
     ];
 
     protected $casts = [

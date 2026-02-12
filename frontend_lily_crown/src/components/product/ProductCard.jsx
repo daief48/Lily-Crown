@@ -118,7 +118,7 @@ export function ProductCard({ product, index, priority = false }) {
             <div className="px-1 flex flex-col flex-1">
                 <div className="flex items-center gap-3 mb-2">
                     <span className="text-[10px] text-heritage-gold uppercase tracking-[0.35em] font-bold">
-                        {product.category?.name || product.category}
+                        {product.category?.name || (typeof product.category === 'string' ? product.category : '')}
                     </span>
                     <div className="h-px flex-1 bg-heritage-gold/10"></div>
                 </div>

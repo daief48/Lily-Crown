@@ -15,7 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('customer_name');
             $table->string('customer_email');
+            $table->string('phone')->nullable();
+            $table->text('address')->nullable();
+            $table->string('city')->nullable();
             $table->decimal('total', 10, 2);
+            $table->string('payment_method')->default('cod');
+            $table->string('payment_status')->default('pending');
             $table->string('status')->default('pending');
             $table->json('items')->nullable();
             $table->timestamps();

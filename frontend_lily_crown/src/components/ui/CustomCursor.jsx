@@ -66,7 +66,7 @@ export function CustomCursor() {
         <>
             {/* Trailing glow effect */}
             <motion.div
-                className="fixed top-0 left-0 pointer-events-none z-[9997]"
+                className="fixed top-0 left-0 pointer-events-none z-[100101]"
                 style={{
                     x: glowSpringX,
                     y: glowSpringY,
@@ -83,7 +83,7 @@ export function CustomCursor() {
 
             {/* Main cursor dot */}
             <motion.div
-                className="fixed top-0 left-0 pointer-events-none z-[9999]"
+                className="fixed top-0 left-0 pointer-events-none z-[100103]"
                 style={{
                     x: springX,
                     y: springY,
@@ -99,7 +99,7 @@ export function CustomCursor() {
 
             {/* Outer ring with gradient */}
             <motion.div
-                className="fixed top-0 left-0 pointer-events-none z-[9998]"
+                className="fixed top-0 left-0 pointer-events-none z-[100102]"
                 style={{
                     x: outerSpringX,
                     y: outerSpringY,
@@ -127,7 +127,7 @@ export function CustomCursor() {
             {/* Inner pulse ring on hover */}
             {isHovering && (
                 <motion.div
-                    className="fixed top-0 left-0 pointer-events-none z-[9997]"
+                    className="fixed top-0 left-0 pointer-events-none z-[100101]"
                     initial={{ scale: 0.5, opacity: 0 }}
                     style={{
                         x: cursorX,
