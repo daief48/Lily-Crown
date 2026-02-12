@@ -7,10 +7,29 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $products = \App\Models\Product::with('category')->get();
-        return view('admin.products.index', compact('products'));
+        $query = \App\Models\Product::with('category');
+
+        // Search Filter
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        // Category Filter
+        if ($request->filled('category_id')) {
+            $query->where('category_id', $request->category_id);
+        }
+
+        // Badge Filter
+        if ($request->filled('badge')) {
+            $query->where('badge', $request->badge);
+        }
+
+        $products = $query->paginate(10)->appends($request->all());
+        $categories = \App\Models\Category::all();
+
+        return view('admin.products.index', compact('products', 'categories'));
     }
 
     public function create()

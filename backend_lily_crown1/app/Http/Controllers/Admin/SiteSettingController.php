@@ -7,9 +7,19 @@ use Illuminate\Http\Request;
 
 class SiteSettingController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $settings = \App\Models\SiteSetting::all();
+        $query = \App\Models\SiteSetting::query();
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('key', 'like', "%{$search}%")
+                  ->orWhere('value', 'like', "%{$search}%");
+            });
+        }
+
+        $settings = $query->get();
         return view('admin.settings.index', compact('settings'));
     }
 

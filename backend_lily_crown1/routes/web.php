@@ -17,4 +17,10 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::resource('orders', App\Http\Controllers\Admin\OrderController::class);
     Route::resource('subscribers', App\Http\Controllers\Admin\SubscriberController::class);
     Route::resource('settings', App\Http\Controllers\Admin\SiteSettingController::class);
+    Route::resource('hero-slides', App\Http\Controllers\Admin\HeroSlideController::class);
+    Route::resource('lookbook', App\Http\Controllers\Admin\LookbookController::class);
+    Route::resource('testimonials', App\Http\Controllers\Admin\TestimonialController::class);
+    Route::resource('features', App\Http\Controllers\Admin\FeatureController::class);
+    Route::resource('instagram-posts', App\Http\Controllers\Admin\InstagramPostController::class);
+    Route::resource('contact-inquiries', App\Http\Controllers\Admin\ContactInquiryController::class);
 });

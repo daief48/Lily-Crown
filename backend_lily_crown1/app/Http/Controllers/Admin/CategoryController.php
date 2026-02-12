@@ -7,9 +7,15 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $categories = \App\Models\Category::all();
+        $query = \App\Models\Category::query();
+
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        $categories = $query->paginate(10)->appends($request->all());
         return view('admin.categories.index', compact('categories'));
     }
 
@@ -26,8 +32,16 @@ class CategoryController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'required|string|unique:categories,slug',
-            'icon' => 'nullable|string|max:255',
+            'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        // Handle image upload
+        if ($request->hasFile('icon')) {
+            $image = $request->file('icon');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->move(public_path('images/categories'), $imageName);
+            $data['icon'] = 'images/categories/' . $imageName;
+        }
 
         \App\Models\Category::create($data);
 
@@ -47,8 +61,21 @@ class CategoryController extends Controller
         $data = $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'required|string|unique:categories,slug,'.$id,
-            'icon' => 'nullable|string|max:255',
+            'icon' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
+
+        // Handle image upload
+        if ($request->hasFile('icon')) {
+            // Delete old image if exists
+            if ($category->icon && file_exists(public_path($category->icon))) {
+                unlink(public_path($category->icon));
+            }
+            
+            $image = $request->file('icon');
+            $imageName = time() . '_' . $image->getClientOriginalName();
+            $image->move(public_path('images/categories'), $imageName);
+            $data['icon'] = 'images/categories/' . $imageName;
+        }
 
         $category->update($data);
 

@@ -71,7 +71,7 @@ export function Testimonials() {
                             className="flex flex-col items-center justify-center w-full"
                         >
                             <p className="font-serif text-xl sm:text-2xl md:text-3xl text-emerald-royal italic leading-relaxed mb-12 px-4 md:px-0">
-                                &ldquo;{testimonials[activeIndex].content}&rdquo;
+                                &ldquo;{testimonials[activeIndex].quote}&rdquo;
                             </p>
 
                             <div className="flex items-center gap-5">
@@ -79,8 +79,8 @@ export function Testimonials() {
                                     <div className="absolute inset-0 border border-heritage-gold/30 rounded-full scale-110"></div>
                                     <div className="relative w-full h-full rounded-full border-2 border-heritage-gold overflow-hidden shadow-2xl">
                                         <Image
-                                            src={getOptimizedImage(testimonials[activeIndex].image, `https://i.pravatar.cc/150?u=${testimonials[activeIndex].name}`)}
-                                            alt={testimonials[activeIndex].name}
+                                            src={getOptimizedImage(testimonials[activeIndex].image, `https://i.pravatar.cc/150?u=${testimonials[activeIndex].author}`)}
+                                            alt={testimonials[activeIndex].author}
                                             fill
                                             sizes="64px"
                                             loading="lazy"
@@ -89,7 +89,7 @@ export function Testimonials() {
                                     </div>
                                 </div>
                                 <div className="text-left">
-                                    <p className="font-bold text-xs uppercase tracking-[0.2em] text-emerald-royal">{testimonials[activeIndex].name}</p>
+                                    <p className="font-bold text-xs uppercase tracking-[0.2em] text-emerald-royal">{testimonials[activeIndex].author}</p>
                                     <div className="text-heritage-gold flex gap-1 mt-1.5">
                                         {[...Array(testimonials[activeIndex].rating || 5)].map((_, i) => (
                                             <Star key={i} size={12} className="fill-current" />

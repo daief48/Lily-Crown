@@ -63,12 +63,12 @@ return [
     |
     */
 
-    'logo' => '<b>Lily</b> Crown',
-    'logo_img' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
-    'logo_img_class' => 'brand-image img-circle elevation-3',
+    'logo' => '<span class="brand-text shadow-sm">Lily Crown</span>',
+    'logo_img' => 'brand-icon.png',
+    'logo_img_class' => 'brand-image shadow-sm',
     'logo_img_xl' => null,
     'logo_img_xl_class' => 'brand-image-xs',
-    'logo_img_alt' => 'Admin Logo',
+    'logo_img_alt' => '',
 
     /*
     |--------------------------------------------------------------------------
@@ -84,13 +84,13 @@ return [
     */
 
     'auth_logo' => [
-        'enabled' => false,
+        'enabled' => true,
         'img' => [
-            'path' => 'vendor/adminlte/dist/img/AdminLTELogo.png',
-            'alt' => 'Auth Logo',
+            'path' => 'img/logo.png',
+            'alt' => 'Lily Crown Auth Logo',
             'class' => '',
-            'width' => 50,
-            'height' => 50,
+            'width' => 200,
+            'height' => 80,
         ],
     ],
 
@@ -154,7 +154,7 @@ return [
 
     'layout_topnav' => null,
     'layout_boxed' => null,
-    'layout_fixed_sidebar' => null,
+    'layout_fixed_sidebar' => true,
     'layout_fixed_navbar' => null,
     'layout_fixed_footer' => null,
     'layout_dark_mode' => null,
@@ -196,9 +196,9 @@ return [
     'classes_content_wrapper' => '',
     'classes_content_header' => '',
     'classes_content' => '',
-    'classes_sidebar' => 'sidebar-dark-primary elevation-4',
-    'classes_sidebar_nav' => '',
-    'classes_topnav' => 'navbar-white navbar-light',
+    'classes_sidebar' => 'sidebar-dark-primary',
+    'classes_sidebar_nav' => 'nav-flat nav-child-indent',
+    'classes_topnav' => 'navbar-light border-bottom-0',
     'classes_topnav_nav' => 'navbar-expand',
     'classes_topnav_container' => 'container',
 
@@ -300,53 +300,80 @@ return [
 
     'menu' => [
         // Navbar items:
-        [
-            'type' => 'navbar-search',
-            'text' => 'search',
-            'topnav_right' => true,
-        ],
+
         [
             'type' => 'fullscreen-widget',
             'topnav_right' => true,
         ],
 
         // Sidebar items:
-        [
-            'type' => 'sidebar-menu-search',
-            'text' => 'search',
-        ],
+
         [
             'text' => 'Dashboard',
             'url'  => 'home',
-            'icon' => 'fas fa-fw fa-tachometer-alt',
+            'icon' => 'fas fa-fw fa-home',
         ],
         ['header' => 'SHOP MANAGEMENT'],
         [
             'text' => 'Categories',
             'url'  => 'admin/categories',
-            'icon' => 'fas fa-fw fa-list',
+            'icon' => 'fas fa-fw fa-th-large',
         ],
         [
             'text' => 'Products',
             'url'  => 'admin/products',
-            'icon' => 'fas fa-fw fa-box',
+            'icon' => 'fas fa-fw fa-tshirt',
         ],
         [
             'text' => 'Orders',
             'url'  => 'admin/orders',
-            'icon' => 'fas fa-fw fa-shopping-cart',
+            'icon' => 'fas fa-fw fa-shopping-bag',
         ],
         ['header' => 'CONTENT MANAGEMENT'],
         [
             'text' => 'Blogs',
             'url'  => 'admin/blogs',
-            'icon' => 'fas fa-fw fa-blog',
+            'icon' => 'fas fa-fw fa-pen-fancy',
         ],
         [
             'text' => 'Subscribers',
             'url'  => 'admin/subscribers',
-            'icon' => 'fas fa-fw fa-users',
+            'icon' => 'fas fa-fw fa-user-check',
         ],
+        ['header' => 'LANDING PAGE'],
+        [
+            'text' => 'Hero Slides',
+            'url'  => 'admin/hero-slides',
+            'icon' => 'fas fa-fw fa-images',
+        ],
+        [
+            'text' => 'Features',
+            'url'  => 'admin/features',
+            'icon' => 'fas fa-fw fa-star',
+        ],
+        [
+            'text' => 'Testimonials',
+            'url'  => 'admin/testimonials',
+            'icon' => 'fas fa-fw fa-quote-left',
+        ],
+        ['header' => 'GALLERY & SOCIAL'],
+        [
+            'text' => 'Lookbook',
+            'url'  => 'admin/lookbook',
+            'icon' => 'fas fa-fw fa-camera-retro',
+        ],
+        [
+            'text' => 'Instagram Feed',
+            'url'  => 'admin/instagram-posts',
+            'icon' => 'fab fa-fw fa-instagram',
+        ],
+        ['header' => 'CUSTOMER INQUIRIES'],
+        [
+            'text' => 'Contact Inquiries',
+            'url'  => 'admin/contact-inquiries',
+            'icon' => 'fas fa-fw fa-envelope-open',
+        ],
+        ['header' => 'SYSTEM'],
         [
             'text' => 'Site Settings',
             'url'  => 'admin/settings',
@@ -456,6 +483,21 @@ return [
                     'type' => 'js',
                     'asset' => false,
                     'location' => '//cdnjs.cloudflare.com/ajax/libs/pace/1.0.2/pace.min.js',
+                ],
+            ],
+        ],
+        'Luxury' => [
+            'active' => true,
+            'files' => [
+                [
+                    'type' => 'css',
+                    'asset' => true,
+                    'location' => 'css/luxury.css',
+                ],
+                [
+                    'type' => 'js',
+                    'asset' => false,
+                    'location' => '//fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;600;700&display=swap',
                 ],
             ],
         ],

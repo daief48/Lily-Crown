@@ -7,9 +7,15 @@ use Illuminate\Http\Request;
 
 class SubscriberController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $subscribers = \App\Models\Subscriber::all();
+        $query = \App\Models\Subscriber::query();
+
+        if ($request->filled('search')) {
+            $query->where('email', 'like', '%' . $request->search . '%');
+        }
+
+        $subscribers = $query->latest()->paginate(10)->appends($request->all());
         return view('admin.subscribers.index', compact('subscribers'));
     }
 

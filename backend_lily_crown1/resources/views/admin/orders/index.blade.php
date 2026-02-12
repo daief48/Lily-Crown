@@ -7,7 +7,57 @@
 @stop
 
 @section('content')
-    <div class="card">
+    {{-- Filter Card --}}
+    <div class="card card-royal mb-3">
+        <div class="card-header">
+            <h3 class="card-title">Filter Orders</h3>
+            <div class="card-tools">
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                    <i class="fas fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="card-body">
+            <form method="GET" action="{{ route('orders.index') }}">
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Search Order</label>
+                            <input type="text" name="search" class="form-control" placeholder="Order ID or Customer Name..." value="{{ request('search') }}">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>Status</label>
+                            <select name="status" class="form-control">
+                                <option value="">All Statuses</option>
+                                <option value="Pending" {{ request('status') == 'Pending' ? 'selected' : '' }}>Pending</option>
+                                <option value="Processing" {{ request('status') == 'Processing' ? 'selected' : '' }}>Processing</option>
+                                <option value="Shipped" {{ request('status') == 'Shipped' ? 'selected' : '' }}>Shipped</option>
+                                <option value="Delivered" {{ request('status') == 'Delivered' ? 'selected' : '' }}>Delivered</option>
+                                <option value="Cancelled" {{ request('status') == 'Cancelled' ? 'selected' : '' }}>Cancelled</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label>&nbsp;</label>
+                            <div class="d-flex">
+                                <button type="submit" class="btn btn-primary mr-2">
+                                    <i class="fas fa-filter mr-1"></i> Filter
+                                </button>
+                                <a href="{{ route('orders.index') }}" class="btn btn-default">
+                                    <i class="fas fa-undo mr-1"></i> Reset
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="card card-royal">
         <div class="card-body p-0">
             <table class="table table-striped">
                 <thead>
@@ -21,7 +71,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($orders as $order)
+                    @forelse($orders as $order)
                         <tr>
                             <td>{{ $order->id }}</td>
                             <td>
@@ -49,9 +99,16 @@
                                 </a>
                             </td>
                         </tr>
-                    @endforeach
+                    @empty
+                        <tr>
+                            <td colspan="6" class="text-center py-4">No orders found.</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
+        </div>
+        <div class="card-footer clearfix">
+            {{ $orders->links('pagination::bootstrap-4') }}
         </div>
     </div>
 @stop

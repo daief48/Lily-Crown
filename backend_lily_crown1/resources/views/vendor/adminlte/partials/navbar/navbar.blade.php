@@ -17,9 +17,26 @@
     </ul>
 
     {{-- Navbar right links --}}
+    <div class="luxury-navbar-brand mx-auto">
+        <a href="{{ route('home') }}" class="d-flex align-items-center">
+            @if(config('adminlte.logo_img_xl'))
+                @include('adminlte::partials.common.brand-logo-xl')
+            @else
+                @include('adminlte::partials.common.brand-logo-xs')
+            @endif
+        </a>
+    </div>
+
     <ul class="navbar-nav ml-auto">
         {{-- Custom right links --}}
         @yield('content_top_nav_right')
+
+        {{-- Theme Toggle --}}
+        <li class="nav-item">
+            <a class="nav-link" id="royal-theme-toggle" href="#" role="button">
+                <i class="fas fa-moon"></i>
+            </a>
+        </li>
 
         {{-- Configured right links --}}
         @each('adminlte::partials.navbar.menu-item', $adminlte->menu('navbar-right'), 'item')
@@ -40,3 +57,5 @@
     </ul>
 
 </nav>
+
+<script src="{{ asset('js/theme-toggle.js') }}"></script>

@@ -1,6 +1,6 @@
 /* 
-  Luxury "Royal" Design System for Lily Crown Admin
-  Inspired by frontend_lily_crown
+  Advanced Luxury "Royal" Design System for Lily Crown Admin
+  Synchronized with frontend_lily_crown
 */
 
 :root {
@@ -11,93 +11,416 @@
     --luxury-black: #121212;
     --gold-accent: #D4AF37;
     --rose-gold: #B76E79;
+    --heritage-gradient: linear-gradient(to right, #996515, #D4AF37, #996515);
 }
 
-/* Global Styles */
-body.layout-fixed .main-sidebar {
+/* Sidebar Modernization - Floating Royal Style */
+.main-sidebar {
     background-color: var(--luxury-black) !important;
+    border-right: 1px solid rgba(153, 101, 21, 0.1) !important;
 }
 
-.content-wrapper {
-    background-color: var(--muslin-cream) !important;
+.sidebar {
+    padding: 1.5rem 0.75rem !important;
+    height: calc(100vh - 4rem);
+    overflow-y: auto;
+    overflow-x: hidden !important;
+    scrollbar-width: none;
+    /* Firefox */
+    -ms-overflow-style: none;
+    /* IE and Edge */
 }
 
-/* Sidebar Styling */
-.sidebar-dark-primary .nav-sidebar>.nav-item>.nav-link.active,
-.sidebar-light-primary .nav-sidebar>.nav-item>.nav-link.active {
-    background-color: var(--heritage-gold) !important;
+/* Hide scrollbar for Chrome, Safari and Opera */
+.sidebar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide OverlayScrollbars custom scrollbar */
+.sidebar .os-scrollbar,
+.sidebar .os-scrollbar-horizontal,
+.sidebar .os-scrollbar-vertical {
+    display: none !important;
+    opacity: 0 !important;
+    visibility: hidden !important;
+}
+
+.nav-sidebar .nav-item {
+    margin-bottom: 0.4rem;
+}
+
+.nav-sidebar .nav-link {
+    border-radius: 12px !important;
+    padding: 0.85rem 1.25rem !important;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.5px;
+    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1) !important;
+    color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.nav-sidebar .nav-link:hover {
+    background: rgba(153, 101, 21, 0.08) !important;
+    color: var(--heritage-gold) !important;
+    transform: translateX(5px);
+}
+
+.nav-sidebar .nav-link.active {
+    background: var(--heritage-gradient) !important;
+    color: #fff !important;
+    box-shadow: 0 8px 25px rgba(153, 101, 21, 0.4) !important;
+    transform: scale(1.02);
+}
+
+.nav-sidebar .nav-link i {
+    font-size: 1.1rem !important;
+    margin-right: 0.75rem !important;
+    width: 25px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+.nav-sidebar .nav-link.active i {
     color: #fff !important;
 }
 
+.nav-sidebar .nav-link:hover i {
+    color: var(--gold-accent) !important;
+    transform: scale(1.2);
+}
+
+/* Sidebar Headers */
+.nav-header {
+    font-family: 'Playfair Display', serif !important;
+    color: var(--heritage-gold) !important;
+    text-transform: uppercase !important;
+    font-size: 0.7rem !important;
+    font-weight: 700 !important;
+    letter-spacing: 2px !important;
+    padding: 1.5rem 1.25rem 0.75rem !important;
+    opacity: 0.9;
+}
+
+/* Brand Area Modernization */
 .brand-link {
     background-color: var(--luxury-black) !important;
-    border-bottom: 1px solid rgba(153, 101, 21, 0.2) !important;
-    color: var(--heritage-gold) !important;
+    border-bottom: 1px solid rgba(153, 101, 21, 0.1) !important;
+    padding: 1.5rem 1rem !important;
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: auto !important;
+    text-align: center;
+}
+
+.brand-link .brand-image {
+    float: none !important;
+    line-height: .8;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-top: 0 !important;
+    max-height: 80px !important;
+    /* Increased size */
+    width: auto !important;
+    margin-bottom: 0.75rem !important;
 }
 
 .brand-link .brand-text {
+    font-family: 'Playfair Display', serif !important;
+    font-size: 1.5rem !important;
+    /* Larger text */
     font-weight: 700 !important;
-    letter-spacing: 1px;
+    letter-spacing: 1.5px !important;
     text-transform: uppercase;
-    background: linear-gradient(to right, #996515, #D4AF37, #996515);
+    background: var(--heritage-gradient);
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
+    margin-left: 0 !important;
+    display: block !important;
 }
 
-/* Navbar (Glassmorphism) */
+/* Advanced Glassmorphism White Navbar */
 .main-header {
-    background: rgba(253, 251, 247, 0.8) !important;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
+    background: rgba(253, 251, 247, 0.85) !important;
+    /* Muslin Cream with transparency */
+    backdrop-filter: blur(20px) !important;
+    -webkit-backdrop-filter: blur(20px) !important;
+    border-bottom: 1px solid rgba(153, 101, 21, 0.1) !important;
+    padding: 0.5rem 2rem !important;
+    display: flex !important;
+    align-items: center !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05) !important;
+    height: 90px !important;
+    /* Slightly taller for larger logo */
+}
+
+.main-header .nav-link {
+    color: var(--emerald-royal) !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease;
+}
+
+.main-header .nav-link:hover {
+    color: var(--heritage-gold) !important;
+}
+
+.main-header .navbar-nav i {
+    color: var(--emerald-royal) !important;
+}
+
+.luxury-navbar-brand {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.luxury-navbar-brand a {
+    text-decoration: none !important;
+    border: none !important;
+    background: transparent !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+}
+
+.luxury-navbar-brand .brand-image {
+    max-height: 70px !important;
+    width: auto !important;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    mix-blend-mode: multiply;
+    /* Removes white background if any */
+    filter: drop-shadow(0 2px 4px rgba(153, 101, 21, 0.1));
+}
+
+/* If the logo is white text on black background, we use 'screen' */
+.luxury-navbar-brand .brand-image[src*="brand-icon"] {
+    mix-blend-mode: screen;
+    filter: brightness(1.1) contrast(1.1);
+    background: transparent !important;
+}
+
+.luxury-navbar-brand:hover .brand-image {
+    transform: scale(1.05);
+}
+
+.luxury-navbar-brand .brand-text {
+    display: none !important;
+}
+
+@media (max-width: 768px) {
+    .luxury-navbar-brand .brand-text {
+        display: none !important;
+    }
+}
+
+/* Global Smooth Theme Transition */
+body {
+    transition: background-color 0.5s ease, color 0.5s ease !important;
+}
+
+/* --- Royal Dark Mode Implementation --- */
+.dark-mode {
+    --muslin-cream: #121212;
+    --luxury-black: #0A0A0A;
+    --emerald-royal: #10B981;
+    /* Brighter emerald for dark-mode contrast */
+    background-color: #0A0A0A !important;
+}
+
+.dark-mode .content-wrapper {
+    background-color: #0A0A0A !important;
+    background-image: radial-gradient(rgba(153, 101, 21, 0.05) 1px, transparent 1px);
+}
+
+.dark-mode .main-header {
+    background: rgba(10, 10, 10, 0.8) !important;
+    border-bottom: 1px solid rgba(153, 101, 21, 0.2) !important;
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.4) !important;
+}
+
+.dark-mode .main-header .nav-link {
+    color: #fff !important;
+}
+
+.dark-mode .card {
+    background-color: #1A1A1A !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3) !important;
+}
+
+.dark-mode .card-header {
+    background-color: rgba(255, 255, 255, 0.02) !important;
     border-bottom: 1px solid rgba(153, 101, 21, 0.1) !important;
 }
 
-/* Cards & Containers */
+.dark-mode .card-title {
+    color: #fff !important;
+}
+
+.dark-mode .form-control {
+    background-color: #222 !important;
+    border-color: rgba(153, 101, 21, 0.2) !important;
+    color: #eee !important;
+}
+
+.dark-mode .form-control:focus {
+    background-color: #2a2a2a !important;
+    border-color: var(--gold-accent) !important;
+}
+
+.dark-mode .table thead th {
+    background-color: rgba(153, 101, 21, 0.1);
+}
+
+.dark-mode .table tbody td {
+    color: #ccc !important;
+    border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.dark-mode .section-title {
+    color: var(--heritage-gold);
+    border-bottom-color: rgba(153, 101, 21, 0.2);
+}
+
+/* Custom Scrollbar for Dark Mode */
+.dark-mode ::-webkit-scrollbar-track {
+    background: #000;
+}
+
+/* --- End Dark Mode --- */
+
+/* Luxury Royal Cards */
 .card {
     border: none !important;
-    border-radius: 12px !important;
-    box-shadow: 0 10px 30px rgba(6, 78, 59, 0.05) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 10px 40px rgba(6, 78, 59, 0.04) !important;
     background-color: #fff !important;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.card-royal {
+    border-top: 4px solid var(--heritage-gold) !important;
 }
 
 .card-header {
-    background-color: transparent !important;
-    border-bottom: 1px solid rgba(153, 101, 21, 0.1) !important;
+    background-color: rgba(153, 101, 21, 0.01) !important;
+    border-bottom: 1px solid rgba(153, 101, 21, 0.05) !important;
+    padding: 1.25rem 1.5rem !important;
 }
 
 .card-title {
     color: var(--emerald-royal);
+    font-family: 'Playfair Display', serif;
     font-weight: 700;
+    font-size: 1.15rem;
 }
 
-/* Buttons */
+/* Premium Buttons */
 .btn-primary {
-    background-color: var(--emerald-royal) !important;
-    border-color: var(--emerald-royal) !important;
-    box-shadow: 0 4px 14px 0 rgba(6, 78, 59, 0.2) !important;
+    background: var(--emerald-royal) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 0.6rem 1.5rem !important;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 14px rgba(6, 78, 59, 0.2) !important;
 }
 
 .btn-primary:hover {
-    background-color: #054032 !important;
-    transform: translateY(-1px);
+    background: #054032 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(6, 78, 59, 0.3) !important;
 }
 
-.btn-info {
-    background-color: var(--heritage-gold) !important;
-    border-color: var(--heritage-gold) !important;
+/* Form Styles Modernization */
+.section-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--heritage-gold);
+    border-bottom: 1px solid rgba(153, 101, 21, 0.1);
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
 }
 
-/* Tables */
+.section-title i {
+    color: var(--gold-accent);
+    margin-right: 0.75rem;
+}
+
+.form-group label {
+    font-family: 'Inter', sans-serif;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    color: #666;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.form-control {
+    border: 1px solid rgba(153, 101, 21, 0.1) !important;
+    border-radius: 10px !important;
+    padding: 0.75rem 1.25rem !important;
+    height: auto !important;
+    background-color: #fcfcfc !important;
+}
+
+.form-control:focus {
+    background-color: #fff !important;
+    border-color: var(--gold-accent) !important;
+    box-shadow: 0 0 0 4px rgba(212, 175, 55, 0.1) !important;
+}
+
+/* Table Styling */
 .table thead th {
-    border-top: none;
-    background-color: rgba(153, 101, 21, 0.05);
+    background-color: rgba(153, 101, 21, 0.03);
     color: var(--heritage-gold);
     text-transform: uppercase;
-    font-size: 0.85rem;
-    letter-spacing: 0.5px;
+    font-size: 0.75rem;
+    letter-spacing: 1px;
+    border: none !important;
+    padding: 1rem 1.5rem !important;
 }
 
-/* Scrollbar */
+.table tbody td {
+    padding: 1rem 1.5rem !important;
+    vertical-align: middle !important;
+    border-top: 1px solid rgba(153, 101, 21, 0.03) !important;
+}
+
+/* Enhanced Preview Containers */
+#image-preview,
+#gallery-preview {
+    background: rgba(153, 101, 21, 0.015);
+    border: 1px dashed rgba(153, 101, 21, 0.15);
+    padding: 1.5rem;
+    border-radius: 12px;
+    margin-top: 1rem;
+}
+
+/* Layout Grid */
+.luxury-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+}
+
+@media (max-width: 992px) {
+    .luxury-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Custom Scrollbar */
 ::-webkit-scrollbar {
     width: 10px;
 }
@@ -107,6 +430,111 @@ body.layout-fixed .main-sidebar {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: linear-gradient(180deg, #996515, #D4AF37, #996515);
-    border-radius: 5px;
+    background: var(--heritage-gradient);
+    border-radius: 100px;
+    border: 2px solid var(--luxury-black);
+}
+
+/* Modern Action Buttons (Edit, Delete, View) */
+.btn-xs {
+    padding: 0.5rem 0.75rem !important;
+    border-radius: 8px !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+    border: none !important;
+    font-size: 0.875rem !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-width: 38px !important;
+    min-height: 38px !important;
+}
+
+/* Edit Button - Emerald Theme */
+.btn-xs.text-primary {
+    background: linear-gradient(135deg, #064E3B 0%, #059669 100%) !important;
+    color: #fff !important;
+    box-shadow: 0 2px 8px rgba(6, 78, 59, 0.2) !important;
+}
+
+.btn-xs.text-primary:hover {
+    background: linear-gradient(135deg, #059669 0%, #10B981 100%) !important;
+    transform: translateY(-2px) scale(1.05) !important;
+    box-shadow: 0 4px 16px rgba(6, 78, 59, 0.35) !important;
+}
+
+.btn-xs.text-primary i {
+    color: #fff !important;
+    font-size: 1rem !important;
+}
+
+/* Delete Button - Royal Red Theme */
+.btn-xs.text-danger {
+    background: linear-gradient(135deg, #DC2626 0%, #EF4444 100%) !important;
+    color: #fff !important;
+    box-shadow: 0 2px 8px rgba(220, 38, 38, 0.2) !important;
+}
+
+.btn-xs.text-danger:hover {
+    background: linear-gradient(135deg, #B91C1C 0%, #DC2626 100%) !important;
+    transform: translateY(-2px) scale(1.05) !important;
+    box-shadow: 0 4px 16px rgba(220, 38, 38, 0.35) !important;
+}
+
+.btn-xs.text-danger i {
+    color: #fff !important;
+    font-size: 1rem !important;
+}
+
+/* View/Eye Button - Gold Theme */
+.btn-xs.text-info,
+.btn-xs.text-primary.fa-eye {
+    background: linear-gradient(135deg, #996515 0%, #D4AF37 100%) !important;
+    color: #fff !important;
+    box-shadow: 0 2px 8px rgba(153, 101, 21, 0.2) !important;
+}
+
+.btn-xs.text-info:hover,
+.btn-xs.text-primary.fa-eye:hover {
+    background: linear-gradient(135deg, #D4AF37 0%, #F59E0B 100%) !important;
+    transform: translateY(-2px) scale(1.05) !important;
+    box-shadow: 0 4px 16px rgba(153, 101, 21, 0.35) !important;
+}
+
+/* Icon animations */
+.btn-xs i {
+    transition: transform 0.3s ease !important;
+}
+
+.btn-xs:hover i {
+    transform: rotate(5deg) scale(1.1) !important;
+}
+
+/* Ripple effect on click */
+.btn-xs:active {
+    transform: scale(0.95) !important;
+}
+
+/* Button group spacing */
+.btn-xs+.btn-xs,
+form+.btn-xs,
+.btn-xs+form {
+    margin-left: 0.25rem !important;
+}
+
+/* Keep action buttons in same row */
+td form {
+    display: inline-flex !important;
+    margin: 0 !important;
+}
+
+td .btn-xs {
+    vertical-align: middle !important;
+}
+
+/* Actions column flexbox layout */
+table td:last-child {
+    display: flex !important;
+    align-items: center !important;
+    gap: 0.5rem !important;
+    flex-wrap: nowrap !important;
 }

@@ -13,10 +13,22 @@ class DatabaseSeeder extends Seeder
     /**
      * Seed the application's database.
      */
-    public function run(): void
+    public function run()
     {
+        // Run seeders in order
         $this->call([
             AdminSeeder::class,
+            CategorySeeder::class,
+            ProductSeeder::class,
+            BlogSeeder::class,
+            SubscriberSeeder::class,
+            HeroSlideSeeder::class,
+            FeatureSeeder::class,
+            TestimonialSeeder::class,
+            LookbookSeeder::class,
+            InstagramPostSeeder::class,
+            ContactInquirySeeder::class,
+            SiteSettingSeeder::class,
         ]);
     }
 }

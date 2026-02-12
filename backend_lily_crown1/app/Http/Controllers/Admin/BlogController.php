@@ -7,9 +7,15 @@ use Illuminate\Http\Request;
 
 class BlogController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $blogs = \App\Models\Blog::all();
+        $query = \App\Models\Blog::query();
+
+        if ($request->filled('search')) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+
+        $blogs = $query->latest()->paginate(10)->appends($request->all());
         return view('admin.blogs.index', compact('blogs'));
     }
 

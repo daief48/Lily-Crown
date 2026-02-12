@@ -1,11 +1,11 @@
 <aside class="main-sidebar {{ config('adminlte.classes_sidebar', 'sidebar-dark-primary elevation-4') }}">
 
-    {{-- Sidebar brand logo --}}
+    <!-- {{-- Sidebar brand logo --}}
     @if(config('adminlte.logo_img_xl'))
         @include('adminlte::partials.common.brand-logo-xl')
     @else
         @include('adminlte::partials.common.brand-logo-xs')
-    @endif
+    @endif -->
 
     {{-- Sidebar menu --}}
     <div class="sidebar">
