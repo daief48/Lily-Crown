@@ -68,16 +68,41 @@ export function debounce(func, wait = 300) {
  * @returns {string} Balanced image source
  */
 export function getOptimizedImage(src, fallback = "https://picsum.photos/1200/800?grayscale&blur=2") {
-    if (!src || src === "") return fallback;
+    if (!src) return fallback;
+
+    // Handle object input (e.g., gallery items like {url: '...'})
+    let cleanedSrc = typeof src === 'object' && src.url ? src.url : String(src);
+    cleanedSrc = cleanedSrc.replace(/\\/g, '/');
 
     // If it's already an absolute URL (http/https), return it
-    if (src.startsWith('http')) return src;
+    if (cleanedSrc.startsWith('http')) return cleanedSrc;
 
-    // Otherwise, prepend the backend storage URL
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000';
+    // Remove leading slash for consistency
+    if (cleanedSrc.startsWith('/')) {
+        cleanedSrc = cleanedSrc.substring(1);
+    }
 
-    // Ensure we don't end up with storage/storage/
-    const path = src.startsWith('/storage') ? src : `/storage/${src}`;
+    // Use URL constructor for robust origin derivation
+    let backendUrl = 'http://localhost:8000';
+    try {
+        if (process.env.NEXT_PUBLIC_API_URL) {
+            backendUrl = new URL(process.env.NEXT_PUBLIC_API_URL).origin;
+        }
+    } catch (e) {
+        // Fallback to simple replacement if URL parsing fails
+        backendUrl = process.env.NEXT_PUBLIC_API_URL?.replace('/api', '') || 'http://localhost:8000';
+    }
 
-    return `${backendUrl}${path}`;
+    // 1. If it's in public images (e.g., 'images/categories/...')
+    if (cleanedSrc.startsWith('images/')) {
+        return `${backendUrl}/${cleanedSrc}`;
+    }
+
+    // 2. If it's already prefixed with storage/ or images/ (for categories)
+    if (cleanedSrc.startsWith('storage/') || cleanedSrc.startsWith('images/')) {
+        return `${backendUrl}/${cleanedSrc}`;
+    }
+
+    // 3. Fallback: assume it's a raw path that belongs in storage
+    return `${backendUrl}/storage/${cleanedSrc}`;
 }

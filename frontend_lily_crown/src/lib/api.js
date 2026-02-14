@@ -4,7 +4,11 @@ export async function fetchFromApi(endpoint, options = {}) {
     try {
         const response = await fetch(`${API_URL}/${endpoint}`, {
             next: { revalidate: 60 }, // Default revalidation
-            ...options
+            ...options,
+            headers: {
+                'Accept': 'application/json',
+                ...options.headers
+            }
         });
 
         if (!response.ok) {
@@ -38,6 +42,19 @@ export const api = {
     getSettings: () => fetchFromApi('settings'),
     getInstagramPosts: () => fetchFromApi('instagram-posts'),
     getFeatures: () => fetchFromApi('features'),
+    getOrders: (token) => fetchFromApi('orders', {
+        headers: token ? {
+            'Authorization': `Bearer ${token}`
+        } : {}
+    }),
+    updateProfile: (userData, token) => fetchFromApi('user/update', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify(userData)
+    }),
     subscribe: (email) => fetchFromApi('subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

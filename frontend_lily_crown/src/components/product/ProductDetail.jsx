@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ShoppingBag, Heart, ChevronLeft, ChevronRight, Star, ShieldCheck, Truck, RefreshCw, X, ZoomIn } from "lucide-react";
 import { useStore } from "@/context/StoreContext";
 import { getOptimizedImage } from "@/lib/utils";
+import { RoyalImage } from "@/components/ui/RoyalImage";
 
 export function ProductDetail({ product }) {
     const { addToCart, toggleWishlist, wishlistItems } = useStore();
@@ -31,7 +32,7 @@ export function ProductDetail({ product }) {
         };
     }, [isLightboxOpen]);
 
-    const isWishlisted = wishlistItems.has(product.id);
+    const isWishlisted = wishlistItems.some(item => Number(item.id) === Number(product.id));
 
     if (!product) return null;
 
@@ -82,7 +83,7 @@ export function ProductDetail({ product }) {
                                         }}
                                         className="h-full w-full"
                                     >
-                                        <Image
+                                        <RoyalImage
                                             src={getOptimizedImage(product.gallery[activeImage])}
                                             alt={product.name}
                                             fill
@@ -125,7 +126,7 @@ export function ProductDetail({ product }) {
                                     className={`relative w-16 md:w-24 aspect-[3/4] rounded-xl overflow-hidden border-2 flex-shrink-0 transition-all ${activeImage === idx ? "border-heritage-gold scale-95 shadow-lg" : "border-transparent opacity-60 hover:opacity-100"
                                         }`}
                                 >
-                                    <Image src={getOptimizedImage(img)} alt={`Thumbnail ${idx}`} fill sizes="100px" className="object-cover" />
+                                    <RoyalImage src={getOptimizedImage(img)} alt={`Thumbnail ${idx}`} fill sizes="100px" className="object-cover" />
                                 </button>
                             ))}
                         </div>
@@ -191,7 +192,7 @@ export function ProductDetail({ product }) {
                                 Keep in My Bag
                             </button>
                             <button
-                                onClick={() => toggleWishlist(product.id)}
+                                onClick={() => toggleWishlist(product)}
                                 className={`flex-1 border-2 py-5 px-8 uppercase tracking-[0.2em] font-bold text-xs md:text-sm transition-all flex items-center justify-center gap-3 ${isWishlisted
                                     ? "border-deep-maroon text-deep-maroon bg-deep-maroon/5 shadow-inner"
                                     : "border-emerald-royal text-emerald-royal hover:bg-emerald-royal hover:text-white"
@@ -269,6 +270,7 @@ export function ProductDetail({ product }) {
                                             src={getOptimizedImage(product.gallery[activeImage])}
                                             alt={product.name}
                                             fill
+                                            unoptimized
                                             className="object-contain"
                                             priority
                                         />

@@ -4,10 +4,12 @@ import React, { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useStore } from "@/context/StoreContext";
-import { Heart, ShoppingBag, Menu, X, Search, ChevronDown, LayoutGrid } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import { Heart, ShoppingBag, Menu, X, Search, ChevronDown, LayoutGrid, User, LogOut } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { RoyalImage } from "@/components/ui/RoyalImage";
 
 function cn(...inputs) {
     return twMerge(clsx(inputs));
@@ -15,6 +17,7 @@ function cn(...inputs) {
 
 export function Navbar() {
     const { cartCount, wishlistItems } = useStore();
+    const { user, logout } = useAuth();
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -156,13 +159,13 @@ export function Navbar() {
                     {/* Center: Logo */}
                     <div className="flex justify-center flex-shrink-0 mx-4 md:mx-8">
                         <Link href="/" className="relative h-[45px] w-[140px] md:h-[65px] md:w-[190px] transition-transform duration-500 hover:scale-105">
-                            <Image
+                            <RoyalImage
                                 src="/img/logo.png"
                                 alt="Lily Crown"
                                 fill
                                 priority
                                 sizes="(max-width: 768px) 140px, 190px"
-                                className="object-contain"
+                                className="object-contain drop-shadow-[0_0_30px_rgba(153,101,21,0.2)]"
                             />
                         </Link>
                     </div>
@@ -216,13 +219,61 @@ export function Navbar() {
 
                         {/* Auth Buttons (Desktop) */}
                         <div className="hidden lg:flex items-center space-x-3 ml-2 border-l border-emerald-royal/10 pl-4">
-                            <Link href="/login" className="text-xs font-medium text-emerald-royal hover:text-heritage-gold transition-colors">
-                                Login
-                            </Link>
-                            <span className="text-xs text-emerald-royal/30">|</span>
-                            <Link href="/register" className="text-xs font-medium text-emerald-royal hover:text-heritage-gold transition-colors">
-                                Register
-                            </Link>
+                            {user ? (
+                                <div className="relative group">
+                                    <button className="flex items-center gap-2 text-emerald-royal hover:text-heritage-gold transition-colors py-2">
+                                        <div className="p-1.5 border border-emerald-royal/20 rounded-full">
+                                            <User size={16} />
+                                        </div>
+                                        <span className="text-xs font-bold uppercase tracking-widest hidden xl:block max-w-[100px] truncate">
+                                            {user.name}
+                                        </span>
+                                        <ChevronDown size={12} className="text-emerald-royal/50 group-hover:rotate-180 transition-transform duration-300" />
+                                    </button>
+
+                                    {/* Dropdown */}
+                                    <div className="absolute top-full right-0 mt-2 w-56 bg-white border border-heritage-gold/20 shadow-2xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform origin-top-right z-50 rounded-sm">
+                                        <div className="p-4 border-b border-heritage-gold/10 bg-muslin-cream/20">
+                                            <p className="text-[10px] text-emerald-royal/50 uppercase tracking-widest font-bold mb-1">Signed in as</p>
+                                            <p className="text-sm font-serif text-emerald-royal truncate font-medium">{user.name}</p>
+                                        </div>
+
+                                        <div className="py-2">
+                                            <Link
+                                                href="/profile"
+                                                className="w-full flex items-center gap-3 px-4 py-3 text-[10px] uppercase tracking-widest text-emerald-royal hover:bg-emerald-royal/5 hover:text-heritage-gold transition-colors text-left font-bold"
+                                            >
+                                                <User size={14} />
+                                                My Profile
+                                            </Link>
+                                            <Link
+                                                href="/orders"
+                                                className="w-full flex items-center gap-3 px-4 py-3 text-[10px] uppercase tracking-widest text-emerald-royal hover:bg-emerald-royal/5 hover:text-heritage-gold transition-colors text-left font-bold"
+                                            >
+                                                <ShoppingBag size={14} />
+                                                My Orders
+                                            </Link>
+                                            <button
+                                                onClick={logout}
+                                                className="w-full flex items-center gap-3 px-4 py-3 text-[10px] uppercase tracking-widest text-red-500 hover:bg-red-50 transition-colors text-left font-bold"
+                                            >
+                                                <LogOut size={14} />
+                                                Logout
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <>
+                                    <Link href="/login" className="text-xs font-medium text-emerald-royal hover:text-heritage-gold transition-colors">
+                                        Login
+                                    </Link>
+                                    <span className="text-xs text-emerald-royal/30">|</span>
+                                    <Link href="/register" className="text-xs font-medium text-emerald-royal hover:text-heritage-gold transition-colors">
+                                        Register
+                                    </Link>
+                                </>
+                            )}
                         </div>
 
                         <Link
@@ -274,7 +325,7 @@ export function Navbar() {
                         >
                             <div className="flex justify-between items-center mb-10">
                                 <Link href="/" onClick={() => setIsMobileMenuOpen(false)}>
-                                    <Image src="/img/logo.png" alt="Logo" width={140} height={55} className="object-contain" />
+                                    <RoyalImage src="/img/logo.png" alt="Logo" width={140} height={55} className="object-contain" />
                                 </Link>
                                 <button onClick={() => setIsMobileMenuOpen(false)} className="text-emerald-royal p-1 border border-emerald-royal/10 rounded-full bg-emerald-royal/5">
                                     <X size={20} />
@@ -333,20 +384,69 @@ export function Navbar() {
                                 </Link>
 
                                 <div className="pt-10 mt-6 grid grid-cols-2 gap-4">
-                                    <Link
-                                        href="/login"
-                                        onClick={() => setIsMobileMenuOpen(false)}
-                                        className="text-center py-3 border border-emerald-royal text-emerald-royal text-xs uppercase font-bold tracking-widest hover:bg-emerald-royal hover:text-white transition-colors"
-                                    >
-                                        Login
-                                    </Link>
-                                    <Link
-                                        href="/register"
-                                        onClick={() => setIsMobileMenuOpen(false)}
-                                        className="text-center py-3 bg-emerald-royal text-white text-xs uppercase font-bold tracking-widest hover:bg-emerald-royal/90 transition-colors"
-                                    >
-                                        Register
-                                    </Link>
+                                    {user ? (
+                                        <>
+                                            <div className="col-span-2 text-center mb-4">
+                                                <p className="text-sm font-serif text-emerald-royal">Welcome, {user.name}</p>
+                                                <div className="flex justify-center gap-4 mt-4">
+                                                    <Link
+                                                        href="/profile"
+                                                        onClick={() => setIsMobileMenuOpen(false)}
+                                                        className="text-[10px] uppercase tracking-widest font-bold text-heritage-gold underline"
+                                                    >
+                                                        Profile
+                                                    </Link>
+                                                    <Link
+                                                        href="/orders"
+                                                        onClick={() => setIsMobileMenuOpen(false)}
+                                                        className="text-[10px] uppercase tracking-widest font-bold text-heritage-gold underline"
+                                                    >
+                                                        Orders
+                                                    </Link>
+                                                </div>
+                                            </div>
+                                            <Link
+                                                href="/profile"
+                                                onClick={() => setIsMobileMenuOpen(false)}
+                                                className="text-center py-3 bg-emerald-royal/5 text-emerald-royal text-xs uppercase font-bold tracking-widest hover:bg-emerald-royal hover:text-white transition-colors border border-emerald-royal/10"
+                                            >
+                                                Profile
+                                            </Link>
+                                            <Link
+                                                href="/orders"
+                                                onClick={() => setIsMobileMenuOpen(false)}
+                                                className="text-center py-3 bg-emerald-royal/5 text-emerald-royal text-xs uppercase font-bold tracking-widest hover:bg-emerald-royal hover:text-white transition-colors border border-emerald-royal/10"
+                                            >
+                                                Orders
+                                            </Link>
+                                            <button
+                                                onClick={() => {
+                                                    logout();
+                                                    setIsMobileMenuOpen(false);
+                                                }}
+                                                className="col-span-2 text-center py-3 bg-red-50 text-red-600 text-xs uppercase font-bold tracking-widest hover:bg-red-600 hover:text-white transition-colors mt-2 border border-red-100"
+                                            >
+                                                Logout
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Link
+                                                href="/login"
+                                                onClick={() => setIsMobileMenuOpen(false)}
+                                                className="text-center py-3 border border-emerald-royal text-emerald-royal text-xs uppercase font-bold tracking-widest hover:bg-emerald-royal hover:text-white transition-colors"
+                                            >
+                                                Login
+                                            </Link>
+                                            <Link
+                                                href="/register"
+                                                onClick={() => setIsMobileMenuOpen(false)}
+                                                className="text-center py-3 bg-emerald-royal text-white text-xs uppercase font-bold tracking-widest hover:bg-emerald-royal/90 transition-colors"
+                                            >
+                                                Register
+                                            </Link>
+                                        </>
+                                    )}
                                 </div>
 
                                 <div className="mt-12 text-center">

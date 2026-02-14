@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\HeroSlide;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class HeroSlideController extends Controller
 {
@@ -33,7 +34,7 @@ class HeroSlideController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'image' => 'required|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
             'title' => 'nullable|string',
             'subtitle' => 'nullable|string',
             'button_text' => 'nullable|string',
@@ -41,6 +42,11 @@ class HeroSlideController extends Controller
             'order' => 'integer',
             'is_active' => 'boolean',
         ]);
+
+        if ($request->hasFile('image')) {
+            $imagePath = $request->file('image')->store('uploads/hero-slides', 'public');
+            $data['image'] = 'storage/' . $imagePath;
+        }
 
         HeroSlide::create($data);
 
@@ -55,7 +61,7 @@ class HeroSlideController extends Controller
     public function update(Request $request, HeroSlide $heroSlide)
     {
         $data = $request->validate([
-            'image' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
             'title' => 'nullable|string',
             'subtitle' => 'nullable|string',
             'button_text' => 'nullable|string',
@@ -63,6 +69,20 @@ class HeroSlideController extends Controller
             'order' => 'integer',
             'is_active' => 'boolean',
         ]);
+
+        if ($request->hasFile('image')) {
+            // Delete old image if it exists
+            if ($heroSlide->image && !str_starts_with($heroSlide->image, 'http')) {
+                $oldPath = str_replace('storage/', '', $heroSlide->image);
+                Storage::disk('public')->delete($oldPath);
+            }
+
+            $imagePath = $request->file('image')->store('uploads/hero-slides', 'public');
+            $data['image'] = 'storage/' . $imagePath;
+        } else {
+            // Keep existing image if no new one uploaded
+            $data['image'] = $heroSlide->image;
+        }
 
         $heroSlide->update($data);
 

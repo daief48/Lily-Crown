@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Navbar, Footer } from "@/components";
 import { Calendar, User, ArrowRight } from "lucide-react";
 import { api } from "@/lib/api";
+import { getOptimizedImage } from "@/lib/utils";
 import Skeleton from "@/components/ui/Skeleton";
 
 export default function BlogListing() {
@@ -86,7 +87,7 @@ export default function BlogListing() {
                             >
                                 <Link href={`/blog/${blog.slug}`} className="relative aspect-[16/10] overflow-hidden">
                                     <Image
-                                        src={blog.image}
+                                        src={getOptimizedImage(blog.image || blog.thumbnail)}
                                         alt={blog.title}
                                         fill
                                         className="object-cover transition-transform duration-1000 group-hover:scale-105"

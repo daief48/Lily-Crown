@@ -80,17 +80,24 @@
                             </td>
                             <td>${{ number_format($order->total, 2) }}</td>
                             <td>
-                                @php
-                                    $badgeClass = match($order->status) {
-                                        'Pending' => 'badge-warning',
-                                        'Processing' => 'badge-info',
-                                        'Shipped' => 'badge-primary',
-                                        'Delivered' => 'badge-success',
-                                        'Cancelled' => 'badge-danger',
-                                        default => 'badge-secondary'
-                                    };
-                                @endphp
-                                <span class="badge {{ $badgeClass }}">{{ $order->status }}</span>
+                                <form action="{{ route('orders.update', $order->id) }}" method="POST" class="status-update-form">
+                                    @csrf
+                                    @method('PUT')
+                                    <select name="status" onchange="this.form.submit()" class="form-control form-control-sm @php
+                                        echo match($order->status) {
+                                            'Pending' => 'bg-warning',
+                                            'Processing' => 'bg-info',
+                                            'Shipped' => 'bg-primary',
+                                            'Delivered' => 'bg-success',
+                                            'Cancelled' => 'bg-danger',
+                                            default => 'bg-secondary'
+                                        };
+                                    @endphp" style="border-radius: 20px; font-weight: bold; font-size: 10px; text-transform: uppercase; padding: 0 10px; height: 25px; border: none; color: white; cursor: pointer;">
+                                        @foreach(['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'] as $status)
+                                            <option value="{{ $status }}" {{ $order->status == $status ? 'selected' : '' }}>{{ $status }}</option>
+                                        @endforeach
+                                    </select>
+                                </form>
                             </td>
                             <td>{{ $order->created_at->format('Y-m-d') }}</td>
                             <td>

@@ -11,6 +11,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Calendar, User, Clock, ChevronLeft, ArrowRight } from "lucide-react";
 
 import { api } from "@/lib/api";
+import { getOptimizedImage } from "@/lib/utils";
 import Skeleton from "@/components/ui/Skeleton";
 
 export default function BlogPost() {
@@ -101,12 +102,12 @@ export default function BlogPost() {
                         </div>
                     </div>
 
-                    <div className="relative aspect-[21/9] rounded-3xl overflow-hidden mb-16 royal-shadow font-cursive">
+                    <div className="relative aspect-video rounded-3xl overflow-hidden mb-16 royal-shadow font-cursive bg-emerald-royal/5">
                         <Image
-                            src={blog.image}
+                            src={getOptimizedImage(blog.image)}
                             alt={blog.title}
                             fill
-                            className="object-cover"
+                            className="object-contain"
                             priority
                         />
                     </div>
@@ -131,7 +132,7 @@ export default function BlogPost() {
                         {relatedBlogs.map((story) => (
                             <Link key={story.id} href={`/blog/${story.slug}`} className="group flex flex-col md:flex-row gap-8 items-center">
                                 <div className="relative w-full md:w-48 h-48 rounded-2xl overflow-hidden shrink-0">
-                                    <Image src={story.image} alt={story.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
+                                    <Image src={getOptimizedImage(story.image)} alt={story.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
                                 </div>
                                 <div className="space-y-3">
                                     <span className="text-heritage-gold text-[9px] uppercase font-bold tracking-widest">{story.category?.name || (typeof story.category === 'string' ? story.category : '')}</span>

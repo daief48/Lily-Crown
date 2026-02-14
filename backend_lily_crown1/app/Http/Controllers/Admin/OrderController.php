@@ -39,11 +39,20 @@ class OrderController extends Controller
     {
         $order = \App\Models\Order::findOrFail($id);
         
-        $data = $request->validate([
-            'status' => 'required|in:Pending,Processing,Shipped,Delivered,Cancelled',
+        $request->validate([
+            'status' => 'required|string',
         ]);
 
-        $order->update($data);
+        // Normalize status: first letter uppercase, rest lowercase (e.g., "Pending")
+        $status = ucfirst(strtolower($request->status));
+        
+        $validStatuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled'];
+        
+        if (!in_array($status, $validStatuses)) {
+            return back()->with('error', 'Invalid status selected');
+        }
+
+        $order->update(['status' => $status]);
 
         return redirect()->route('orders.index')->with('success', 'Order status updated successfully');
     }

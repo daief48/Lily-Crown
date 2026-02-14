@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
-import Image from "next/image";
+import { RoyalImage } from "@/components/ui/RoyalImage";
 
 export function Preloader() {
     const [loading, setLoading] = useState(true);
@@ -108,7 +108,7 @@ export function Preloader() {
                                 className="absolute inset-0 bg-heritage-gold/20 blur-[80px] rounded-full"
                             />
 
-                            <Image
+                            <RoyalImage
                                 src="/img/logo.png"
                                 alt="Lily Crown"
                                 fill

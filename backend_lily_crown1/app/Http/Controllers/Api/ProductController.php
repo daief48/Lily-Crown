@@ -16,7 +16,11 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $product = Product::with('category')->find($id);
+        $product = Product::with('category')
+            ->where('id', $id)
+            ->orWhere('slug', $id)
+            ->first();
+
         if (!$product) {
             return response()->json(['message' => 'Product not found'], 404);
         }

@@ -28,10 +28,20 @@ class InstagramPostController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'image' => 'required|string',
+            'image' => 'nullable|string',
+            'image_file' => 'nullable|image|max:2048',
             'link' => 'nullable|string',
             'caption' => 'nullable|string',
         ]);
+
+        if ($request->hasFile('image_file')) {
+            $path = $request->file('image_file')->store('instagram', 'public');
+            $data['image'] = 'storage/' . $path;
+        }
+
+        if (empty($data['image'])) {
+            return back()->withErrors(['image' => 'Please provide an image file or URL'])->withInput();
+        }
 
         InstagramPost::create($data);
 
@@ -46,10 +56,20 @@ class InstagramPostController extends Controller
     public function update(Request $request, InstagramPost $instagramPost)
     {
         $data = $request->validate([
-            'image' => 'required|string',
+            'image' => 'nullable|string',
+            'image_file' => 'nullable|image|max:2048',
             'link' => 'nullable|string',
             'caption' => 'nullable|string',
         ]);
+
+        if ($request->hasFile('image_file')) {
+            $path = $request->file('image_file')->store('instagram', 'public');
+            $data['image'] = 'storage/' . $path;
+        }
+
+        if (empty($data['image'])) {
+            return back()->withErrors(['image' => 'Please provide an image file or URL'])->withInput();
+        }
 
         $instagramPost->update($data);
 

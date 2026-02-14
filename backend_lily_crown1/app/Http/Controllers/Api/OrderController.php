@@ -8,6 +8,14 @@ use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+    public function index(Request $request)
+    {
+        $orders = Order::where('user_id', $request->user()->id)
+            ->orderBy('created_at', 'desc')
+            ->get();
+        return response()->json($orders);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
@@ -22,6 +30,7 @@ class OrderController extends Controller
         ]);
 
         $order = Order::create([
+            'user_id' => $request->user('sanctum')?->id,
             'customer_name' => $request->customer_name,
             'customer_email' => $request->customer_email,
             'phone' => $request->phone,

@@ -9,6 +9,7 @@ import { motion } from "framer-motion";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { getOptimizedImage } from "@/lib/utils";
+import { RoyalImage } from "@/components/ui/RoyalImage";
 
 function cn(...inputs) {
     return twMerge(clsx(inputs));
@@ -16,7 +17,7 @@ function cn(...inputs) {
 
 export function ProductCard({ product, index, priority = false }) {
     const { addToCart, toggleWishlist, wishlistItems } = useStore();
-    const isWishlisted = wishlistItems.has(product.id);
+    const isWishlisted = wishlistItems.some(item => Number(item.id) === Number(product.id));
     const [isHovered, setIsHovered] = React.useState(false);
 
     // Get primary and secondary images
@@ -49,12 +50,11 @@ export function ProductCard({ product, index, priority = false }) {
 
                 <Link href={`/product/${product.id}`} className="block h-full relative cursor-none md:cursor-pointer">
                     {/* Primary Image */}
-                    <Image
+                    <RoyalImage
                         src={primaryImage}
                         alt={product.name}
                         fill
                         priority={priority}
-                        loading={priority ? "eager" : "lazy"}
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                         className={cn(
                             "object-cover transition-all duration-700 ease-out",
@@ -63,11 +63,10 @@ export function ProductCard({ product, index, priority = false }) {
                     />
 
                     {/* Secondary Image - Shows on Hover */}
-                    <Image
+                    <RoyalImage
                         src={secondaryImage}
                         alt={`${product.name} - alternate view`}
                         fill
-                        loading="lazy"
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                         className={cn(
                             "object-cover transition-all duration-700 ease-out",
@@ -93,7 +92,7 @@ export function ProductCard({ product, index, priority = false }) {
                 </div>
 
                 <button
-                    onClick={() => toggleWishlist(product.id)}
+                    onClick={() => toggleWishlist(product)}
                     className={cn(
                         "absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500 backdrop-blur-md z-20 border border-white/20",
                         isWishlisted ? "bg-white shadow-xl" : "bg-white/40 hover:bg-white"

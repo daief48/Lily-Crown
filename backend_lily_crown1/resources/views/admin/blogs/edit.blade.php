@@ -8,7 +8,7 @@
 
 @section('content')
 <div class="container-fluid">
-    <form action="{{ route('blogs.update', $blog->id) }}" method="POST">
+    <form action="{{ route('blogs.update', $blog->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         
@@ -56,20 +56,16 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="thumbnail" class="luxury-label">Cover Image URL</label>
-                        <div class="input-group">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text bg-transparent border-right-0">
-                                    <i class="fas fa-image text-gold-accent"></i>
-                                </span>
-                            </div>
-                            <input type="text" name="thumbnail" class="form-control luxury-input border-left-0 @error('thumbnail') is-invalid @enderror" id="thumbnail" placeholder="Enter image URL" value="{{ old('thumbnail', $blog->thumbnail) }}">
+                        <label for="thumbnail" class="luxury-label">Cover Image</label>
+                        <div class="custom-file luxury-file">
+                            <input type="file" name="thumbnail" class="custom-file-input @error('thumbnail') is-invalid @enderror" id="thumbnail" accept="image/*">
+                            <label class="custom-file-label" for="thumbnail">Choose file...</label>
                         </div>
                         <div id="thumbnail-preview" class="mt-3 text-center {{ $blog->thumbnail ? '' : 'd-none' }}">
-                            <img src="{{ $blog->thumbnail }}" alt="Thumbnail Preview" class="img-fluid rounded-lg shadow-sm border border-gold-accent/20" style="max-height: 200px;">
+                            <img src="{{ Str::startsWith($blog->thumbnail, 'http') ? $blog->thumbnail : asset($blog->thumbnail) }}" alt="Thumbnail Preview" class="img-fluid rounded-lg shadow-sm border border-gold-accent/20" style="max-height: 200px;">
                         </div>
                         @error('thumbnail')
-                            <span class="error invalid-feedback">{{ $message }}</span>
+                            <span class="error invalid-feedback" style="display:block">{{ $message }}</span>
                         @enderror
                     </div>
                 </div>
@@ -94,6 +90,20 @@
         $('#title').on('keyup', function() {
             var slug = $(this).val().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
             $('#slug').val(slug);
+        });
+
+        // Image preview
+        $('#thumbnail').on('change', function() {
+            var file = this.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#thumbnail-preview img').attr('src', e.target.result);
+                    $('#thumbnail-preview').removeClass('d-none');
+                }
+                reader.readAsDataURL(file);
+                $(this).next('.custom-file-label').html(file.name);
+            }
         });
     });
 </script>

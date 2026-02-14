@@ -9,6 +9,7 @@ import { Star, ChevronLeft, ChevronRight } from "lucide-react";
 import { api } from "@/lib/api";
 import { getOptimizedImage } from "@/lib/utils";
 import Skeleton from "@/components/ui/Skeleton";
+import { RoyalImage } from "@/components/ui/RoyalImage";
 
 export function Hero() {
     const [slides, setSlides] = useState([]);
@@ -163,7 +164,7 @@ export function Hero() {
                                 className="relative group w-full max-w-[180px] sm:max-w-[240px] md:max-w-[380px]"
                             >
                                 <div className="relative z-10 w-full aspect-[3/4] rounded-t-[10rem] rounded-b-[2rem] overflow-hidden shadow-2xl border-4 border-white animate-float">
-                                    <Image
+                                    <RoyalImage
                                         src={getOptimizedImage(slides[currentSlide].image)}
                                         alt={slides[currentSlide].title}
                                         fill

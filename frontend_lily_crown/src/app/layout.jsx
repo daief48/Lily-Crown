@@ -1,6 +1,7 @@
 import { Playfair_Display, Lato } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "@/context/StoreContext";
+import { AuthProvider } from "@/context/AuthContext";
 import { Preloader } from "@/components/layout/Preloader";
 import { CustomCursor } from "@/components/ui/CustomCursor";
 import { RoyalConcierge } from "@/components/ui/RoyalConcierge";
@@ -143,12 +144,14 @@ export default function RootLayout({ children }) {
                         })
                     }}
                 />
-                <StoreProvider>
-                    <Preloader />
-                    <CustomCursor />
-                    <RoyalConcierge />
-                    {children}
-                </StoreProvider>
+                <AuthProvider>
+                    <StoreProvider>
+                        <Preloader />
+                        <CustomCursor />
+                        <RoyalConcierge />
+                        {children}
+                    </StoreProvider>
+                </AuthProvider>
             </body>
         </html>
     );

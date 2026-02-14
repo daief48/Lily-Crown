@@ -26,17 +26,23 @@ class LookbookController extends Controller
 
     public function create()
     {
-        return view('admin.lookbook.create');
+        $products = \App\Models\Product::orderBy('name')->get();
+        return view('admin.lookbook.create', compact('products'));
     }
 
     public function store(Request $request)
     {
         $data = $request->validate([
-            'image' => 'required|string',
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'title' => 'nullable|string',
             'category_name' => 'nullable|string',
             'order' => 'integer',
+            'product_id' => 'nullable|exists:products,id',
         ]);
+
+        if ($request->hasFile('image')) {
+            $data['image'] = 'storage/' . $request->file('image')->store('lookbook', 'public');
+        }
 
         Lookbook::create($data);
 
@@ -45,17 +51,28 @@ class LookbookController extends Controller
 
     public function edit(Lookbook $lookbook)
     {
-        return view('admin.lookbook.edit', compact('lookbook'));
+        $products = \App\Models\Product::orderBy('name')->get();
+        return view('admin.lookbook.edit', compact('lookbook', 'products'));
     }
 
     public function update(Request $request, Lookbook $lookbook)
     {
         $data = $request->validate([
-            'image' => 'required|string',
+            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,webp|max:2048',
             'title' => 'nullable|string',
             'category_name' => 'nullable|string',
             'order' => 'integer',
+            'product_id' => 'nullable|exists:products,id',
         ]);
+
+        if ($request->hasFile('image')) {
+            // Delete old image if it exists and is a local file
+            if ($lookbook->image && !str_starts_with($lookbook->image, 'http')) {
+                $oldPath = str_replace('storage/', '', $lookbook->image);
+                \Storage::disk('public')->delete($oldPath);
+            }
+            $data['image'] = 'storage/' . $request->file('image')->store('lookbook', 'public');
+        }
 
         $lookbook->update($data);
 

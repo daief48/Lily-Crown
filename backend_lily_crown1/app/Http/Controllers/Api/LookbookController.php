@@ -10,7 +10,7 @@ class LookbookController extends Controller
     public function index(Request $request)
     {
         $perPage = $request->get('per_page', 8);
-        $lookbooks = \App\Models\Lookbook::orderBy('order')->paginate($perPage);
+        $lookbooks = \App\Models\Lookbook::with(['product.category'])->orderBy('order')->paginate($perPage);
         return response()->json($lookbooks);
     }
 

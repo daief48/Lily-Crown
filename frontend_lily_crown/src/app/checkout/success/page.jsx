@@ -40,6 +40,13 @@ function SuccessContent() {
                         Continue Shopping
                     </Link>
                     <Link
+                        href="/orders"
+                        className="px-8 py-4 border border-heritage-gold text-heritage-gold uppercase tracking-widest text-xs font-bold hover:bg-heritage-gold hover:text-white transition-all flex items-center justify-center gap-2"
+                    >
+                        View My Orders
+                        <ShoppingBag size={16} />
+                    </Link>
+                    <Link
                         href="/"
                         className="px-8 py-4 border border-emerald-royal text-emerald-royal uppercase tracking-widest text-xs font-bold hover:bg-emerald-royal hover:text-white transition-all flex items-center justify-center gap-2"
                     >

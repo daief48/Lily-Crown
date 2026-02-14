@@ -8,13 +8,21 @@
 
 @section('content')
     <div class="card card-royal">
-        <form action="{{ route('instagram-posts.update', $instagramPost->id) }}" method="POST">
+        <form action="{{ route('instagram-posts.update', $instagramPost->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div class="card-body">
                 <div class="form-group">
+                    <label for="image_file">Upload Image</label>
+                    <input type="file" name="image_file" class="form-control @error('image_file') is-invalid @enderror" id="image_file" accept="image/*">
+                    @error('image_file')
+                        <span class="invalid-feedback">{{ $message }}</span>
+                    @enderror
+                    <small class="form-text text-muted">Or provide an image URL below.</small>
+                </div>
+                <div class="form-group">
                     <label for="image">Image URL</label>
-                    <input type="text" name="image" class="form-control @error('image') is-invalid @enderror" id="image" placeholder="Enter image URL" value="{{ old('image', $instagramPost->image) }}" required>
+                    <input type="text" name="image" class="form-control @error('image') is-invalid @enderror" id="image" placeholder="Enter image URL" value="{{ old('image', $instagramPost->image) }}">
                     @error('image')
                         <span class="invalid-feedback">{{ $message }}</span>
                     @enderror

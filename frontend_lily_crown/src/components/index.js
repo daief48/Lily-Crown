@@ -25,4 +25,5 @@ export { RelatedProducts } from './product/RelatedProducts';
 export { CustomCursor } from './ui/CustomCursor';
 export { Toast } from './ui/Toast';
 export { SectionHeader } from './ui/SectionHeader';
+export { RoyalImage } from './ui/RoyalImage';
 export { WishlistModal } from './ui/WishlistModal';

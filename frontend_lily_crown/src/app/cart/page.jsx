@@ -7,6 +7,8 @@ import Link from "next/link";
 import { Trash2, Plus, Minus, ArrowRight } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
+import { getOptimizedImage } from "@/lib/utils";
+import { RoyalImage } from "@/components/ui/RoyalImage";
 
 export default function CartPage() {
     const { cartItems, removeFromCart, updateQuantity, cartTotal } = useStore();
@@ -37,8 +39,8 @@ export default function CartPage() {
                                 <div key={item.id} className="flex flex-col sm:flex-row items-center bg-white p-6 shadow-md border border-heritage-gold/10 gap-6 transition-hover hover:shadow-lg">
                                     <div className="relative w-full sm:w-32 h-40 flex-shrink-0 bg-muslin-cream">
                                         {item.image ? (
-                                            <Image
-                                                src={item.image}
+                                            <RoyalImage
+                                                src={getOptimizedImage(item.image)}
                                                 alt={item.name}
                                                 fill
                                                 className="object-cover"

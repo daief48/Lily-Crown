@@ -40,19 +40,31 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'slug' => 'required|string|unique:products,slug',
-            'category_id' => 'required|exists:categories,id',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric',
-            'badge' => 'nullable|string',
-            'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'details' => 'nullable|string',
-        ]);
+        \Log::info('Product store initiated', $request->all());
+
+        try {
+            $validated = $request->validate([
+                'name' => 'required|string|max:255',
+                'slug' => 'required|string|unique:products,slug',
+                'category_id' => 'required|exists:categories,id',
+                'description' => 'nullable|string',
+                'price' => 'required|numeric',
+                'badge' => 'nullable|string',
+                'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'gallery.*' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+                'details' => 'nullable|string',
+            ]);
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            \Log::error('Product validation failed', $e->errors());
+            throw $e;
+        }
 
         $data = $request->except(['image', 'gallery']);
+
+        // Set default for is_trending if not present
+        if (!isset($data['is_trending'])) {
+            $data['is_trending'] = 0;
+        }
 
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('products', 'public');
@@ -68,9 +80,27 @@ class ProductController extends Controller
             $data['gallery'] = $galleryPaths;
         }
 
-        \App\Models\Product::create($data);
+        if ($request->filled('details')) {
+            $data['details'] = array_filter(array_map('trim', explode("\n", $request->details)));
+        } else {
+             // Remove details from data if null/empty to avoid casting issues if any, or ensure it is null
+             $data['details'] = null;
+        }
+
+        try {
+            $product = \App\Models\Product::create($data);
+            \Log::info('Product created successfully', ['id' => $product->id]);
+        } catch (\Exception $e) {
+            \Log::error('Product creation failed in DB', ['error' => $e->getMessage()]);
+            return back()->withInput()->withErrors(['error' => 'Database error: ' . $e->getMessage()]);
+        }
 
         return redirect()->route('products.index')->with('success', 'Product created successfully');
+    }
+
+    public function show($id)
+    {
+        return redirect()->route('products.edit', $id);
     }
 
     public function edit($id)
@@ -110,6 +140,10 @@ class ProductController extends Controller
                 $galleryPaths[] = ['url' => '/storage/' . $path];
             }
             $data['gallery'] = $galleryPaths;
+        }
+
+        if ($request->filled('details')) {
+            $data['details'] = array_filter(array_map('trim', explode("\n", $request->details)));
         }
 
         $product->update($data);

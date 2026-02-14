@@ -1,17 +1,18 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
-import { X, Heart, Trash2 } from "lucide-react";
+import { Trash2, ShoppingBag, X, Heart } from "lucide-react";
+import { RoyalImage } from "@/components/ui/RoyalImage";
 import { motion, AnimatePresence } from "framer-motion";
 import { useStore } from "@/context/StoreContext";
+import { getOptimizedImage } from "@/lib/utils";
 
 import { products } from "@/data/products";
 
 export function WishlistModal() {
     const { isWishlistOpen, setIsWishlistOpen, wishlistItems, toggleWishlist, addToCart } = useStore();
 
-    const wishlistedProducts = products.filter((p) => wishlistItems.has(p.id));
+    const wishlistedProducts = wishlistItems;
 
     return (
         <AnimatePresence>
@@ -57,7 +58,12 @@ export function WishlistModal() {
                                 wishlistedProducts.map((product) => (
                                     <div key={product.id} className="flex gap-4 p-2 hover:bg-gray-50 transition-colors rounded">
                                         <div className="relative w-20 h-24 flex-shrink-0">
-                                            <Image src={product.image} alt={product.name} fill className="object-cover rounded" />
+                                            <RoyalImage
+                                                src={getOptimizedImage(product.image)}
+                                                alt={product.name}
+                                                fill
+                                                className="object-cover rounded"
+                                            />
                                         </div>
                                         <div className="flex-1 flex flex-col justify-center text-left">
                                             <h4 className="font-serif text-gray-800">{product.name}</h4>
@@ -70,7 +76,7 @@ export function WishlistModal() {
                                             </button>
                                         </div>
                                         <button
-                                            onClick={() => toggleWishlist(product.id)}
+                                            onClick={() => toggleWishlist(product)}
                                             className="text-gray-400 hover:text-red-500 self-center p-2"
                                         >
                                             <Trash2 size={18} />

@@ -71,7 +71,13 @@
                             <td>{{ $category->id }}</td>
                             <td>{{ $category->name }}</td>
                             <td>{{ $category->slug }}</td>
-                            <td><i class="fas {{ $category->icon }}"></i> {{ $category->icon }}</td>
+                            <td>
+                                @if($category->icon)
+                                    <img src="{{ asset($category->icon) }}" alt="{{ $category->name }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 8px; border: 1px solid #d4af37;">
+                                @else
+                                    <span class="badge badge-secondary">No Image</span>
+                                @endif
+                            </td>
                             <td>
                                 <a href="{{ route('categories.edit', $category->id) }}" class="btn btn-xs btn-default text-primary mx-1 shadow" title="Edit">
                                     <i class="fa fa-lg fa-fw fa-pen"></i>

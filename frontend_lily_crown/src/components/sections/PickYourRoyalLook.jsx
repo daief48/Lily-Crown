@@ -2,11 +2,13 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 
 import { api } from "@/lib/api";
 import { getOptimizedImage } from "@/lib/utils";
 import Skeleton from "@/components/ui/Skeleton";
+import { RoyalImage } from "@/components/ui/RoyalImage";
 
 export function PickYourRoyalLook() {
     const [items, setItems] = React.useState([]);
@@ -73,8 +75,11 @@ export function PickYourRoyalLook() {
                                 transition={{ duration: 0.5, delay: idx * 0.1 }}
                                 className="group relative"
                             >
-                                <div className="aspect-[3/4] overflow-hidden rounded-xl shadow-lg nakshi-border bg-white relative">
-                                    <Image
+                                <Link
+                                    href={item.product?.slug ? `/product/${item.product.slug}` : '#'}
+                                    className="block aspect-[3/4] overflow-hidden rounded-xl shadow-lg nakshi-border bg-white relative cursor-pointer"
+                                >
+                                    <RoyalImage
                                         src={getOptimizedImage(item.image)}
                                         alt={item.title}
                                         fill
@@ -82,14 +87,25 @@ export function PickYourRoyalLook() {
                                         className="object-cover transition-transform duration-700 group-hover:scale-110"
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-emerald-royal/90 via-emerald-royal/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-6">
-                                        <p className="text-heritage-gold text-xs tracking-widest uppercase mb-2 font-bold transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-100">
-                                            {item.product?.category?.name || item.category_name}
-                                        </p>
-                                        <h3 className="text-white font-serif text-xl leading-snug transform translate-y-4 group-hover:translate-y-0 transition-transform duration-500 delay-200">
-                                            {item.product?.name || item.title}
-                                        </h3>
+                                        <div className="transform translate-y-8 group-hover:translate-y-0 transition-transform duration-500">
+                                            <p className="text-heritage-gold text-xs tracking-widest uppercase mb-2 font-bold opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-100">
+                                                {item.product?.category?.name || item.category_name}
+                                            </p>
+                                            <h3 className="text-white font-serif text-xl leading-snug mb-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500 delay-200">
+                                                {item.product?.name || item.title}
+                                            </h3>
+
+                                            {item.product && (
+                                                <div className="inline-flex items-center space-x-2 text-heritage-gold text-sm font-bold border-b border-heritage-gold/50 pb-1 group-hover:border-heritage-gold transition-colors duration-300">
+                                                    <span>Shop This Look</span>
+                                                    <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                                    </svg>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
-                                </div>
+                                </Link>
                             </motion.div>
                         ))}
                     </AnimatePresence>

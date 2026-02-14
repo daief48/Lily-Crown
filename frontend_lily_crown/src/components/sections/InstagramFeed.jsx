@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { Instagram } from "lucide-react";
+import { RoyalImage } from "@/components/ui/RoyalImage";
 
 import { api } from "@/lib/api";
 import { getOptimizedImage } from "@/lib/utils";
@@ -48,11 +49,10 @@ export function InstagramFeed() {
                             viewport={{ once: true }}
                             className="relative aspect-square overflow-hidden group cursor-pointer rounded-xl nakshi-border block"
                         >
-                            <Image
+                            <RoyalImage
                                 src={getOptimizedImage(post.image)}
                                 alt={post.caption || `Lily Crown heritage fashion style ${idx + 1}`}
                                 fill
-                                loading="lazy"
                                 sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
                                 className="object-cover transition-transform duration-700 group-hover:scale-110"
                             />

@@ -2,15 +2,19 @@
 
 import React, { useState } from "react";
 import { useStore } from "@/context/StoreContext";
+import { useAuth } from "@/context/AuthContext";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { useRouter } from "next/navigation";
 import { ShieldCheck, Truck, RefreshCw, ChevronLeft, CreditCard } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { getOptimizedImage } from "@/lib/utils";
+import { RoyalImage } from "@/components/ui/RoyalImage";
 
 export default function CheckoutPage() {
     const { cartItems, cartTotal, clearCart } = useStore();
+    const { user, loading } = useAuth();
     const router = useRouter();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [formData, setFormData] = useState({
@@ -22,6 +26,24 @@ export default function CheckoutPage() {
         payment_method: "cod", // Default to COD
     });
 
+    // Protect Route
+    React.useEffect(() => {
+        if (!loading && !user) {
+            router.push("/login?redirect=/checkout");
+        }
+    }, [user, loading, router]);
+
+    // Auto-fill form if user is logged in
+    React.useEffect(() => {
+        if (user) {
+            setFormData(prev => ({
+                ...prev,
+                customer_name: user.name || "",
+                customer_email: user.email || "",
+            }));
+        }
+    }, [user]);
+
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
     };
@@ -31,10 +53,15 @@ export default function CheckoutPage() {
         setIsSubmitting(true);
 
         try {
-            const response = await fetch("http://localhost:8000/api/orders", {
+            const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8000/api';
+            const token = localStorage.getItem('lily_auth_token');
+
+            const response = await fetch(`${API_URL}/orders`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    "Accept": "application/json",
+                    ...(token ? { "Authorization": `Bearer ${token}` } : {})
                 },
                 body: JSON.stringify({
                     ...formData,
@@ -57,6 +84,14 @@ export default function CheckoutPage() {
             setIsSubmitting(false);
         }
     };
+
+    if (loading) {
+        return (
+            <main className="bg-muslin-cream min-h-screen flex items-center justify-center">
+                <div className="w-16 h-16 border-4 border-emerald-royal/20 border-t-heritage-gold rounded-full animate-spin"></div>
+            </main>
+        );
+    }
 
     if (cartItems.length === 0) {
         return (
@@ -195,7 +230,12 @@ export default function CheckoutPage() {
                                     <div key={item.id} className="flex gap-4">
                                         <div className="relative w-16 h-20 flex-shrink-0 bg-white/10 rounded-sm overflow-hidden border border-white/10">
                                             {item.image && (
-                                                <Image src={item.image} alt={item.name} fill className="object-cover" />
+                                                <RoyalImage
+                                                    src={getOptimizedImage(item.image)}
+                                                    alt={item.name}
+                                                    fill
+                                                    className="object-cover"
+                                                />
                                             )}
                                         </div>
                                         <div className="flex-1">

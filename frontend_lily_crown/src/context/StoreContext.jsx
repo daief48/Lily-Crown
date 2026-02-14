@@ -6,7 +6,7 @@ const StoreContext = createContext(undefined);
 
 export function StoreProvider({ children }) {
     const [cartItems, setCartItems] = useState([]);
-    const [wishlistItems, setWishlistItems] = useState(new Set());
+    const [wishlistItems, setWishlistItems] = useState([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [isWishlistOpen, setIsWishlistOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
@@ -32,7 +32,11 @@ export function StoreProvider({ children }) {
 
             if (savedWishlist) {
                 const parsedWishlist = JSON.parse(savedWishlist);
-                if (Array.isArray(parsedWishlist)) setWishlistItems(new Set(parsedWishlist));
+                if (Array.isArray(parsedWishlist)) {
+                    // Filter valid items similar to cart if needed
+                    const validItems = parsedWishlist.filter(item => item && item.id);
+                    setWishlistItems(validItems);
+                }
             }
         } catch (error) {
             console.error("Failed to load store data from localStorage:", error);
@@ -46,7 +50,7 @@ export function StoreProvider({ children }) {
     }, [cartItems]);
 
     useEffect(() => {
-        localStorage.setItem("lily_wishlist", JSON.stringify(Array.from(wishlistItems)));
+        localStorage.setItem("lily_wishlist", JSON.stringify(wishlistItems));
     }, [wishlistItems]);
 
     const addToCart = (product) => {
@@ -57,8 +61,11 @@ export function StoreProvider({ children }) {
                     item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
                 );
             }
-            // Ensure price is valid
-            const safeProduct = { ...product, price: typeof product.price === 'number' ? product.price : 0, quantity: 1 };
+            // Ensure price is valid and parse if string
+            const price = parseFloat(product.price);
+            const validPrice = !isNaN(price) ? price : 0;
+
+            const safeProduct = { ...product, price: validPrice, quantity: 1 };
             return [...prev, safeProduct];
         });
         showToast(`${product.name} added to your bag.`);
@@ -80,16 +87,20 @@ export function StoreProvider({ children }) {
         );
     };
 
-    const toggleWishlist = (id) => {
+    const toggleWishlist = (product) => {
         setWishlistItems((prev) => {
-            const newSet = new Set(prev);
-            if (newSet.has(id)) {
-                newSet.delete(id);
-            } else {
-                newSet.add(id);
+            const exists = prev.find(item => Number(item.id) === Number(product.id));
+            if (exists) {
+                showToast(`${product.name} removed from wishlist.`);
+                return prev.filter(item => Number(item.id) !== Number(product.id));
             }
-            return newSet;
+            showToast(`${product.name} saved to your wishlist.`);
+            return [...prev, product];
         });
+    };
+
+    const clearCart = () => {
+        setCartItems([]);
     };
 
     const showToast = (message) => {
@@ -112,6 +123,7 @@ export function StoreProvider({ children }) {
                 addToCart,
                 removeFromCart,
                 updateQuantity,
+                clearCart,
                 toggleWishlist,
                 isCartOpen,
                 setIsCartOpen,

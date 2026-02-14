@@ -9,12 +9,13 @@ import { ShoppingBag, X } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { motion } from "framer-motion";
+import { getOptimizedImage } from "@/lib/utils";
+import { RoyalImage } from "@/components/ui/RoyalImage";
 
 export default function WishlistPage() {
     const { wishlistItems, toggleWishlist, addToCart } = useStore();
 
-    // Filter products that are in the wishlist Set
-    const validWishlistItems = products.filter(p => wishlistItems.has(p.id));
+    const validWishlistItems = wishlistItems;
 
     return (
         <main className="bg-muslin-cream min-h-screen">
@@ -50,8 +51,8 @@ export default function WishlistPage() {
                                 className="group relative bg-white shadow-md hover:shadow-2xl transition-all duration-500 border border-emerald-royal/5"
                             >
                                 <div className="relative aspect-[3/4] overflow-hidden">
-                                    <Image
-                                        src={product.image}
+                                    <RoyalImage
+                                        src={getOptimizedImage(product.image)}
                                         alt={product.name}
                                         fill
                                         className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -59,7 +60,7 @@ export default function WishlistPage() {
 
                                     {/* Remove Button */}
                                     <button
-                                        onClick={() => toggleWishlist(product.id)}
+                                        onClick={() => toggleWishlist(product)}
                                         className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm p-2 rounded-full text-emerald-royal hover:bg-red-500 hover:text-white transition-all shadow-md z-10"
                                         title="Remove from Wishlist"
                                     >

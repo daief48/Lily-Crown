@@ -13,15 +13,18 @@
         
         <div class="luxury-grid">
             {{-- Essential Information --}}
-            <div class="card card-royal">
-                <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="fas fa-tag mr-2"></i> Category Details
-                    </h3>
+            <div class="card card-royal luxury-animate" style="animation-delay: 0.1s;">
+                <div class="card-header d-flex align-items-center justify-content-between">
+                    <div>
+                        <span class="luxury-header-badge">New Entry</span>
+                        <h3 class="card-title">
+                            <i class="fas fa-tag mr-2"></i> Collection Definition
+                        </h3>
+                    </div>
                 </div>
                 <div class="card-body">
-                    <div class="form-group">
-                        <label for="name" class="luxury-label">Name</label>
+                    <div class="form-group mb-4">
+                        <label for="name" class="luxury-label">Display Name</label>
                         <input type="text" name="name" class="form-control luxury-input @error('name') is-invalid @enderror" id="name" placeholder="Enter collection name" value="{{ old('name') }}" required>
                         @error('name')
                             <span class="error invalid-feedback">{{ $message }}</span>
@@ -29,7 +32,7 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="slug" class="luxury-label">Slug</label>
+                        <label for="slug" class="luxury-label">Permalinks (Slug)</label>
                         <input type="text" name="slug" class="form-control luxury-input @error('slug') is-invalid @enderror" id="slug" placeholder="automatic-slug" value="{{ old('slug') }}" required>
                         @error('slug')
                             <span class="error invalid-feedback">{{ $message }}</span>
@@ -39,40 +42,43 @@
             </div>
 
             {{-- Styling & Assets --}}
-            <div class="card card-royal">
+            <div class="card card-royal luxury-animate" style="animation-delay: 0.2s;">
                 <div class="card-header">
-                    <h3 class="card-title">
-                        <i class="fas fa-image mr-2"></i> Category Image
-                    </h3>
+                    <div>
+                        <span class="luxury-header-badge">Visuals</span>
+                        <h3 class="card-title">
+                            <i class="fas fa-image mr-2"></i> Category Signature
+                        </h3>
+                    </div>
                 </div>
                 <div class="card-body">
                     <div class="form-group">
-                        <label for="icon" class="luxury-label">Category Image</label>
-                        <div class="custom-file">
+                        <label for="icon" class="luxury-label">Primary Asset</label>
+                        <div class="custom-file luxury-file">
                             <input type="file" name="icon" class="custom-file-input @error('icon') is-invalid @enderror" id="icon" accept="image/*">
-                            <label class="custom-file-label" for="icon">Choose image file</label>
+                            <label class="custom-file-label" for="icon">Select premium icon...</label>
                         </div>
-                        <small class="text-muted mt-2 d-block">Upload a category icon image (PNG, JPG, SVG recommended)</small>
+                        <small class="text-muted mt-2 d-block">Recommended: Transparent PNG or high-res JPG (Max 2MB)</small>
                         @error('icon')
                             <span class="error invalid-feedback d-block">{{ $message }}</span>
                         @enderror
                     </div>
                     
                     {{-- Image Preview --}}
-                    <div class="form-group" id="imagePreview" style="display: none;">
-                        <label class="luxury-label">Preview</label>
-                        <div>
-                            <img id="preview" src="" alt="Category preview" style="max-width: 200px; max-height: 200px; border-radius: 8px; border: 2px solid #d4af37;">
+                    <div class="form-group mt-4" id="imagePreview" style="display: none;">
+                        <label class="luxury-label">Visual Preview</label>
+                        <div class="royal-image-frame">
+                            <img id="preview" src="" alt="Category preview" style="max-width: 150px; max-height: 150px;">
                         </div>
                     </div>
                 </div>
                 
-                <div class="card-footer bg-transparent border-top-0 pb-4">
-                    <button type="submit" class="btn btn-luxury px-5">
+                <div class="card-footer bg-transparent border-top-0 pb-4 d-flex align-items-center">
+                    <button type="submit" class="btn btn-luxury px-5 shadow-sm">
                         <i class="fas fa-crown mr-2"></i> Create Collection
                     </button>
-                    <a href="{{ route('categories.index') }}" class="btn btn-outline-luxury ml-2">
-                        Cancel
+                    <a href="{{ route('categories.index') }}" class="btn btn-outline-luxury ml-3">
+                        Discard
                     </a>
                 </div>
             </div>

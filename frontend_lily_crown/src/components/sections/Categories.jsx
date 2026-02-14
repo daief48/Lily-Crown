@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { api } from "@/lib/api";
 import { getOptimizedImage } from "@/lib/utils";
 import Skeleton from "@/components/ui/Skeleton";
+import { RoyalImage } from "@/components/ui/RoyalImage";
 
 export function Categories() {
     const [categories, setCategories] = React.useState([]);
@@ -21,6 +22,8 @@ export function Categories() {
                 // Add visual logic props since they aren't in the DB
                 const enriched = data.map((cat, idx) => ({
                     ...cat,
+                    // Map 'icon' or 'image' field from backend to 'image' for component
+                    image: cat.icon || cat.image || null,
                     span: idx === 1,
                     bordered: idx > 1,
                     href: `/shop?category=${cat.slug}`
@@ -50,7 +53,7 @@ export function Categories() {
                         whileInView={{ opacity: 1, y: 0 }}
                         className="text-4xl font-serif mt-3 text-emerald-royal"
                     >
-                        Pick Your Royal Look
+                        Royal Collections
                     </motion.h2>
                     <div className="w-16 h-px bg-heritage-gold/30 mx-auto mt-6"></div>
                 </div>
@@ -84,29 +87,29 @@ export function Categories() {
                                     viewport={{ once: true }}
                                     className="w-full h-full relative"
                                 >
-                                    <Image
+                                    <RoyalImage
                                         src={getOptimizedImage(category.image)}
                                         alt={category.name}
                                         fill
-                                        loading="lazy"
                                         sizes={category.span ? "(max-width: 768px) 100vw, (max-width: 1200px) 66vw, 50vw" : "(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"}
                                         className="object-cover transition-transform duration-[1200ms] group-hover:scale-110"
                                     />
-                                    <div className="absolute inset-0 bg-emerald-royal/20 group-hover/active:bg-emerald-royal/40 lg:group-hover:bg-emerald-royal/30 transition-colors duration-300"></div>
+                                    <div className="absolute inset-0 bg-emerald-royal/10 group-hover:bg-emerald-royal/20 transition-colors duration-300"></div>
+                                    <div className="absolute inset-0 bg-gradient-to-t from-emerald-royal/60 via-transparent to-transparent opacity-80"></div>
 
                                     {category.bordered ? (
                                         <div className="absolute inset-0 flex items-center justify-center p-6 md:p-4">
-                                            <h3 className="font-serif text-2xl md:text-3xl text-white border-2 border-heritage-gold/50 px-6 py-3 md:px-6 md:py-2 uppercase tracking-[0.2em] group-hover:bg-muslin-cream group-hover:text-emerald-royal group-hover:border-transparent transition-all text-center backdrop-blur-[2px] md:backdrop-blur-none">
+                                            <h3 className="font-serif text-2xl md:text-3xl text-white border-2 border-heritage-gold/50 px-6 py-3 md:px-6 md:py-2 uppercase tracking-[0.2em] group-hover:bg-muslin-cream group-hover:text-emerald-royal group-hover:border-transparent transition-all text-center backdrop-blur-md shadow-2xl">
                                                 {category.name}
                                             </h3>
                                         </div>
                                     ) : (
-                                        <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8 text-white">
-                                            <h3 className="font-serif text-3xl md:text-4xl mb-2 translate-y-0 lg:translate-y-4 lg:group-hover:translate-y-0 transition-transform duration-500">
+                                        <div className="absolute bottom-6 left-6 md:bottom-8 md:left-8 text-white z-10">
+                                            <h3 className="font-serif text-3xl md:text-4xl mb-2 translate-y-0 lg:translate-y-4 lg:group-hover:translate-y-0 transition-transform duration-500 [text-shadow:_0_2px_10px_rgb(0_0_0_/_40%)]">
                                                 {category.name}
                                             </h3>
-                                            <p className="text-[9px] uppercase tracking-[0.3em] font-bold text-heritage-gold/60 mt-2">Loyal Monarch</p>
-                                            <span className="text-xs md:text-sm uppercase tracking-widest opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-500 underline underline-offset-8 decoration-heritage-gold decoration-2 font-bold">
+                                            <p className="text-[9px] uppercase tracking-[0.3em] font-bold text-heritage-gold mt-2 [text-shadow:_0_1px_5px_rgb(0_0_0_/_40%)]">Loyal Monarch</p>
+                                            <span className="text-xs md:text-sm uppercase tracking-widest opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-500 underline underline-offset-8 decoration-heritage-gold decoration-2 font-bold [text-shadow:_0_1px_5px_rgb(0_0_0_/_40%)]">
                                                 See this story
                                             </span>
                                         </div>

@@ -48,6 +48,11 @@ class CategoryController extends Controller
         return redirect()->route('categories.index')->with('success', 'Category created successfully');
     }
 
+    public function show($id)
+    {
+        return redirect()->route('categories.edit', $id);
+    }
+
     public function edit($id)
     {
         $category = \App\Models\Category::findOrFail($id);
