@@ -1,4 +1,56 @@
-<?php
+
+
+1/1
+
+Next.js 16.1.6
+Turbopack
+Runtime TypeError
+
+
+
+Cannot read properties of null (reading 'length')
+src\app\product\[id]\page.jsx (21:13) @ ProductPage
+
+
+  19 |         <main className="min-h-screen">
+  20 |             <Navbar />
+> 21 |             <ProductDetail product={product} />
+     |             ^
+  22 |             <RelatedProducts currentProductId={product.id} category={product.category} />
+  23 |             <Footer />
+  24 |
+Call Stack
+13
+
+ProductDetail
+file:///D:/Lily%20Crown/frontend_lily_crown/.next/dev/static/chunks/src_c239c67c._.js (8438:34)
+Object.react_stack_bottom_frame
+file:///D:/Lily%20Crown/frontend_lily_crown/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (14826:24)
+renderWithHooks
+file:///D:/Lily%20Crown/frontend_lily_crown/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (4651:24)
+updateFunctionComponent
+file:///D:/Lily%20Crown/frontend_lily_crown/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (6112:21)
+beginWork
+file:///D:/Lily%20Crown/frontend_lily_crown/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (6687:639)
+runWithFiberInDEV
+file:///D:/Lily%20Crown/frontend_lily_crown/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (965:74)
+performUnitOfWork
+file:///D:/Lily%20Crown/frontend_lily_crown/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (9562:97)
+workLoopSync
+file:///D:/Lily%20Crown/frontend_lily_crown/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (9456:40)
+renderRootSync
+file:///D:/Lily%20Crown/frontend_lily_crown/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (9440:13)
+performWorkOnRoot
+file:///D:/Lily%20Crown/frontend_lily_crown/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (9105:47)
+performWorkOnRootViaSchedulerTask
+file:///D:/Lily%20Crown/frontend_lily_crown/.next/dev/static/chunks/node_modules_next_dist_compiled_react-dom_1e674e59._.js (10230:9)
+MessagePort.performWorkUntilDeadline
+file:///D:/Lily%20Crown/frontend_lily_crown/.next/dev/static/chunks/node_modules_next_dist_compiled_a0e4c7b4._.js (2647:64)
+ProductPage
+src\app\product\[id]\page.jsx (21:13)
+1
+2
+Application error: a client-side exception has occurred while loading localhost (see the browser console for more information).<?php
 
 namespace App\Http\Controllers\Admin;
 
