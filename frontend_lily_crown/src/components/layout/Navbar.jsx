@@ -10,6 +10,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { RoyalImage } from "@/components/ui/RoyalImage";
+import { getOptimizedImage } from "@/lib/utils";
+import { api } from "@/lib/api";
 
 function cn(...inputs) {
     return twMerge(clsx(inputs));
@@ -22,6 +24,8 @@ export function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const [searchResults, setSearchResults] = useState([]);
+    const [isSearching, setIsSearching] = useState(false);
     const [activeDropdown, setActiveDropdown] = useState(null);
     const [mobileCategoriesOpen, setMobileCategoriesOpen] = useState(false);
     const dropdownRef = useRef(null);
@@ -45,19 +49,99 @@ export function Navbar() {
         return () => window.removeEventListener("scroll", handleScroll);
     }, []);
 
-    const categories = [
-        { name: "Jamdani", href: "/shop?category=jamdani", icon: "✨" },
-        { name: "Muslin", href: "/shop?category=muslin", icon: "🌬️" },
-        { name: "Silk", href: "/shop?category=silk", icon: "🧣" },
-        { name: "Kantha", href: "/shop?category=kantha", icon: "🧵" },
-    ];
+    // Live Search Logic
+    useEffect(() => {
+        if (!searchQuery.trim()) {
+            setSearchResults([]);
+            return;
+        }
+
+        const delayDebounceFn = setTimeout(async () => {
+            setIsSearching(true);
+            try {
+                const results = await api.searchProducts(searchQuery);
+                setSearchResults(results || []);
+            } catch (error) {
+                console.error("Search error:", error);
+            } finally {
+                setIsSearching(false);
+            }
+        }, 500);
+
+        return () => clearTimeout(delayDebounceFn);
+    }, [searchQuery]);
+
+    const [categories, setCategories] = useState([]);
+    const [settings, setSettings] = useState({});
+
+    useEffect(() => {
+        const loadCategories = async () => {
+            try {
+                const data = await api.getCategories();
+                if (data) {
+                    setCategories(data.map(cat => ({
+                        name: cat.name,
+                        href: `/shop?category=${cat.slug}`,
+                        icon: cat.icon
+                    })));
+                }
+            } catch (error) {
+                console.error("Error fetching categories:", error);
+            }
+        };
+
+        const loadSettings = async () => {
+            try {
+                const data = await api.getSettings();
+                if (data) {
+                    setSettings(data);
+                }
+            } catch (error) {
+                console.error("Error fetching settings:", error);
+            }
+        };
+
+        loadCategories();
+        loadSettings();
+    }, []);
+
+    // Helper to render Lucide icon by name or custom element
+    const renderIcon = (iconName, size = 16) => {
+        if (!iconName) return null;
+
+        // If it's already a React element
+        if (React.isValidElement(iconName)) return iconName;
+
+        // Common Lucide icons mapping
+        const icons = {
+            LayoutGrid,
+            ShoppingBag,
+            Heart,
+            Search,
+            User,
+            Menu
+        };
+
+        const IconComponent = icons[iconName];
+        if (IconComponent) {
+            return <IconComponent size={size} className="text-heritage-gold group-hover:scale-110 transition-transform" />;
+        }
+
+        // Fallback for custom text/emoji
+        return <span className="text-heritage-gold group-hover:scale-110 transition-transform text-xs font-bold">{iconName}</span>;
+    };
 
     const navLinks = [
         { name: "Home", href: "/" },
-        { name: "Categories", href: "/shop", hasDropdown: true, icon: <LayoutGrid size={16} className="text-heritage-gold group-hover:scale-110 transition-transform" /> },
-        { name: "Blog", href: "/blog" },
-        { name: "About", href: "/about" },
-        { name: "Contact", href: "/contact" },
+        {
+            name: "Shop New",
+            href: "/shop",
+            hasDropdown: true,
+            icon: renderIcon(settings.navbar_shop_icon || "LayoutGrid")
+        },
+        { name: "Our Stories", href: "/blog" },
+        { name: "About Us", href: "/about" },
+        { name: "Contact Us", href: "/contact" },
     ];
 
     return (
@@ -81,7 +165,7 @@ export function Navbar() {
                                 {link.hasDropdown ? (
                                     <button
                                         onClick={() => setActiveDropdown(activeDropdown === link.name ? null : link.name)}
-                                        className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] font-medium text-emerald-royal hover:text-heritage-gold transition-colors"
+                                        className="flex items-center gap-2 text-xs uppercase tracking-[0.2em] font-medium text-emerald-royal hover:text-heritage-gold transition-colors whitespace-nowrap group/nav"
                                     >
                                         {link.icon && link.icon}
                                         {link.name}
@@ -90,7 +174,7 @@ export function Navbar() {
                                 ) : (
                                     <Link
                                         href={link.href}
-                                        className="text-xs uppercase tracking-[0.2em] font-medium text-emerald-royal hover:text-heritage-gold transition-colors"
+                                        className="text-xs uppercase tracking-[0.2em] font-medium text-emerald-royal hover:text-heritage-gold transition-colors whitespace-nowrap"
                                     >
                                         {link.name}
                                     </Link>
@@ -100,46 +184,71 @@ export function Navbar() {
                                     (activeDropdown === link.name) ? "w-full" : "w-0 group-hover:w-full"
                                 )}></div>
 
-                                {link.hasDropdown && activeDropdown === link.name && (
-                                    <motion.div
-                                        initial={{ opacity: 0, y: 10 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: 10 }}
-                                        className="absolute top-full left-0 mt-4 w-[600px] bg-white shadow-2xl border-t-2 border-heritage-gold p-8 grid grid-cols-2 gap-10"
-                                    >
-                                        <div>
-                                            <h4 className="text-xs uppercase tracking-widest font-bold text-heritage-gold mb-6 border-b border-heritage-gold/10 pb-2">Royal Collections</h4>
-                                            <ul className="space-y-4">
-                                                {categories.map((cat) => (
-                                                    <li key={cat.name}>
-                                                        <Link
-                                                            href={cat.href}
-                                                            onClick={() => setActiveDropdown(null)}
-                                                            className="text-sm text-emerald-royal/70 hover:text-heritage-gold transition-colors font-medium flex items-center group/item"
-                                                        >
-                                                            <span className="mr-3 text-lg opacity-40 group-hover/item:opacity-100 transition-opacity">{cat.icon}</span>
-                                                            {cat.name}
-                                                            <div className="ml-auto w-0 h-px bg-heritage-gold group-hover/item:w-8 transition-all"></div>
-                                                        </Link>
-                                                    </li>
-                                                ))}
-                                            </ul>
-                                        </div>
-                                        <div className="bg-emerald-royal/5 p-8 flex flex-col justify-between rounded-xl">
+                                <AnimatePresence>
+                                    {link.hasDropdown && activeDropdown === link.name && (
+                                        <motion.div
+                                            key={`${link.name}-dropdown`}
+                                            initial={{ opacity: 0, y: 10 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: 10 }}
+                                            className="absolute top-full left-0 mt-4 w-[600px] bg-white shadow-2xl border-t-2 border-heritage-gold p-8 grid grid-cols-2 gap-10"
+                                        >
                                             <div>
-                                                <p className="font-serif text-xl text-emerald-royal mb-2 italic">The Royal Selection</p>
-                                                <p className="text-xs text-emerald-royal/50 leading-relaxed font-light">Explore the legendary looms of Bengal. Each piece is a testament to hundred-year-old heritage.</p>
+                                                <h4 className="text-xs uppercase tracking-widest font-bold text-heritage-gold mb-6 border-b border-heritage-gold/10 pb-2">Royal Collections</h4>
+                                                <ul className="space-y-4">
+                                                    {categories.length > 0 ? (
+                                                        categories.map((cat) => (
+                                                            <li key={cat.name}>
+                                                                <Link
+                                                                    href={cat.href}
+                                                                    onClick={() => setActiveDropdown(null)}
+                                                                    className="text-sm text-emerald-royal/70 hover:text-heritage-gold transition-colors font-medium flex items-center group/item"
+                                                                >
+                                                                    <span className="mr-3 text-lg opacity-40 group-hover/item:opacity-100 transition-opacity flex-shrink-0">
+                                                                        {cat.icon && (cat.icon.includes('/') || cat.icon.includes('.')) ? (
+                                                                            <div className="relative w-6 h-6 rounded-full overflow-hidden border border-heritage-gold/20">
+                                                                                <Image
+                                                                                    src={cat.icon.startsWith('http') ? cat.icon : `http://localhost:8000/${cat.icon.startsWith('/') ? cat.icon.substring(1) : cat.icon}`}
+                                                                                    alt={cat.name}
+                                                                                    fill
+                                                                                    className="object-cover"
+                                                                                />
+                                                                            </div>
+                                                                        ) : (
+                                                                            cat.icon || "✨"
+                                                                        )}
+                                                                    </span>
+                                                                    {cat.name}
+                                                                    <div className="ml-auto w-0 h-px bg-heritage-gold group-hover/item:w-8 transition-all"></div>
+                                                                </Link>
+                                                            </li>
+                                                        ))
+                                                    ) : (
+                                                        [1, 2, 3, 4].map((i) => (
+                                                            <li key={i} className="flex items-center gap-3">
+                                                                <div className="w-6 h-6 rounded-full bg-emerald-royal/5 animate-pulse"></div>
+                                                                <div className="h-4 w-32 bg-emerald-royal/5 animate-pulse rounded"></div>
+                                                            </li>
+                                                        ))
+                                                    )}
+                                                </ul>
                                             </div>
-                                            <Link
-                                                href="/shop"
-                                                onClick={() => setActiveDropdown(null)}
-                                                className="text-[10px] uppercase tracking-[0.3em] font-bold text-white bg-emerald-royal px-6 py-3 text-center hover:bg-heritage-gold transition-all gold-gradient-bg"
-                                            >
-                                                View The Full Palace
-                                            </Link>
-                                        </div>
-                                    </motion.div>
-                                )}
+                                            <div className="bg-emerald-royal/5 p-8 flex flex-col justify-between rounded-xl">
+                                                <div>
+                                                    <p className="font-serif text-xl text-emerald-royal mb-2 italic">The Royal Selection</p>
+                                                    <p className="text-xs text-emerald-royal/50 leading-relaxed font-light">Explore the legendary looms of Bengal. Each piece is a testament to hundred-year-old heritage.</p>
+                                                </div>
+                                                <Link
+                                                    href="/shop"
+                                                    onClick={() => setActiveDropdown(null)}
+                                                    className="text-[10px] uppercase tracking-[0.3em] font-bold text-white bg-emerald-royal px-6 py-3 text-center hover:bg-heritage-gold transition-all gold-gradient-bg"
+                                                >
+                                                    View The Full Palace
+                                                </Link>
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
                             </div>
                         ))}
                     </div>
@@ -177,7 +286,7 @@ export function Navbar() {
                                 <Link
                                     key={link.name}
                                     href={link.href}
-                                    className="text-xs uppercase tracking-[0.2em] font-medium text-emerald-royal hover:text-heritage-gold transition-colors relative group"
+                                    className="text-xs uppercase tracking-[0.2em] font-medium text-emerald-royal hover:text-heritage-gold transition-colors relative group whitespace-nowrap"
                                 >
                                     {link.name}
                                     <div className="absolute -bottom-1 left-0 w-0 h-px bg-heritage-gold transition-all duration-500 group-hover:w-full"></div>
@@ -201,9 +310,69 @@ export function Navbar() {
                                         className="w-full text-xs p-2 outline-none text-emerald-royal bg-transparent placeholder:text-emerald-royal/30"
                                         autoFocus
                                     />
-                                    <button onClick={() => setIsSearchOpen(false)} className="p-2 text-emerald-royal hover:text-red-500">
+                                    <button onClick={() => { setIsSearchOpen(false); setSearchQuery(""); }} className="p-2 text-emerald-royal hover:text-red-500">
                                         <X size={14} />
                                     </button>
+
+                                    {/* Search Results Dropdown */}
+                                    <AnimatePresence>
+                                        {(searchQuery && (searchResults.length > 0 || isSearching)) && (
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 10 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: 10 }}
+                                                className="absolute top-full right-0 mt-4 w-[350px] bg-white border border-heritage-gold/20 shadow-2xl rounded-sm z-[60] overflow-hidden"
+                                            >
+                                                <div className="max-h-[400px] overflow-y-auto custom-scrollbar">
+                                                    {isSearching ? (
+                                                        <div className="p-4 text-center text-xs text-emerald-royal/50 uppercase tracking-widest animate-pulse">
+                                                            Searching the Palace...
+                                                        </div>
+                                                    ) : searchResults.length > 0 ? (
+                                                        <div className="py-2">
+                                                            <div className="px-4 py-2 border-b border-heritage-gold/5 mb-2">
+                                                                <p className="text-[10px] uppercase tracking-widest font-bold text-heritage-gold">Found Treasures ({searchResults.length})</p>
+                                                            </div>
+                                                            {searchResults.map((product) => (
+                                                                <Link
+                                                                    key={product.id}
+                                                                    href={`/product/${product.slug || product.id}`}
+                                                                    onClick={() => setIsSearchOpen(false)}
+                                                                    className="flex items-center gap-4 px-4 py-3 hover:bg-muslin-cream/30 transition-colors border-b border-heritage-gold/5 last:border-0"
+                                                                >
+                                                                    <div className="relative h-12 w-12 flex-shrink-0 border border-heritage-gold/10">
+                                                                        <RoyalImage
+                                                                            src={getOptimizedImage(product.image)}
+                                                                            alt={product.name || "Product Image"}
+                                                                            fill
+                                                                            className="object-cover"
+                                                                        />
+                                                                    </div>
+                                                                    <div className="flex-1 min-w-0">
+                                                                        <h5 className="text-xs font-serif text-emerald-royal truncate mb-1">{product.name}</h5>
+                                                                        <p className="text-[10px] text-heritage-gold font-bold">Tk {product.price}</p>
+                                                                    </div>
+                                                                </Link>
+                                                            ))}
+                                                        </div>
+                                                    ) : (
+                                                        <div className="p-8 text-center">
+                                                            <p className="text-xs text-emerald-royal/50 italic font-serif">"No treasures found for this quest."</p>
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                {searchResults.length > 0 && (
+                                                    <Link
+                                                        href={`/shop?search=${searchQuery}`}
+                                                        onClick={() => setIsSearchOpen(false)}
+                                                        className="block py-3 bg-emerald-royal text-white text-center text-[10px] uppercase tracking-widest font-bold hover:bg-heritage-gold transition-colors"
+                                                    >
+                                                        View All Results
+                                                    </Link>
+                                                )}
+                                            </motion.div>
+                                        )}
+                                    </AnimatePresence>
                                 </motion.div>
                             ) : (
                                 <button
@@ -266,11 +435,11 @@ export function Navbar() {
                             ) : (
                                 <>
                                     <Link href="/login" className="text-xs font-medium text-emerald-royal hover:text-heritage-gold transition-colors">
-                                        Login
+                                        Sign In
                                     </Link>
                                     <span className="text-xs text-emerald-royal/30">|</span>
                                     <Link href="/register" className="text-xs font-medium text-emerald-royal hover:text-heritage-gold transition-colors">
-                                        Register
+                                        Join Us
                                     </Link>
                                 </>
                             )}
@@ -340,9 +509,63 @@ export function Navbar() {
                                         placeholder="Search monarch treasures..."
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="w-full bg-muslin-cream/50 border border-emerald-royal/5 rounded-xl py-4 pl-12 pr-4 text-sm font-medium outline-none focus:border-heritage-gold/30 focus:bg-white transition-all transition-hover"
                                     />
                                 </div>
+
+                                {/* Mobile Search Results */}
+                                <AnimatePresence>
+                                    {searchQuery && (searchResults.length > 0 || isSearching) && (
+                                        <motion.div
+                                            initial={{ opacity: 0, height: 0 }}
+                                            animate={{ opacity: 1, height: "auto" }}
+                                            exit={{ opacity: 0, height: 0 }}
+                                            className="mt-4 bg-muslin-cream/30 rounded-xl overflow-hidden"
+                                        >
+                                            <div className="max-h-[300px] overflow-y-auto">
+                                                {isSearching ? (
+                                                    <div className="p-4 text-center text-[10px] uppercase tracking-widest text-emerald-royal/40 animate-pulse">
+                                                        Searching...
+                                                    </div>
+                                                ) : searchResults.length > 0 ? (
+                                                    <div className="py-2">
+                                                        {searchResults.map((product) => (
+                                                            <Link
+                                                                key={product.id}
+                                                                href={`/product/${product.slug || product.id}`}
+                                                                onClick={() => setIsMobileMenuOpen(false)}
+                                                                className="flex items-center gap-3 px-4 py-3 border-b border-emerald-royal/5 last:border-0"
+                                                            >
+                                                                <div className="relative h-10 w-10 flex-shrink-0">
+                                                                    <RoyalImage
+                                                                        src={getOptimizedImage(product.image)}
+                                                                        alt={product.name || "Product Image"}
+                                                                        fill
+                                                                        className="object-cover rounded-md"
+                                                                    />
+                                                                </div>
+                                                                <div className="flex-1 min-w-0">
+                                                                    <h5 className="text-[11px] font-serif text-emerald-royal truncate">{product.name}</h5>
+                                                                    <p className="text-[9px] text-heritage-gold font-bold">Tk {product.price}</p>
+                                                                </div>
+                                                            </Link>
+                                                        ))}
+                                                        <Link
+                                                            href={`/shop?search=${searchQuery}`}
+                                                            onClick={() => setIsMobileMenuOpen(false)}
+                                                            className="block py-3 text-center text-[9px] uppercase tracking-widest font-bold text-heritage-gold bg-white/50"
+                                                        >
+                                                            View All Results
+                                                        </Link>
+                                                    </div>
+                                                ) : (
+                                                    <div className="p-6 text-center">
+                                                        <p className="text-[10px] text-emerald-royal/40 italic">No products found.</p>
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
                             </div>
 
                             <nav className="space-y-2">
@@ -436,14 +659,14 @@ export function Navbar() {
                                                 onClick={() => setIsMobileMenuOpen(false)}
                                                 className="text-center py-3 border border-emerald-royal text-emerald-royal text-xs uppercase font-bold tracking-widest hover:bg-emerald-royal hover:text-white transition-colors"
                                             >
-                                                Login
+                                                Sign In
                                             </Link>
                                             <Link
                                                 href="/register"
                                                 onClick={() => setIsMobileMenuOpen(false)}
                                                 className="text-center py-3 bg-emerald-royal text-white text-xs uppercase font-bold tracking-widest hover:bg-emerald-royal/90 transition-colors"
                                             >
-                                                Register
+                                                Join Us
                                             </Link>
                                         </>
                                     )}
@@ -488,7 +711,20 @@ export function Navbar() {
                                                 >
                                                     <div className="absolute inset-0 flex items-center justify-between p-6 z-10">
                                                         <div className="space-y-1">
-                                                            <span className="text-2xl">{cat.icon}</span>
+                                                            <span className="text-2xl">
+                                                                {cat.icon && (cat.icon.includes('/') || cat.icon.includes('.')) ? (
+                                                                    <div className="relative w-10 h-10 rounded-full overflow-hidden border border-heritage-gold/20">
+                                                                        <Image
+                                                                            src={cat.icon.startsWith('http') ? cat.icon : `http://localhost:8000/${cat.icon.startsWith('/') ? cat.icon.substring(1) : cat.icon}`}
+                                                                            alt={cat.name}
+                                                                            fill
+                                                                            className="object-cover"
+                                                                        />
+                                                                    </div>
+                                                                ) : (
+                                                                    cat.icon || "✨"
+                                                                )}
+                                                            </span>
                                                             <h3 className="text-lg font-serif text-emerald-royal group-hover:text-heritage-gold transition-colors">{cat.name}</h3>
                                                             <p className="text-[10px] uppercase tracking-widest text-emerald-royal/50">Explore Heritage</p>
                                                         </div>

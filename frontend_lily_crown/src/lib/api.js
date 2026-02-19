@@ -31,7 +31,11 @@ export async function fetchFromApi(endpoint, options = {}) {
 }
 
 export const api = {
-    getProducts: () => fetchFromApi('products'),
+    getProducts: (params = {}) => {
+        const queryString = new URLSearchParams(params).toString();
+        return fetchFromApi(`products${queryString ? `?${queryString}` : ''}`);
+    },
+    searchProducts: (query) => fetchFromApi(`products?search=${query}`),
     getProduct: (id) => fetchFromApi(`products/${id}`),
     getBlogs: () => fetchFromApi('blogs'),
     getBlog: (slug) => fetchFromApi(`blogs/${slug}`),

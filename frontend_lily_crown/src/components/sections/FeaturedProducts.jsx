@@ -12,12 +12,17 @@ export function FeaturedProducts() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isExpanded, setIsExpanded] = useState(false);
+    const [categories, setCategories] = useState(["All"]);
 
     React.useEffect(() => {
         const loadProducts = async () => {
             const data = await api.getProducts();
             if (data) {
                 setProducts(data);
+
+                // derive categories dynamically from products
+                const cats = Array.from(new Set(data.map(p => (p.category && (p.category.name || p.category))).filter(Boolean)));
+                setCategories(["All", ...cats]);
             }
             setLoading(false);
         };
@@ -37,58 +42,65 @@ export function FeaturedProducts() {
     return (
         <section id="featured" className="py-16 md:py-24 bg-muslin-cream">
             <div className="max-w-7xl mx-auto px-4 md:px-6">
-                <div className="flex flex-col md:flex-row justify-between items-center md:items-end mb-12 text-center md:text-left">
-                    <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                    >
+                <div className="flex flex-col md:flex-row items-center justify-between mb-8 md:mb-12 gap-4">
+                    <div>
                         <span className="text-heritage-gold text-[10px] md:text-xs uppercase tracking-[0.3em] font-bold">
                             Our Best Styles
                         </span>
-                        <h2 className="text-3xl md:text-4xl font-serif mt-2 md:mt-3 text-emerald-royal text-center md:text-left">
-                            Special For You
+                        <h2 className="text-3xl md:text-4xl font-serif mt-1 text-emerald-royal">
+                            Handpicked For You
                         </h2>
-                    </motion.div>
-                    {/* Filter Buttons */}
-                    <div className="flex space-x-4 md:space-x-8 mt-8 md:mt-0 overflow-x-auto pb-4 md:pb-0 w-full md:w-auto justify-center md:justify-end no-scrollbar">
-                        {["All", "Royal Dresses", "Heritage Jewelry", "Nawabi Perfumes"].map((cat) => (
+                    </div>
+
+                    <div className="flex items-center gap-4 w-full md:w-auto">
+                        <div className="w-full md:w-auto">
+                            <div className="flex gap-2 items-center overflow-x-auto no-scrollbar py-1 px-1 w-full" style={{ WebkitOverflowScrolling: 'touch' }}>
+                                <div className="flex gap-2" role="tablist" aria-label="Product categories">
+                                    {categories.map((cat) => (
+                                        <button
+                                            key={cat}
+                                            onClick={() => { setFilter(cat); setIsExpanded(false); }}
+                                            className={`flex-shrink-0 text-[13px] md:text-[12px] px-3 py-2 rounded-full transition-all whitespace-nowrap ${filter === cat
+                                                ? "bg-emerald-royal text-white shadow-sm"
+                                                : "bg-white/5 text-emerald-royal/80 hover:bg-white/10"
+                                                }`}
+                                            role="tab"
+                                            aria-selected={filter === cat}
+                                        >
+                                            {cat}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="flex-shrink-0">
                             <button
-                                key={cat}
-                                onClick={() => { setFilter(cat); setIsExpanded(false); }}
-                                className={`text-[10px] md:text-xs uppercase tracking-widest border-b-2 transition-colors pb-2 whitespace-nowrap ${filter === cat
-                                    ? "border-heritage-gold text-emerald-royal font-bold"
-                                    : "border-transparent text-emerald-royal/40 hover:text-emerald-royal"
-                                    }`}
-                                aria-pressed={filter === cat}
+                                onClick={() => setIsExpanded(true)}
+                                className="inline-flex items-center gap-2 px-3 py-2 bg-emerald-royal text-white text-xs rounded-full hover:bg-heritage-gold transition"
                             >
-                                {cat === "Royal Dresses" ? "Royal Clothes" : cat}
+                                See Every Royal Style
                             </button>
-                        ))}
+                        </div>
                     </div>
                 </div>
 
-                {/* Products Grid - Optimized for Mobile */}
                 {loading ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 px-4 md:px-0">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 px-2 md:px-0">
                         {[1, 2, 3, 4].map((i) => (
-                            <div key={i} className="space-y-4">
-                                <Skeleton className="aspect-[3/4] w-full rounded-2xl" />
-                                <div className="space-y-2">
-                                    <Skeleton className="h-4 w-2/3" />
-                                    <Skeleton className="h-4 w-1/3" />
+                            <div key={i} className="space-y-5">
+                                <Skeleton className="aspect-[3/4] w-full rounded-2xl shadow-sm" />
+                                <div className="space-y-3">
+                                    <Skeleton className="h-5 w-2/3" />
+                                    <Skeleton className="h-4 w-1/3 opacity-60" />
                                 </div>
                             </div>
                         ))}
                     </div>
                 ) : visibleProducts.length > 0 ? (
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8 px-4 md:px-0">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6 px-2 md:px-0">
                         {visibleProducts.map((product, index) => (
-                            <ProductCard
-                                key={product.id}
-                                product={product}
-                                index={index}
-                                priority={index < 2}
-                            />
+                            <ProductCard key={product.id} product={product} index={index} priority={index < 2} />
                         ))}
                     </div>
                 ) : (
@@ -101,9 +113,9 @@ export function FeaturedProducts() {
                     <div className="text-center mt-12 md:mt-16">
                         <button
                             onClick={() => setIsExpanded(true)}
-                            className="w-full md:w-auto px-10 py-4 bg-emerald-royal text-white uppercase tracking-widest text-[10px] md:text-xs hover:bg-heritage-gold transition-all font-bold shadow-xl"
+                            className="w-full md:w-auto px-10 py-3 bg-emerald-royal text-white uppercase tracking-widest text-[10px] md:text-xs hover:bg-heritage-gold transition-all font-bold rounded-full"
                         >
-                            See Every Royal Style
+                            View All Styles
                         </button>
                     </div>
                 )}

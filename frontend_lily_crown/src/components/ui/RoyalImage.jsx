@@ -20,7 +20,7 @@ export const RoyalImage = ({
     height,
     priority = false,
     unoptimized = true, // We need this for local backend images
-    onLoadingComplete,
+    onLoad,
     ...props
 }) => {
     const [isLoading, setIsLoading] = useState(true);
@@ -40,15 +40,15 @@ export const RoyalImage = ({
 
             <Image
                 src={hasError ? "https://picsum.photos/1200/800?grayscale&blur=2" : src}
-                alt={alt}
+                alt={alt || "Image"}
                 fill={fill}
                 width={width}
                 height={height}
                 priority={priority}
                 unoptimized={unoptimized}
-                onLoadingComplete={(img) => {
+                onLoad={(e) => {
                     setIsLoading(false);
-                    if (onLoadingComplete) onLoadingComplete(img);
+                    if (onLoad) onLoad(e);
                 }}
                 onError={() => {
                     setIsLoading(false);

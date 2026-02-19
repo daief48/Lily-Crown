@@ -15,6 +15,7 @@
   --animate-float: float 6s ease-in-out infinite;
   --animate-fade-in-up: fadeInUp 0.8s ease-out forwards;
   --animate-shimmer: shimmer 3s infinite linear;
+  --animate-spin-slow: spin-slow 15s linear infinite;
 
   @keyframes float {
 
@@ -87,6 +88,16 @@
 
     50% {
       transform: scale(1.15);
+    }
+  }
+
+  @keyframes spin-slow {
+    from {
+      transform: rotate(0deg);
+    }
+
+    to {
+      transform: rotate(360deg);
     }
   }
 }
@@ -247,4 +258,23 @@ section {
 @utility royal-border-shimmer {
   border: 1px solid rgba(153, 101, 21, 0.3);
   animation: border-glow 4s ease-in-out infinite;
+}
+@utility custom-scrollbar {
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: rgba(153, 101, 21, 0.05);
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(153, 101, 21, 0.2);
+    border-radius: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: rgba(153, 101, 21, 0.4);
+  }
 }

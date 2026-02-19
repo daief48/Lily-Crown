@@ -92,15 +92,15 @@ export function BlogPreview() {
                             viewport={{ once: true }}
                             className="group"
                         >
-                            <Link href={`/blog/${blog.slug}`} className="block overflow-hidden rounded-2xl aspect-[16/10] mb-6 relative royal-shadow">
+                            <Link href={`/blog/${blog.slug}`} className="block rounded-2xl aspect-[16/10] mb-6 relative royal-shadow bg-white/5 overflow-hidden flex items-center justify-center">
                                 <Image
                                     src={getOptimizedImage(blog.image)}
                                     alt={blog.title}
                                     fill
                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
-                                    className="object-cover transition-transform duration-1000 group-hover:scale-105"
+                                    className="object-contain transition-transform duration-700 group-hover:scale-102 p-2"
                                 />
-                                <div className="absolute inset-0 bg-emerald-royal/10 group-hover:bg-transparent transition-colors duration-500"></div>
+                                <div className="absolute inset-0 bg-emerald-royal/6 group-hover:bg-transparent transition-colors duration-500"></div>
                                 <div className="absolute top-4 left-4">
                                     <span className="bg-white/90 backdrop-blur-sm text-emerald-royal text-[9px] uppercase font-bold px-3 py-1.5 tracking-widest rounded-full shadow-sm">
                                         {blog.category?.name || (typeof blog.category === 'string' ? blog.category : '')}

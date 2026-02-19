@@ -49,13 +49,14 @@ export function InstagramFeed() {
                             viewport={{ once: true }}
                             className="relative aspect-square overflow-hidden group cursor-pointer rounded-xl nakshi-border block"
                         >
-                            <RoyalImage
-                                src={getOptimizedImage(post.image)}
-                                alt={post.caption || `Lily Crown heritage fashion style ${idx + 1}`}
-                                fill
-                                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-                                className="object-cover transition-transform duration-700 group-hover:scale-110"
-                            />
+                                <RoyalImage
+                                    src={getOptimizedImage(post.image)}
+                                    alt={post.caption || `Lily Crown heritage fashion style ${idx + 1}`}
+                                    fill
+                                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
+                                    className="object-contain transition-transform duration-700 group-hover:scale-105 bg-white/30 p-1"
+                                    containerClassName="bg-white/5"
+                                />
                             <div className="absolute inset-0 bg-emerald-royal/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
                                 <Instagram size={24} className="text-white opacity-80" />
                             </div>

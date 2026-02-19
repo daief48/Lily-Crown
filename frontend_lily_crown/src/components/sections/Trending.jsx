@@ -68,7 +68,7 @@ export function Trending() {
                             What Everyone Loves
                         </span>
                         <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif text-emerald-royal mt-2">
-                            Dhakai Favorites
+                            Most Loved Styles
                         </h2>
                     </motion.div>
 
@@ -91,13 +91,13 @@ export function Trending() {
 
                 {/* Slider */}
                 {loading ? (
-                    <div className="flex overflow-hidden gap-4 md:gap-6 px-4 md:px-0 pb-6">
+                    <div className="flex flex-col md:flex-row gap-6 px-4 md:px-0 pb-6 overflow-hidden">
                         {[1, 2, 3, 4].map((i) => (
-                            <div key={i} className="flex-shrink-0 w-[85%] sm:w-[260px] md:w-[320px] space-y-4">
-                                <Skeleton className="aspect-[3/4] w-full rounded-none" />
-                                <div className="space-y-2">
-                                    <Skeleton className="h-4 w-2/3" />
-                                    <Skeleton className="h-4 w-1/3" />
+                            <div key={i} className="w-full md:w-[320px] md:flex-shrink-0">
+                                <Skeleton className="aspect-[3/4] w-full rounded-2xl shadow-sm" />
+                                <div className="space-y-3 mt-4">
+                                    <Skeleton className="h-5 w-2/3" />
+                                    <Skeleton className="h-4 w-1/3 opacity-60" />
                                 </div>
                             </div>
                         ))}
@@ -106,8 +106,9 @@ export function Trending() {
                     <div
                         ref={scrollRef}
                         onScroll={handleScroll}
-                        className="flex overflow-x-auto gap-4 md:gap-6 snap-x snap-mandatory scroll-smooth px-4 md:px-0 pb-6"
+                        className="flex flex-col md:flex-row md:overflow-x-auto gap-6 md:gap-6 scroll-smooth px-4 md:px-0 pb-6"
                         style={{
+                            /* hide scrollbar on horizontal layouts */
                             scrollbarWidth: "none",
                             msOverflowStyle: "none",
                             WebkitOverflowScrolling: "touch",
@@ -116,7 +117,7 @@ export function Trending() {
                         {products.map((product, index) => (
                             <div
                                 key={product.id}
-                                className="snap-start flex-shrink-0 w-[85%] sm:w-[260px] md:w-[320px] max-w-[320px]"
+                                className="w-full md:flex-shrink-0 md:w-[320px] max-w-full md:max-w-[320px]"
                             >
                                 <ProductCard product={product} index={index} />
                             </div>
@@ -128,22 +129,7 @@ export function Trending() {
                     </div>
                 )}
 
-                {/* Mobile Dots Indicator */}
-                {!loading && products.length > 0 && (
-                    <div className="flex justify-center gap-2 mt-4 md:hidden">
-                        {products.map((_, index) => (
-                            <span
-                                key={index}
-                                className={`h-2 rounded-full transition-all duration-300
-                ${activeIndex === index
-                                        ? "w-6 bg-emerald-royal"
-                                        : "w-2 bg-emerald-royal/30"
-                                    }
-              `}
-                            />
-                        ))}
-                    </div>
-                )}
+                {/* Desktop arrows are above; no mobile dots for stacked layout */}
             </div>
         </section>
     );

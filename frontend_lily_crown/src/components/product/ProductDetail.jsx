@@ -36,8 +36,13 @@ export function ProductDetail({ product }) {
 
     if (!product) return null;
 
-    const nextImage = () => setActiveImage((prev) => (prev + 1) % product.gallery.length);
-    const prevImage = () => setActiveImage((prev) => (prev - 1 + product.gallery.length) % product.gallery.length);
+    // Ensure gallery is always an array, fallback to primary image
+    const safeGallery = (Array.isArray(product.gallery) && product.gallery.length > 0)
+        ? product.gallery
+        : [product.image].filter(Boolean);
+
+    const nextImage = () => setActiveImage((prev) => (prev + 1) % safeGallery.length);
+    const prevImage = () => setActiveImage((prev) => (prev - 1 + safeGallery.length) % safeGallery.length);
 
     const handleMouseMove = (e) => {
         const { left, top, width, height } = e.currentTarget.getBoundingClientRect();
@@ -84,7 +89,7 @@ export function ProductDetail({ product }) {
                                         className="h-full w-full"
                                     >
                                         <RoyalImage
-                                            src={getOptimizedImage(product.gallery[activeImage])}
+                                            src={getOptimizedImage(safeGallery[activeImage])}
                                             alt={product.name}
                                             fill
                                             sizes="(max-width: 768px) 100vw, 50vw"
@@ -119,7 +124,7 @@ export function ProductDetail({ product }) {
 
                         {/* Thumbnails */}
                         <div className="flex gap-3 md:gap-4 overflow-x-auto pb-4 no-scrollbar px-1">
-                            {product.gallery.map((img, idx) => (
+                            {safeGallery.map((img, idx) => (
                                 <button
                                     key={idx}
                                     onClick={() => setActiveImage(idx)}
@@ -267,7 +272,7 @@ export function ProductDetail({ product }) {
                                         className="relative w-full h-full max-w-5xl"
                                     >
                                         <Image
-                                            src={getOptimizedImage(product.gallery[activeImage])}
+                                            src={getOptimizedImage(safeGallery[activeImage])}
                                             alt={product.name}
                                             fill
                                             unoptimized
@@ -294,7 +299,7 @@ export function ProductDetail({ product }) {
 
                                     {/* Counter */}
                                     <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/50 font-serif tracking-widest text-sm">
-                                        {activeImage + 1} / {product.gallery.length}
+                                        {activeImage + 1} / {safeGallery.length}
                                     </div>
                                 </div>
                             </motion.div>

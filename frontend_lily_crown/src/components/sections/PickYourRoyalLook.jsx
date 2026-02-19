@@ -59,7 +59,7 @@ export function PickYourRoyalLook() {
                         Royal Wardrobe
                     </span>
                     <h2 className="text-4xl md:text-5xl font-serif text-emerald-royal">
-                        Pick Your Royal Look
+                        Find Your Royal Style
                     </h2>
                     <div className="w-24 h-1 bg-heritage-gold mx-auto"></div>
                 </div>
@@ -95,14 +95,12 @@ export function PickYourRoyalLook() {
                                                 {item.product?.name || item.title}
                                             </h3>
 
-                                            {item.product && (
-                                                <div className="inline-flex items-center space-x-2 text-heritage-gold text-sm font-bold border-b border-heritage-gold/50 pb-1 group-hover:border-heritage-gold transition-colors duration-300">
-                                                    <span>Shop This Look</span>
-                                                    <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                                                    </svg>
-                                                </div>
-                                            )}
+                                            <div className="inline-flex items-center space-x-2 text-heritage-gold text-sm font-bold border-b border-heritage-gold/50 pb-1 group-hover:border-heritage-gold transition-colors duration-300">
+                                                <span>Get This Look</span>
+                                                <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                                                </svg>
+                                            </div>
                                         </div>
                                     </div>
                                 </Link>
@@ -117,7 +115,7 @@ export function PickYourRoyalLook() {
                             onClick={handleSeeAll}
                             className="inline-block px-12 py-4 bg-emerald-royal text-white font-serif text-lg tracking-wider hover:bg-emerald-royal/90 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl"
                         >
-                            See All Collections
+                            View All Collections
                         </button>
                     </div>
                 )}

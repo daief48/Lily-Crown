@@ -161,7 +161,7 @@ export function Hero() {
                                 initial={{ opacity: 0, scale: 0.9, x: 50 }}
                                 animate={{ opacity: 1, scale: 1, x: 0 }}
                                 transition={{ duration: 1 }}
-                                className="relative group w-full max-w-[180px] sm:max-w-[240px] md:max-w-[380px]"
+                                className="relative group w-full max-w-[360px] sm:max-w-[420px] md:max-w-[520px]"
                             >
                                 <div className="relative z-10 w-full aspect-[3/4] rounded-t-[10rem] rounded-b-[2rem] overflow-hidden shadow-2xl border-4 border-white animate-float">
                                     <RoyalImage

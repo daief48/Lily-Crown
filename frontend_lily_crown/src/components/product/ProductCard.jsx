@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useStore } from "@/context/StoreContext";
-import { Heart } from "lucide-react";
+import { Heart, Star, Truck } from "lucide-react";
 import { motion } from "framer-motion";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -21,10 +21,11 @@ export function ProductCard({ product, index, priority = false }) {
     const [isHovered, setIsHovered] = React.useState(false);
 
     // Get primary and secondary images
+    // gallery[0] is used as the alternate/hover image (primary image comes from product.image separately)
     const primaryImage = getOptimizedImage(product.image);
-    const secondaryImage = product.gallery && product.gallery.length > 1
-        ? getOptimizedImage(product.gallery[1])
-        : primaryImage;
+    const secondaryImage = product.gallery && product.gallery.length > 0
+        ? getOptimizedImage(product.gallery[0])
+        : null;
 
     return (
         <motion.div
@@ -32,112 +33,105 @@ export function ProductCard({ product, index, priority = false }) {
             whileInView={{ opacity: 1, y: 0 }}
             transition={{ delay: index * 0.05 }}
             viewport={{ once: true }}
-            className="group relative flex flex-col h-full"
+            className="group relative flex flex-col h-full bg-white rounded-2xl overflow-hidden hover:shadow-2xl hover:shadow-emerald-royal/10 transition-all duration-500"
         >
             <div
-                className="relative overflow-hidden rounded-2xl mb-5 aspect-[3/4] bg-muslin-cream/50 nakshi-border transition-all duration-1000 group-hover:royal-shadow"
+                className="relative overflow-hidden aspect-[3/4] bg-muslin-cream/20"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >
-                {product.badge && (
-                    <div className="absolute top-4 left-4 z-20">
-                        <span className="relative inline-block px-4 py-1.5 text-[9px] uppercase font-bold tracking-[0.2em] text-heritage-gold border border-heritage-gold/30 rounded-full overflow-hidden">
-                            <div className="absolute inset-0 bg-white/80 backdrop-blur-sm -z-10"></div>
+                {/* Delivery Badge */}
+                <div className="absolute top-3 left-3 z-20 flex flex-col gap-2">
+                    {product.badge && (
+                        <span className="inline-block px-3 py-1 text-[8px] uppercase font-bold tracking-widest text-white bg-emerald-royal rounded-lg shadow-lg">
                             {product.badge}
                         </span>
+                    )}
+                    <div className="flex items-center gap-1.5 px-2.5 py-1 text-[8px] font-bold text-heritage-gold bg-white/90 backdrop-blur-md rounded-lg shadow-sm border border-heritage-gold/10">
+                        <Truck size={10} />
+                        <span>ROYAL EXPRESS</span>
                     </div>
-                )}
+                </div>
 
-                <Link href={`/product/${product.id}`} className="block h-full relative cursor-none md:cursor-pointer">
+                <Link href={`/product/${product.id}`} className="block h-full relative">
                     {/* Primary Image */}
-                    <RoyalImage
+                    <Image
                         src={primaryImage}
                         alt={product.name}
                         fill
                         priority={priority}
+                        unoptimized
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                         className={cn(
-                            "object-cover transition-all duration-700 ease-out",
-                            isHovered ? "opacity-0 scale-110" : "opacity-100 scale-100"
+                            "object-cover transition-all duration-700 ease-in-out",
+                            isHovered && secondaryImage ? "opacity-0 scale-110" : "opacity-100 scale-100"
                         )}
                     />
-
-                    {/* Secondary Image - Shows on Hover */}
-                    <RoyalImage
-                        src={secondaryImage}
-                        alt={`${product.name} - alternate view`}
-                        fill
-                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-                        className={cn(
-                            "object-cover transition-all duration-700 ease-out",
-                            isHovered ? "opacity-100 scale-110" : "opacity-0 scale-100"
-                        )}
-                    />
-
-                    {/* Satin Shimmer Overlay on Hover */}
-                    <div className="absolute inset-x-0 inset-y-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[200%] group-hover:translate-x-[200%] transition-transform duration-[1500ms] pointer-events-none"></div>
+                    {/* Secondary / Hover Image */}
+                    {secondaryImage && (
+                        <Image
+                            src={secondaryImage}
+                            alt={`${product.name} - alternate view`}
+                            fill
+                            unoptimized
+                            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                            className={cn(
+                                "object-cover transition-all duration-700 ease-in-out absolute inset-0",
+                                isHovered ? "opacity-100 scale-100" : "opacity-0 scale-105"
+                            )}
+                        />
+                    )}
                 </Link>
 
-                {/* Glassmorphism Actions Panel */}
-                <div className="absolute bottom-4 left-4 right-4 p-2 translate-y-[120%] group-hover:translate-y-0 transition-all duration-700 delay-75 z-20">
-                    <div className="bg-white/10 backdrop-blur-xl border border-white/20 p-1.5 rounded-xl shadow-2xl flex gap-1">
-                        <button
-                            onClick={() => addToCart(product)}
-                            className="flex-1 bg-emerald-royal text-white py-3.5 text-[9px] uppercase tracking-[0.25em] font-bold hover:bg-heritage-gold transition-all duration-500 rounded-lg shadow-inner active:scale-95"
-                            aria-label={`Add ${product.name} to bag`}
-                        >
-                            Keep in My Bag
-                        </button>
-                    </div>
+                {/* Quick Add Overlay */}
+                <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 z-20 bg-gradient-to-t from-black/20 to-transparent">
+                    <button
+                        onClick={() => addToCart(product)}
+                        className="w-full bg-emerald-royal text-white py-3 rounded-xl text-[9px] uppercase tracking-[0.2em] font-bold shadow-2xl hover:bg-heritage-gold transition-colors active:scale-95"
+                    >
+                        Add to Selection
+                    </button>
                 </div>
 
                 <button
                     onClick={() => toggleWishlist(product)}
                     className={cn(
-                        "absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center transition-all duration-500 backdrop-blur-md z-20 border border-white/20",
-                        isWishlisted ? "bg-white shadow-xl" : "bg-white/40 hover:bg-white"
+                        "absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 backdrop-blur-md z-20 border border-white/20",
+                        isWishlisted ? "bg-white text-deep-maroon shadow-lg" : "bg-white/40 text-emerald-royal/40 hover:bg-white hover:text-deep-maroon"
                     )}
-                    aria-label={isWishlisted ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`}
                 >
-                    <motion.div
-                        animate={isWishlisted ? { scale: [1, 1.2, 1] } : {}}
-                        transition={{ repeat: isWishlisted ? Infinity : 0, duration: 2 }}
-                    >
-                        <Heart
-                            size={18}
-                            className={cn(
-                                "transition-colors duration-500",
-                                isWishlisted ? "fill-deep-maroon text-deep-maroon" : "text-emerald-royal/60"
-                            )}
-                        />
-                    </motion.div>
+                    <Heart size={14} fill={isWishlisted ? "currentColor" : "none"} />
                 </button>
             </div>
 
-            <div className="px-1 flex flex-col flex-1">
-                <div className="flex items-center gap-3 mb-2">
-                    <span className="text-[10px] text-heritage-gold uppercase tracking-[0.35em] font-bold">
-                        {product.category?.name || (typeof product.category === 'string' ? product.category : '')}
+            <div className="p-4 flex flex-col flex-1 bg-white">
+                <div className="flex items-center justify-between mb-2">
+                    <span className="text-[9px] text-emerald-royal/40 uppercase tracking-widest font-bold">
+                        {product.category?.name || "Artifact"}
                     </span>
-                    <div className="h-px flex-1 bg-heritage-gold/10"></div>
+                    <div className="flex items-center gap-0.5 text-heritage-gold">
+                        {[1, 2, 3, 4, 5].map((s) => (
+                            <Star key={s} size={10} fill={s <= 4 ? "currentColor" : "none"} />
+                        ))}
+                        <span className="text-[9px] text-emerald-royal/30 ml-1 font-bold">(4.0)</span>
+                    </div>
                 </div>
 
-                <Link href={`/product/${product.id}`} className="block mb-2">
-                    <h3 className="font-serif text-lg md:text-xl text-emerald-royal group-hover:text-heritage-gold transition-colors duration-500 leading-snug">
+                <Link href={`/product/${product.id}`} className="block mb-3">
+                    <h3 className="font-serif text-base text-emerald-royal group-hover:text-heritage-gold transition-colors line-clamp-2 min-h-[3rem]">
                         {product.name}
                     </h3>
                 </Link>
 
-                <div className="mt-auto pt-2 flex items-end justify-between">
-                    <div className="flex flex-col">
-                        <span className="text-[9px] uppercase tracking-widest text-emerald-royal/40 font-bold mb-0.5">Investment</span>
-                        <p className="text-emerald-royal font-serif text-lg md:text-xl font-medium tracking-tight">
-                            ${product.price}
-                        </p>
-                    </div>
-                    {/* View Details Subtle Hook */}
-                    <div className="text-heritage-gold opacity-0 group-hover:opacity-100 -translate-x-2 group-hover:translate-x-0 transition-all duration-700">
-                        <span className="text-[9px] uppercase tracking-[0.3em] font-bold">Details &rarr;</span>
+                <div className="mt-auto pt-3 border-t border-heritage-gold/5 flex items-center justify-between">
+                    <div>
+                        <div className="flex items-baseline gap-2">
+                            <span className="text-emerald-royal font-serif text-xl font-bold">৳{product.price}</span>
+                            {product.old_price && (
+                                <span className="text-emerald-royal/30 line-through text-xs italic">৳{product.old_price}</span>
+                            )}
+                        </div>
+                        <p className="text-[8px] uppercase tracking-widest text-heritage-gold font-bold">Heritage Piece</p>
                     </div>
                 </div>
             </div>

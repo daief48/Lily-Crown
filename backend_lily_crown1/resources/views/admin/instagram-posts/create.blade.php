@@ -13,16 +13,8 @@
             <div class="card-body">
                 <div class="form-group">
                     <label for="image_file">Upload Image</label>
-                    <input type="file" name="image_file" class="form-control @error('image_file') is-invalid @enderror" id="image_file" accept="image/*">
+                    <input type="file" name="image_file" class="form-control @error('image_file') is-invalid @enderror" id="image_file" accept="image/*" required>
                     @error('image_file')
-                        <span class="invalid-feedback">{{ $message }}</span>
-                    @enderror
-                    <small class="form-text text-muted">Or provide an image URL below.</small>
-                </div>
-                <div class="form-group">
-                    <label for="image">Image URL</label>
-                    <input type="text" name="image" class="form-control @error('image') is-invalid @enderror" id="image" placeholder="Enter image URL" value="{{ old('image') }}">
-                    @error('image')
                         <span class="invalid-feedback">{{ $message }}</span>
                     @enderror
                 </div>

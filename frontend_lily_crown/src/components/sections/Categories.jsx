@@ -22,8 +22,8 @@ export function Categories() {
                 // Add visual logic props since they aren't in the DB
                 const enriched = data.map((cat, idx) => ({
                     ...cat,
-                    // Map 'icon' or 'image' field from backend to 'image' for component
-                    image: cat.icon || cat.image || null,
+                    // Map consolidated image field from backend, icon as secondary fallback
+                    image: (cat.image && (cat.image.startsWith('storage') || cat.image.startsWith('http'))) ? cat.image : (cat.icon || cat.image || null),
                     span: idx === 1,
                     bordered: idx > 1,
                     href: `/shop?category=${cat.slug}`
