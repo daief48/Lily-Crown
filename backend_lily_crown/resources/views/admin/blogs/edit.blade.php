@@ -1,0 +1,110 @@
+@extends('adminlte::page')
+
+@section('title', 'Edit Blog Post')
+
+@section('content_header')
+    <h1>Edit Blog Post</h1>
+@stop
+
+@section('content')
+<div class="container-fluid">
+    <form action="{{ route('blogs.update', $blog->id) }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        @method('PUT')
+        
+        <div class="luxury-grid">
+            {{-- Main Content Section --}}
+            <div class="card card-royal">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-edit mr-2"></i> Refine Story
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="title" class="luxury-label">Post Title</label>
+                        <input type="text" name="title" class="form-control luxury-input @error('title') is-invalid @enderror" id="title" placeholder="Enter post title" value="{{ old('title', $blog->title) }}" required>
+                        @error('title')
+                            <span class="error invalid-feedback">{{ $message }}</span>
+                        @enderror
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="content" class="luxury-label">Narrative</label>
+                        <textarea name="content" class="form-control luxury-input @error('content') is-invalid @enderror" id="content" rows="12" placeholder="Write your royal story...">{{ old('content', $blog->content) }}</textarea>
+                        @error('content')
+                            <span class="error invalid-feedback">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+            </div>
+
+            {{-- Metadata & Visuals --}}
+            <div class="card card-royal">
+                <div class="card-header">
+                    <h3 class="card-title">
+                        <i class="fas fa-cog mr-2"></i> Settings & Visuals
+                    </h3>
+                </div>
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="slug" class="luxury-label">Slug</label>
+                        <input type="text" name="slug" class="form-control luxury-input @error('slug') is-invalid @enderror" id="slug" placeholder="automatic-slug" value="{{ old('slug', $blog->slug) }}" required>
+                        @error('slug')
+                            <span class="error invalid-feedback">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <label for="thumbnail" class="luxury-label">Cover Image</label>
+                        <div class="custom-file luxury-file">
+                            <input type="file" name="thumbnail" class="custom-file-input @error('thumbnail') is-invalid @enderror" id="thumbnail" accept="image/*">
+                            <label class="custom-file-label" for="thumbnail">Choose file...</label>
+                        </div>
+                        <div id="thumbnail-preview" class="mt-3 text-center {{ $blog->thumbnail ? '' : 'd-none' }}">
+                            <img src="{{ Str::startsWith($blog->thumbnail, 'http') ? $blog->thumbnail : asset($blog->thumbnail) }}" alt="Thumbnail Preview" class="img-fluid rounded-lg shadow-sm border border-gold-accent/20" style="max-height: 200px;">
+                        </div>
+                        @error('thumbnail')
+                            <span class="error invalid-feedback" style="display:block">{{ $message }}</span>
+                        @enderror
+                    </div>
+                </div>
+                
+                <div class="card-footer bg-transparent border-top-0 pb-4 mt-auto">
+                    <button type="submit" class="btn btn-luxury px-5 btn-block">
+                        <i class="fas fa-save mr-2"></i> Update Story
+                    </button>
+                    <a href="{{ route('blogs.index') }}" class="btn btn-outline-luxury btn-block mt-2">
+                        Cancel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+@stop
+
+@section('js')
+<script>
+    $(function() {
+        $('#title').on('keyup', function() {
+            var slug = $(this).val().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+            $('#slug').val(slug);
+        });
+
+        // Image preview
+        $('#thumbnail').on('change', function() {
+            var file = this.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#thumbnail-preview img').attr('src', e.target.result);
+                    $('#thumbnail-preview').removeClass('d-none');
+                }
+                reader.readAsDataURL(file);
+                $(this).next('.custom-file-label').html(file.name);
+            }
+        });
+    });
+</script>
+@stop
