@@ -19,49 +19,29 @@ const ROYAL_FEATURES = [
         id: 1,
         icon: Truck,
         titleKey: "feature_1_title",
-        descKey: "feature_1_desc"
+        descKey: "feature_1_desc",
+        color: "heritage-gold"
     },
     {
         id: 2,
-        icon: RotateCcw,
-        titleKey: "feature_2_title",
-        descKey: "feature_2_desc"
+        icon: BadgeCheck,
+        titleKey: "feature_5_title",
+        descKey: "feature_5_desc",
+        color: "emerald-royal"
     },
     {
         id: 3,
-        icon: ShieldCheck,
-        titleKey: "feature_3_title",
-        descKey: "feature_3_desc"
+        icon: RotateCcw,
+        titleKey: "feature_2_title",
+        descKey: "feature_2_desc",
+        color: "heritage-gold"
     },
     {
         id: 4,
-        icon: Headset,
-        titleKey: "feature_4_title",
-        descKey: "feature_4_desc"
-    },
-    {
-        id: 5,
-        icon: BadgeCheck,
-        titleKey: "feature_5_title",
-        descKey: "feature_5_desc"
-    },
-    {
-        id: 6,
-        icon: Gift,
-        titleKey: "feature_6_title",
-        descKey: "feature_6_desc"
-    },
-    {
-        id: 7,
-        icon: Leaf,
-        titleKey: "feature_7_title",
-        descKey: "feature_7_desc"
-    },
-    {
-        id: 8,
-        icon: HeartHandshake,
-        titleKey: "feature_8_title",
-        descKey: "feature_8_desc"
+        icon: ShieldCheck,
+        titleKey: "feature_3_title",
+        descKey: "feature_3_desc",
+        color: "emerald-royal"
     }
 ];
 
@@ -70,50 +50,55 @@ const containerVariants = {
     visible: {
         opacity: 1,
         transition: {
-            staggerChildren: 0.1,
-            delayChildren: 0.2
+            staggerChildren: 0.15,
+            delayChildren: 0.1
         }
     }
 };
 
 const itemVariants = {
-    hidden: { opacity: 0, y: 30, scale: 0.95 },
+    hidden: { opacity: 0, y: 40, scale: 0.9 },
     visible: {
         opacity: 1,
         y: 0,
         scale: 1,
-        transition: { type: "spring", stiffness: 100, damping: 20 }
+        transition: {
+            type: "spring",
+            stiffness: 80,
+            damping: 15,
+            mass: 1
+        }
     }
 };
 
 export function Features() {
     const { t } = useLanguage();
     return (
-        <section id="about" className="py-24 md:py-40 bg-gradient-to-b from-emerald-royal to-[#0a2f1f] text-white relative overflow-hidden">
-            {/* Background Narrative Elements */}
-            <div className="absolute inset-0 opacity-[0.03] jamdani-pattern pointer-events-none scale-150"></div>
-            <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-black/20 to-transparent pointer-events-none"></div>
-
-            {/* Ambient Glows */}
-            <div className="absolute -top-24 -left-24 w-96 h-96 bg-heritage-gold/10 rounded-full blur-[120px] pointer-events-none"></div>
-            <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-emerald-royal/20 rounded-full blur-[120px] pointer-events-none"></div>
+        <section id="about" className="py-24 md:py-32 bg-gradient-to-b from-white to-slate-50 relative overflow-hidden">
+            {/* Ambient Decorative Elements */}
+            <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-heritage-gold/20 to-transparent"></div>
+            <div className="absolute -top-40 -left-40 w-96 h-96 bg-heritage-gold/5 rounded-full blur-[100px] pointer-events-none"></div>
+            <div className="absolute -bottom-40 -right-40 w-96 h-96 bg-emerald-royal/5 rounded-full blur-[100px] pointer-events-none"></div>
 
             <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
-                <div className="text-center mb-20 md:mb-28">
+                <div className="text-center mb-16 md:mb-20">
                     <motion.div
-                        initial={{ opacity: 0, y: -20 }}
+                        initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        className="inline-block"
+                        className="inline-flex items-center gap-3 mb-4"
                     >
-                        <span className="text-heritage-gold text-xs uppercase tracking-[0.5em] font-bold block mb-4 border-b border-heritage-gold/20 pb-2">{t("features_promise")}</span>
+                        <div className="w-12 h-px bg-heritage-gold/30"></div>
+                        <span className="text-heritage-gold text-xs font-bold uppercase tracking-[0.4em]">{t("features_promise")}</span>
+                        <div className="w-12 h-px bg-heritage-gold/30"></div>
                     </motion.div>
+
                     <motion.h2
-                        initial={{ opacity: 0, filter: "blur(10px)" }}
-                        whileInView={{ opacity: 1, filter: "blur(0px)" }}
-                        transition={{ duration: 0.8 }}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        transition={{ delay: 0.1, duration: 0.6 }}
                         viewport={{ once: true }}
-                        className="text-4xl md:text-6xl font-serif mt-2 balance"
+                        className="text-3xl md:text-5xl lg:text-6xl font-bold text-luxury-black mb-6"
                     >
                         {t("features_mandate")}
                     </motion.h2>
@@ -123,8 +108,8 @@ export function Features() {
                     variants={containerVariants}
                     initial="hidden"
                     whileInView="visible"
-                    viewport={{ once: true, margin: "-100px" }}
-                    className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8 lg:gap-10"
+                    viewport={{ once: true, margin: "-50px" }}
+                    className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8"
                 >
                     {ROYAL_FEATURES.map((feature) => {
                         const Icon = feature.icon;
@@ -132,40 +117,34 @@ export function Features() {
                             <motion.div
                                 key={feature.id}
                                 variants={itemVariants}
-                                whileHover={{
-                                    y: -10,
-                                    transition: { duration: 0.3, ease: "easeOut" }
-                                }}
-                                className="relative p-6 md:p-8 rounded-3xl group cursor-default"
+                                whileHover={{ y: -8 }}
+                                className="relative group p-8 rounded-2xl bg-white border border-slate-100 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_20px_50px_-15px_rgba(0,0,0,0.1)] transition-all duration-500 overflow-hidden"
                             >
-                                {/* Card Background with Glassmorphism */}
-                                <div className="absolute inset-0 bg-white/[0.03] backdrop-blur-md rounded-3xl border border-white/10 group-hover:border-heritage-gold/30 group-hover:bg-white/[0.06] transition-all duration-500 shadow-2xl overflow-hidden">
-                                    {/* Subtle Glow Trace */}
-                                    <div className="absolute -inset-x-full top-0 h-px bg-gradient-to-r from-transparent via-heritage-gold/20 to-transparent group-hover:inset-x-full transition-all duration-1000 ease-in-out"></div>
-                                </div>
+                                {/* Polish Glow Effect */}
+                                <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-heritage-gold/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
 
-                                <div className="relative z-10 space-y-6">
-                                    <div className="relative w-14 h-14 md:w-16 md:h-16 mx-auto">
-                                        {/* Icon Container with Floating effect */}
-                                        <motion.div
-                                            animate={{ y: [0, -5, 0] }}
-                                            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                                            className="w-full h-full bg-white/5 rounded-2xl flex items-center justify-center border border-white/10 group-hover:bg-heritage-gold group-hover:scale-110 group-hover:rotate-12 transition-all duration-500 shadow-xl"
-                                        >
-                                            <Icon size={26} className="text-heritage-gold group-hover:text-white transition-colors" />
-                                        </motion.div>
-
-                                        {/* Icon Shadow/Glow */}
-                                        <div className="absolute -bottom-2 inset-x-4 h-2 bg-black/20 blur-md rounded-full group-hover:bg-heritage-gold/20 transition-all duration-500"></div>
+                                <div className="relative z-10">
+                                    {/* Icon with Royal Badge Styling */}
+                                    <div className="mb-8 relative w-fit">
+                                        <div className="w-14 h-14 rounded-2xl bg-slate-50 flex items-center justify-center text-luxury-black group-hover:bg-emerald-royal group-hover:text-white transition-all duration-500 transform group-hover:shadow-xl group-hover:rotate-6">
+                                            <Icon size={24} strokeWidth={1.5} />
+                                        </div>
+                                        <div className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-heritage-gold border-4 border-white transform scale-0 group-hover:scale-100 transition-transform duration-500 delay-100"></div>
                                     </div>
 
-                                    <div className="space-y-3">
-                                        <h3 className="font-serif text-lg md:text-xl tracking-wide group-hover:text-heritage-gold transition-colors duration-300">
+                                    <div className="space-y-4">
+                                        <h3 className="text-xl font-bold text-luxury-black group-hover:text-emerald-royal transition-colors duration-300">
                                             {t(feature.titleKey)}
                                         </h3>
-                                        <p className="text-muslin-cream/50 text-[10px] md:text-xs leading-relaxed font-light uppercase tracking-[0.15em] group-hover:text-muslin-cream/80 transition-colors duration-300">
+                                        <p className="text-gray-500 text-sm leading-relaxed font-medium">
                                             {t(feature.descKey)}
                                         </p>
+                                    </div>
+
+                                    {/* Bottom Accent Decor */}
+                                    <div className="mt-8 pt-6 border-t border-slate-50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center gap-2">
+                                        <span className="text-[10px] font-bold text-heritage-gold uppercase tracking-widest">Premium Care</span>
+                                        <div className="w-1 h-1 rounded-full bg-heritage-gold"></div>
                                     </div>
                                 </div>
                             </motion.div>
