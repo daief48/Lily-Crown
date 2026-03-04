@@ -29,7 +29,8 @@ class HeroSlideController extends Controller
     public function create()
     {
         $products = \App\Models\Product::orderBy('name')->get();
-        return view('admin.hero-slides.create', compact('products'));
+        $blogs = \App\Models\Blog::orderBy('title')->get();
+        return view('admin.hero-slides.create', compact('products', 'blogs'));
     }
 
     public function store(Request $request)
@@ -41,7 +42,10 @@ class HeroSlideController extends Controller
             'subtitle' => 'nullable|string',
             'button_text' => 'nullable|string',
             'button_link' => 'nullable|string',
+            'secondary_button_text' => 'nullable|string',
+            'secondary_button_link' => 'nullable|string',
             'product_id' => 'nullable|exists:products,id',
+            'blog_id' => 'nullable|exists:blogs,id',
             'order' => 'integer',
             'is_active' => 'boolean',
         ]);
@@ -59,7 +63,8 @@ class HeroSlideController extends Controller
     public function edit(HeroSlide $heroSlide)
     {
         $products = \App\Models\Product::orderBy('name')->get();
-        return view('admin.hero-slides.edit', compact('heroSlide', 'products'));
+        $blogs = \App\Models\Blog::orderBy('title')->get();
+        return view('admin.hero-slides.edit', compact('heroSlide', 'products', 'blogs'));
     }
 
     public function update(Request $request, HeroSlide $heroSlide)
@@ -71,7 +76,10 @@ class HeroSlideController extends Controller
             'subtitle' => 'nullable|string',
             'button_text' => 'nullable|string',
             'button_link' => 'nullable|string',
+            'secondary_button_text' => 'nullable|string',
+            'secondary_button_link' => 'nullable|string',
             'product_id' => 'nullable|exists:products,id',
+            'blog_id' => 'nullable|exists:blogs,id',
             'order' => 'integer',
             'is_active' => 'boolean',
         ]);

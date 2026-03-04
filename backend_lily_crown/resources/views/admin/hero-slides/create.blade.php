@@ -54,43 +54,81 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-4">
-                            <div class="form-group mb-4">
-                                <label for="button_text" class="luxury-label">CTA Text</label>
-                                <input type="text" name="button_text" class="form-control luxury-input @error('button_text') is-invalid @enderror" id="button_text" placeholder="e.g. Explore Now" value="{{ old('button_text', 'Explore Now') }}">
-                                @error('button_text')
-                                    <span class="error invalid-feedback">{{ $message }}</span>
-                                @enderror
+                        <div class="col-md-6">
+                            <h5 class="text-heritage-gold mt-4 mb-3"><i class="fas fa-link mr-2"></i> Primary Action</h5>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group mb-4">
+                                        <label for="button_text" class="luxury-label">CTA Text</label>
+                                        <input type="text" name="button_text" class="form-control luxury-input @error('button_text') is-invalid @enderror" id="button_text" placeholder="e.g. Explore Now" value="{{ old('button_text', 'Explore Now') }}">
+                                        @error('button_text')
+                                            <span class="error invalid-feedback">{{ $message }}</span>
+                                        @enderror
+                                    </div>
+                                    <div class="form-group mb-4">
+                                        <label class="luxury-label d-flex justify-content-between">
+                                            <span>Link Destination</span>
+                                            <div class="custom-control custom-checkbox custom-control-inline mr-0">
+                                                <input type="checkbox" class="custom-control-input" id="use_custom_link" {{ old('button_link') && !old('product_id') ? 'checked' : '' }}>
+                                                <label class="custom-control-label font-weight-normal text-xs" for="use_custom_link">Use Custom URL</label>
+                                            </div>
+                                        </label>
+                                        
+                                        <div id="product_select_wrapper">
+                                            <select name="product_id" id="product_id" class="form-control luxury-input select2">
+                                                <option value="">-- Search & Select Product --</option>
+                                                @foreach($products as $product)
+                                                    <option value="{{ $product->id }}" {{ old('product_id') == $product->id ? 'selected' : '' }}>
+                                                        {{ $product->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        
+                                        <div id="custom_link_wrapper" style="display: none;">
+                                            <input type="text" name="button_link" class="form-control luxury-input @error('button_link') is-invalid @enderror" id="button_link" placeholder="e.g. /shop or https://..." value="{{ old('button_link') }}">
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-md-8">
-                            <div class="form-group mb-4">
-                                <label class="luxury-label d-flex justify-content-between">
-                                    <span>Link Destination</span>
-                                    <div class="custom-control custom-checkbox custom-control-inline mr-0">
-                                        <input type="checkbox" class="custom-control-input" id="use_custom_link" {{ old('button_link') && !old('product_id') ? 'checked' : '' }}>
-                                        <label class="custom-control-label font-weight-normal text-xs" for="use_custom_link">Use Custom URL</label>
+
+                        <div class="col-md-6">
+                            <h5 class="text-heritage-gold mt-4 mb-3"><i class="fas fa-plus mr-2"></i> Secondary Action (Optional)</h5>
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <div class="form-group mb-4">
+                                        <label for="secondary_button_text" class="luxury-label">Secondary CTA Text</label>
+                                        <input type="text" name="secondary_button_text" class="form-control luxury-input @error('secondary_button_text') is-invalid @enderror" id="secondary_button_text" placeholder="e.g. Our Story" value="{{ old('secondary_button_text', 'My Royal Story') }}">
+                                        @error('secondary_button_text')
+                                            <span class="error invalid-feedback">{{ $message }}</span>
+                                        @enderror
                                     </div>
-                                </label>
-                                
-                                <div id="product_select_wrapper">
-                                    <select name="product_id" id="product_id" class="form-control luxury-input select2">
-                                        <option value="">-- Search & Select Product --</option>
-                                        @foreach($products as $product)
-                                            <option value="{{ $product->id }}" {{ old('product_id') == $product->id ? 'selected' : '' }}>
-                                                {{ $product->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
+                                    <div class="form-group mb-4">
+                                        <label class="luxury-label d-flex justify-content-between">
+                                            <span>Secondary Destination</span>
+                                            <div class="custom-control custom-checkbox custom-control-inline mr-0">
+                                                <input type="checkbox" class="custom-control-input" id="use_custom_secondary_link" {{ old('secondary_button_link') && !old('blog_id') ? 'checked' : '' }}>
+                                                <label class="custom-control-label font-weight-normal text-xs" for="use_custom_secondary_link">Use Custom URL</label>
+                                            </div>
+                                        </label>
+                                        
+                                        <div id="blog_select_wrapper">
+                                            <select name="blog_id" id="blog_id" class="form-control luxury-input select2">
+                                                <option value="">-- Search & Select Blog --</option>
+                                                @foreach($blogs as $blog)
+                                                    <option value="{{ $blog->id }}" {{ old('blog_id') == $blog->id ? 'selected' : '' }}>
+                                                        {{ $blog->title }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        
+                                        <div id="custom_secondary_link_wrapper" style="display: none;">
+                                            <input type="text" name="secondary_button_link" class="form-control luxury-input @error('secondary_button_link') is-invalid @enderror" id="secondary_button_link" placeholder="e.g. /about or https://..." value="{{ old('secondary_button_link') }}">
+                                        </div>
+                                    </div>
                                 </div>
-                                
-                                <div id="custom_link_wrapper" style="display: none;">
-                                    <input type="text" name="button_link" class="form-control luxury-input @error('button_link') is-invalid @enderror" id="button_link" placeholder="e.g. /shop or https://..." value="{{ old('button_link') }}">
-                                </div>
-                                
-                                <small class="text-muted mt-1 d-block" id="link_hint">
-                                    Select a product to automatically generate the link.
-                                </small>
                             </div>
                         </div>
                     </div>
@@ -176,33 +214,52 @@
             allowClear: true
         });
 
-        // Unified Link Logic
+        // Unified Link Logic (Primary)
         function toggleLinkType() {
             if ($('#use_custom_link').is(':checked')) {
                 $('#product_select_wrapper').hide();
                 $('#custom_link_wrapper').show();
                 $('#product_id').val(null).trigger('change');
-                $('#link_hint').text('Enter a manual URL or path for the button.');
             } else {
                 $('#product_select_wrapper').show();
                 $('#custom_link_wrapper').hide();
                 $('#button_link').val('');
-                $('#link_hint').text('Select a product to automatically generate the link.');
+            }
+        }
+
+        // Unified Link Logic (Secondary)
+        function toggleSecondaryLinkType() {
+            if ($('#use_custom_secondary_link').is(':checked')) {
+                $('#blog_select_wrapper').hide();
+                $('#custom_secondary_link_wrapper').show();
+                $('#blog_id').val(null).trigger('change');
+            } else {
+                $('#blog_select_wrapper').show();
+                $('#custom_secondary_link_wrapper').hide();
+                $('#secondary_button_link').val('');
             }
         }
 
         $('#use_custom_link').on('change', toggleLinkType);
+        $('#use_custom_secondary_link').on('change', toggleSecondaryLinkType);
 
         // Initial state
-        if ($('#use_custom_link').is(':checked')) {
-            toggleLinkType();
-        }
+        toggleLinkType();
+        toggleSecondaryLinkType();
 
         // Auto-fill button text when product selected
         $('#product_id').on('change', function() {
             const productId = $(this).val();
-            if (productId && !$('#button_text').val()) {
+            if (productId && (!$('#button_text').val() || $('#button_text').val() === 'Explore Now')) {
                 $('#button_text').val('Buy Now');
+            }
+        });
+
+        // Optional: Auto-fill secondary button text when blog selected
+        $('#blog_id').on('change', function() {
+            const blogId = $(this).val();
+            if (blogId && (!$('#secondary_button_text').val() || $('#secondary_button_text').val() === 'My Royal Story')) {
+                $('#secondary_button_text').val('Read Story');
             }
         });
 

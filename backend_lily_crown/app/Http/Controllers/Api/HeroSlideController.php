@@ -9,7 +9,7 @@ class HeroSlideController extends Controller
 {
     public function index()
     {
-        $slides = \App\Models\HeroSlide::with('product')
+        $slides = \App\Models\HeroSlide::with(['product', 'blog'])
             ->where('is_active', true)
             ->orderBy('order')
             ->get();
