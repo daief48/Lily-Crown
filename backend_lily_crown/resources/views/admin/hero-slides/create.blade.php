@@ -57,32 +57,40 @@
                         <div class="col-md-4">
                             <div class="form-group mb-4">
                                 <label for="button_text" class="luxury-label">CTA Text</label>
-                                <input type="text" name="button_text" class="form-control luxury-input @error('button_text') is-invalid @enderror" id="button_text" placeholder="e.g. Explore Now" value="{{ old('button_text') }}">
+                                <input type="text" name="button_text" class="form-control luxury-input @error('button_text') is-invalid @enderror" id="button_text" placeholder="e.g. Explore Now" value="{{ old('button_text', 'Explore Now') }}">
                                 @error('button_text')
                                     <span class="error invalid-feedback">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-8">
                             <div class="form-group mb-4">
-                                <label for="button_link" class="luxury-label">Link Path</label>
-                                <input type="text" name="button_link" class="form-control luxury-input @error('button_link') is-invalid @enderror" id="button_link" placeholder="/shop" value="{{ old('button_link') }}">
-                                @error('button_link')
-                                    <span class="error invalid-feedback">{{ $message }}</span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="form-group mb-4">
-                                <label for="product_id" class="luxury-label">Link to Product</label>
-                                <select name="product_id" id="product_id" class="form-control luxury-input select2">
-                                    <option value="">-- Optional: Select Product --</option>
-                                    @foreach($products as $product)
-                                        <option value="{{ $product->id }}" {{ old('product_id') == $product->id ? 'selected' : '' }}>
-                                            {{ $product->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
+                                <label class="luxury-label d-flex justify-content-between">
+                                    <span>Link Destination</span>
+                                    <div class="custom-control custom-checkbox custom-control-inline mr-0">
+                                        <input type="checkbox" class="custom-control-input" id="use_custom_link" {{ old('button_link') && !old('product_id') ? 'checked' : '' }}>
+                                        <label class="custom-control-label font-weight-normal text-xs" for="use_custom_link">Use Custom URL</label>
+                                    </div>
+                                </label>
+                                
+                                <div id="product_select_wrapper">
+                                    <select name="product_id" id="product_id" class="form-control luxury-input select2">
+                                        <option value="">-- Search & Select Product --</option>
+                                        @foreach($products as $product)
+                                            <option value="{{ $product->id }}" {{ old('product_id') == $product->id ? 'selected' : '' }}>
+                                                {{ $product->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                
+                                <div id="custom_link_wrapper" style="display: none;">
+                                    <input type="text" name="button_link" class="form-control luxury-input @error('button_link') is-invalid @enderror" id="button_link" placeholder="e.g. /shop or https://..." value="{{ old('button_link') }}">
+                                </div>
+                                
+                                <small class="text-muted mt-1 d-block" id="link_hint">
+                                    Select a product to automatically generate the link.
+                                </small>
                             </div>
                         </div>
                     </div>
@@ -166,6 +174,36 @@
             width: '100%',
             placeholder: "-- Optional: Select Product --",
             allowClear: true
+        });
+
+        // Unified Link Logic
+        function toggleLinkType() {
+            if ($('#use_custom_link').is(':checked')) {
+                $('#product_select_wrapper').hide();
+                $('#custom_link_wrapper').show();
+                $('#product_id').val(null).trigger('change');
+                $('#link_hint').text('Enter a manual URL or path for the button.');
+            } else {
+                $('#product_select_wrapper').show();
+                $('#custom_link_wrapper').hide();
+                $('#button_link').val('');
+                $('#link_hint').text('Select a product to automatically generate the link.');
+            }
+        }
+
+        $('#use_custom_link').on('change', toggleLinkType);
+
+        // Initial state
+        if ($('#use_custom_link').is(':checked')) {
+            toggleLinkType();
+        }
+
+        // Auto-fill button text when product selected
+        $('#product_id').on('change', function() {
+            const productId = $(this).val();
+            if (productId && !$('#button_text').val()) {
+                $('#button_text').val('Buy Now');
+            }
         });
 
         // Update file input label and show preview

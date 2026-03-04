@@ -226,6 +226,19 @@ export function Hero() {
                     </motion.div>
                 </AnimatePresence>
 
+                {/* Hidden Prefetch for Next Slide */}
+                {slides.length > 1 && (
+                    <div className="hidden" aria-hidden="true">
+                        <Image
+                            src={getOptimizedImage(slides[(currentSlide + 1) % slides.length].image)}
+                            alt="prefetch"
+                            width={10}
+                            height={10}
+                            priority={false}
+                        />
+                    </div>
+                )}
+
                 {/* Slide Navigation */}
                 <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 flex gap-3">
                     {slides.map((_, index) => (

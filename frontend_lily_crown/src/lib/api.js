@@ -1,9 +1,24 @@
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
+const cache = new Map();
+
 export async function fetchFromApi(endpoint, options = {}) {
+    const cacheKey = `${endpoint}-${JSON.stringify(options)}`;
+
+    // Only cache GET requests and if not explicitly disabled
+    if ((!options.method || options.method === 'GET') && options.cache !== false) {
+        if (cache.has(cacheKey)) {
+            const cachedData = cache.get(cacheKey);
+            if (Date.now() - cachedData.timestamp < (options.cacheTime || 300000)) { // 5 mins default
+                return cachedData.data;
+            }
+            cache.delete(cacheKey);
+        }
+    }
+
     try {
         const response = await fetch(`${API_URL}/${endpoint}`, {
-            next: { revalidate: 60 }, // Default revalidation
+            next: { revalidate: options.revalidate || 60 },
             ...options,
             headers: {
                 'Accept': 'application/json',
@@ -17,13 +32,17 @@ export async function fetchFromApi(endpoint, options = {}) {
         }
 
         const json = await response.json();
+        const result = options.fullResponse ? json : (json.data !== undefined ? json.data : json);
 
-        if (options.fullResponse) {
-            return json;
+        // Store in cache if applicable
+        if ((!options.method || options.method === 'GET') && options.cache !== false) {
+            cache.set(cacheKey, {
+                data: result,
+                timestamp: Date.now()
+            });
         }
 
-        // Some endpoints might not wrap in 'data' (like settings)
-        return json.data !== undefined ? json.data : json;
+        return result;
     } catch (error) {
         console.error(`Error fetching ${endpoint}:`, error);
         return null;

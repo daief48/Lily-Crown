@@ -19,7 +19,7 @@ export const RoyalImage = ({
     width,
     height,
     priority = false,
-    unoptimized = true, // We need this for local backend images
+    sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
     onLoad,
     ...props
 }) => {
@@ -27,25 +27,19 @@ export const RoyalImage = ({
     const [hasError, setHasError] = useState(false);
 
     return (
-        <div className={cn("relative overflow-hidden", containerClassName, fill ? "w-full h-full" : "")}>
+        <div className={cn("relative overflow-hidden bg-muslin-cream/50", containerClassName, fill ? "w-full h-full" : "")}>
             {isLoading && (
-                <Skeleton
-                    className={cn(
-                        "absolute inset-0 z-10",
-                        fill ? "w-full h-full" : ""
-                    )}
-                    variant="gold"
-                />
+                <div className="absolute inset-0 z-10 animate-pulse bg-gradient-to-r from-muslin-cream via-heritage-gold/5 to-muslin-cream" />
             )}
 
             <Image
                 src={hasError ? "https://picsum.photos/1200/800?grayscale&blur=2" : src}
-                alt={alt || "Image"}
+                alt={alt || "Lily Crown Heirloom"}
                 fill={fill}
-                width={width}
-                height={height}
+                width={!fill ? width : undefined}
+                height={!fill ? height : undefined}
                 priority={priority}
-                unoptimized={unoptimized}
+                sizes={sizes}
                 onLoad={(e) => {
                     setIsLoading(false);
                     if (onLoad) onLoad(e);
@@ -55,8 +49,8 @@ export const RoyalImage = ({
                     setHasError(true);
                 }}
                 className={cn(
-                    "transition-opacity duration-700",
-                    isLoading ? "opacity-0" : "opacity-100",
+                    "transition-all duration-1000 ease-in-out",
+                    isLoading ? "opacity-0 scale-105 blur-lg" : "opacity-100 scale-100 blur-0",
                     className
                 )}
                 {...props}
