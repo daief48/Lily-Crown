@@ -208,17 +208,21 @@ export function Hero() {
                                 </motion.div>
 
                                 {/* Premium Badge */}
-                                <motion.div
-                                    initial={{ scale: 0, rotate: -45 }}
-                                    animate={{ scale: 1, rotate: 0 }}
-                                    transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
-                                    className="absolute -top-4 -right-4 md:-top-6 md:-right-6 bg-gradient-to-r from-heritage-gold to-emerald-600 text-white p-4 md:p-6 rounded-full shadow-2xl"
-                                >
-                                    <div className="flex items-center gap-2">
-                                        <Sparkles size={18} className="animate-pulse" />
-                                        <span className="font-bold text-sm md:text-base">{t("hero_premium_badge")}</span>
-                                    </div>
-                                </motion.div>
+                                {slides[currentSlide].badge_text && (
+                                    <motion.div
+                                        initial={{ scale: 0, rotate: -45 }}
+                                        animate={{ scale: 1, rotate: 0 }}
+                                        transition={{ delay: 0.3, type: "spring", stiffness: 200 }}
+                                        className="absolute -top-4 -right-4 md:-top-6 md:-right-6 bg-gradient-to-r from-heritage-gold to-emerald-600 text-white p-4 md:p-6 rounded-full shadow-2xl"
+                                    >
+                                        <div className="flex items-center gap-2">
+                                            <Sparkles size={18} className="animate-pulse" />
+                                            <span className="font-bold text-sm md:text-base">
+                                                {slides[currentSlide].badge_text}
+                                            </span>
+                                        </div>
+                                    </motion.div>
+                                )}
                             </div>
                         </motion.div>
                     </motion.div>

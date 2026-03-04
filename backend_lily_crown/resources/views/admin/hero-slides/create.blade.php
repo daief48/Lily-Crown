@@ -45,12 +45,25 @@
                         </div>
                     </div>
                     
-                    <div class="form-group mb-4">
-                        <label for="subtitle" class="luxury-label">Subtitle</label>
-                        <input type="text" name="subtitle" class="form-control luxury-input @error('subtitle') is-invalid @enderror" id="subtitle" placeholder="Enter compelling subtitle" value="{{ old('subtitle') }}">
-                        @error('subtitle')
-                            <span class="error invalid-feedback">{{ $message }}</span>
-                        @enderror
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group mb-4">
+                                <label for="subtitle" class="luxury-label">Subtitle</label>
+                                <input type="text" name="subtitle" class="form-control luxury-input @error('subtitle') is-invalid @enderror" id="subtitle" placeholder="Enter compelling subtitle" value="{{ old('subtitle') }}">
+                                @error('subtitle')
+                                    <span class="error invalid-feedback">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-4">
+                                <label for="badge_text" class="luxury-label">Premium Badge Text</label>
+                                <input type="text" name="badge_text" class="form-control luxury-input @error('badge_text') is-invalid @enderror" id="badge_text" placeholder="e.g. Premium Quality" value="{{ old('badge_text') }}">
+                                @error('badge_text')
+                                    <span class="error invalid-feedback">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
                     </div>
 
                     <div class="row">
