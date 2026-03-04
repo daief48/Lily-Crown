@@ -24,11 +24,11 @@ export function Preloader() {
         const progressInterval = setInterval(() => {
             setProgress((prev) => {
                 if (isLoaded && prev >= 100) return 100;
-                if (prev < 90) return prev + 0.8;
-                if (isLoaded) return prev + 2;
+                if (prev < 90) return prev + 5; // Fill significantly faster
+                if (isLoaded) return prev + 15; // Complete quickly when ready
                 return prev;
             });
-        }, 30);
+        }, 15); // Run more frequently
 
         return () => {
             clearInterval(progressInterval);
@@ -38,7 +38,7 @@ export function Preloader() {
 
     useEffect(() => {
         if (progress >= 100) {
-            const timer = setTimeout(() => setLoading(false), 800);
+            const timer = setTimeout(() => setLoading(false), 100);
             return () => clearTimeout(timer);
         }
     }, [progress]);
