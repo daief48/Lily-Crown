@@ -58,7 +58,7 @@ export default function CartPage() {
                                     <div className="flex-1 text-center sm:text-left w-full">
                                         <h3 className="text-xl font-serif text-emerald-royal">{item.name}</h3>
                                         <p className="text-xs text-emerald-royal/50 uppercase tracking-widest mb-2">{item.category?.name || (typeof item.category === 'string' ? item.category : '')}</p>
-                                        <div className="text-lg font-bold text-heritage-gold">Tk {(item.price || 0).toLocaleString()}</div>
+                                        <div className="text-lg font-bold text-heritage-gold">৳{(item.price || 0).toLocaleString()}</div>
                                     </div>
 
                                     <div className="flex items-center gap-6">
@@ -99,7 +99,7 @@ export default function CartPage() {
                                 <div className="space-y-4 mb-6">
                                     <div className="flex justify-between text-sm text-emerald-royal/80">
                                         <span>{t('cart_subtotal')}</span>
-                                        <span>Tk {cartTotal.toLocaleString()}</span>
+                                        <span>৳{cartTotal.toLocaleString()}</span>
                                     </div>
                                     <div className="flex justify-between text-sm text-emerald-royal/80">
                                         <span>{t('cart_shipping')}</span>
@@ -107,7 +107,7 @@ export default function CartPage() {
                                     </div>
                                     <div className="flex justify-between text-lg font-bold text-emerald-royal pt-4 border-t border-emerald-royal/10">
                                         <span>{t('cart_total')}</span>
-                                        <span>Tk {cartTotal.toLocaleString()}</span>
+                                        <span>৳{cartTotal.toLocaleString()}</span>
                                     </div>
                                 </div>
 

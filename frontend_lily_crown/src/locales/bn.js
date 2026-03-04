@@ -301,7 +301,7 @@ const bn = {
     features_promise: "লিলি ক্রাউন ওয়াদা",
     features_mandate: "রাজকীয় আদেশ",
     feature_1_title: "ফ্রি শিপিং",
-    feature_1_desc: "৫০০০ টাকার উপরে অর্ডারে",
+    feature_1_desc: "৫০০০ ৳-এর বেশি অর্ডারে",
     feature_2_title: "সহজ রিটার্ন",
     feature_2_desc: "৩০ দিনের রিটার্ন পলিসি",
     feature_3_title: "নিরাপদ পেমেন্ট",
@@ -319,7 +319,8 @@ const bn = {
     newsletter_error_generic: "প্রাসাদের গেটগুলো সাময়িকভাবে অপাচ্য।",
     newsletter_footer: "অভিজাত্য অনুভব করুন। যেকোনো সময় আনসাবস্ক্রাইব করুন।",
     blog_tagline: "রাজকীয় ইতিহাস",
-    blog_read_more: "আরও পড়ুন"
+    blog_read_more: "আরও পড়ুন",
+    currency_symbol: "৳"
 };
 
 export default bn;

@@ -334,7 +334,7 @@ export function Navbar() {
                                                                     </div>
                                                                     <div className="flex-1 min-w-0">
                                                                         <h5 className="text-xs font-serif text-emerald-royal truncate">{product.name}</h5>
-                                                                        <p className="text-xs text-heritage-gold font-bold">Tk {product.price}</p>
+                                                                        <p className="text-xs text-heritage-gold font-bold">৳{product.price}</p>
                                                                     </div>
                                                                 </Link>
                                                             ))}
@@ -534,7 +534,7 @@ export function Navbar() {
                                                                 </div>
                                                                 <div className="flex-1 min-w-0">
                                                                     <h5 className="text-xs font-serif text-emerald-royal truncate">{product.name}</h5>
-                                                                    <p className="text-xs text-heritage-gold font-bold">Tk {product.price}</p>
+                                                                    <p className="text-xs text-heritage-gold font-bold">৳{product.price}</p>
                                                                 </div>
                                                             </Link>
                                                         ))}
