@@ -117,11 +117,31 @@ export function Hero() {
                                 transition={{ delay: 0.2 }}
                                 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold leading-tight text-luxury-black"
                             >
-                                {slides[currentSlide].title.split(slides[currentSlide].highlight)[0]}
-                                <span className="bg-gradient-to-r from-heritage-gold to-emerald-royal bg-clip-text text-transparent">
-                                    {slides[currentSlide].highlight}
-                                </span>
-                                {slides[currentSlide].title.split(slides[currentSlide].highlight)[1]}
+                                {(() => {
+                                    const titleStr = slides[currentSlide].title || '';
+                                    const highlightWord = slides[currentSlide].highlight || '';
+
+                                    if (!highlightWord) return titleStr;
+
+                                    // Case-insensitive split: escape any regex special characters in the highlight word
+                                    const escapedHighlight = highlightWord.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+                                    const parts = titleStr.split(new RegExp(`(${escapedHighlight})`, 'i'));
+
+                                    // If split doesn't find the word, just return the title
+                                    if (parts.length === 1) return titleStr;
+
+                                    return parts.map((part, index) => {
+                                        // The capture group in RegExp ensures the actual matched word is kept in 'parts'
+                                        if (part.toLowerCase() === highlightWord.toLowerCase()) {
+                                            return (
+                                                <span key={index} className="bg-gradient-to-r from-heritage-gold to-emerald-royal bg-clip-text text-transparent">
+                                                    {part}
+                                                </span>
+                                            );
+                                        }
+                                        return part;
+                                    });
+                                })()}
                             </motion.h1>
 
                             {/* Description */}
