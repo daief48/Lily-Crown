@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { Lock, Mail, User, ArrowRight } from "lucide-react";
@@ -11,6 +12,7 @@ import { Lock, Mail, User, ArrowRight } from "lucide-react";
 export default function RegisterPage() {
     const { register } = useAuth();
     const router = useRouter();
+    const { t } = useLanguage();
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -60,8 +62,8 @@ export default function RegisterPage() {
                     <div className="absolute top-0 left-0 w-20 h-20 bg-heritage-gold/5 rounded-br-[100px]"></div>
 
                     <div className="text-center mb-10">
-                        <h1 className="text-3xl font-serif text-emerald-royal mb-2">Join the Monarchy</h1>
-                        <p className="text-xs uppercase tracking-widest text-emerald-royal/50">Begin your royal journey</p>
+                        <h1 className="text-3xl font-serif text-emerald-royal mb-2">{t('auth_join_monarchy')}</h1>
+                        <p className="text-xs uppercase tracking-widest text-emerald-royal/50">{t('auth_begin_journey')}</p>
                     </div>
 
                     {error && (
@@ -72,7 +74,7 @@ export default function RegisterPage() {
 
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div className="space-y-2">
-                            <label className="text-[10px] uppercase tracking-widest font-bold text-emerald-royal/50 ml-1">Full Name</label>
+                            <label className="text-[10px] uppercase tracking-widest font-bold text-emerald-royal/50 ml-1">{t('auth_full_name')}</label>
                             <div className="relative">
                                 <User size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-heritage-gold" />
                                 <input
@@ -82,13 +84,13 @@ export default function RegisterPage() {
                                     value={formData.name}
                                     onChange={handleChange}
                                     className="w-full bg-muslin-cream/30 border border-heritage-gold/20 py-3 pl-12 pr-4 focus:border-heritage-gold outline-none transition-all placeholder:text-emerald-royal/20 text-sm"
-                                    placeholder="Your Name"
+                                    placeholder={t('auth_name_placeholder')}
                                 />
                             </div>
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-[10px] uppercase tracking-widest font-bold text-emerald-royal/50 ml-1">Email Address</label>
+                            <label className="text-[10px] uppercase tracking-widest font-bold text-emerald-royal/50 ml-1">{t('auth_email')}</label>
                             <div className="relative">
                                 <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-heritage-gold" />
                                 <input
@@ -98,13 +100,13 @@ export default function RegisterPage() {
                                     value={formData.email}
                                     onChange={handleChange}
                                     className="w-full bg-muslin-cream/30 border border-heritage-gold/20 py-3 pl-12 pr-4 focus:border-heritage-gold outline-none transition-all placeholder:text-emerald-royal/20 text-sm"
-                                    placeholder="your@email.com"
+                                    placeholder={t('checkout_email_placeholder')}
                                 />
                             </div>
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-[10px] uppercase tracking-widest font-bold text-emerald-royal/50 ml-1">Password</label>
+                            <label className="text-[10px] uppercase tracking-widest font-bold text-emerald-royal/50 ml-1">{t('auth_password')}</label>
                             <div className="relative">
                                 <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-heritage-gold" />
                                 <input
@@ -120,7 +122,7 @@ export default function RegisterPage() {
                         </div>
 
                         <div className="space-y-2">
-                            <label className="text-[10px] uppercase tracking-widest font-bold text-emerald-royal/50 ml-1">Confirm Password</label>
+                            <label className="text-[10px] uppercase tracking-widest font-bold text-emerald-royal/50 ml-1">{t('auth_confirm_password')}</label>
                             <div className="relative">
                                 <Lock size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-heritage-gold" />
                                 <input
@@ -140,18 +142,18 @@ export default function RegisterPage() {
                             disabled={isLoading}
                             className="w-full py-4 bg-emerald-royal text-white uppercase tracking-[0.2em] font-bold text-xs shadow-lg hover:bg-heritage-gold transition-all disabled:opacity-50 disabled:cursor-not-allowed group flex items-center justify-center gap-2"
                         >
-                            {isLoading ? "Creating Account..." : "Join The Palace"}
+                            {isLoading ? t('auth_creating_account') : t('auth_register_btn')}
                             {!isLoading && <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />}
                         </button>
                     </form>
 
                     <div className="mt-10 pt-6 border-t border-heritage-gold/10 text-center">
-                        <p className="text-xs text-emerald-royal/60 mb-4">Already have an account?</p>
+                        <p className="text-xs text-emerald-royal/60 mb-4">{t('auth_already_account')}</p>
                         <Link
                             href="/login"
                             className="inline-block px-6 py-2 border border-emerald-royal/20 text-emerald-royal text-[10px] uppercase tracking-widest font-bold hover:bg-emerald-royal hover:text-white transition-all"
                         >
-                            Sign In
+                            {t('nav_sign_in')}
                         </Link>
                     </div>
                 </div>

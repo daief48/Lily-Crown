@@ -2,6 +2,7 @@
 
 import React from "react";
 import { useStore } from "@/context/StoreContext";
+import { useLanguage } from "@/context/LanguageContext";
 import Image from "next/image";
 import Link from "next/link";
 import { Trash2, Plus, Minus, ArrowRight } from "lucide-react";
@@ -12,6 +13,7 @@ import { RoyalImage } from "@/components/ui/RoyalImage";
 
 export default function CartPage() {
     const { cartItems, removeFromCart, updateQuantity, cartTotal } = useStore();
+    const { t } = useLanguage();
 
 
     return (
@@ -19,16 +21,16 @@ export default function CartPage() {
             <Navbar />
 
             <div className="pt-32 pb-16 max-w-7xl mx-auto px-4 md:px-6">
-                <h1 className="text-3xl md:text-5xl font-serif text-emerald-royal mb-8 text-center">Your Royal Bag</h1>
+                <h1 className="text-3xl md:text-5xl font-serif text-emerald-royal mb-8 text-center">{t('cart_title')}</h1>
 
                 {cartItems.length === 0 ? (
                     <div className="text-center py-20 bg-white shadow-xl rounded-sm border border-heritage-gold/20">
-                        <p className="text-lg text-emerald-royal/60 mb-8 font-serif">Your bag is currently empty, my majesty.</p>
+                        <p className="text-lg text-emerald-royal/60 mb-8 font-serif">{t('cart_empty_message')}</p>
                         <Link
                             href="/shop"
                             className="inline-block px-8 py-3 bg-emerald-royal text-white uppercase tracking-widest text-xs font-bold hover:bg-heritage-gold transition-colors shadow-lg"
                         >
-                            Start Shopping
+                            {t('shop_start_shopping')}
                         </Link>
                     </div>
                 ) : (
@@ -47,7 +49,7 @@ export default function CartPage() {
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center text-emerald-royal/20 uppercase text-[10px] tracking-widest text-center px-4 font-bold">
-                                                No Image Available
+                                                {t('product_no_image')}
                                             </div>
                                         )}
                                     </div>
@@ -56,7 +58,7 @@ export default function CartPage() {
                                     <div className="flex-1 text-center sm:text-left w-full">
                                         <h3 className="text-xl font-serif text-emerald-royal">{item.name}</h3>
                                         <p className="text-xs text-emerald-royal/50 uppercase tracking-widest mb-2">{item.category?.name || (typeof item.category === 'string' ? item.category : '')}</p>
-                                        <div className="text-lg font-bold text-heritage-gold">৳ {(item.price || 0).toLocaleString()}</div>
+                                        <div className="text-lg font-bold text-heritage-gold">Tk {(item.price || 0).toLocaleString()}</div>
                                     </div>
 
                                     <div className="flex items-center gap-6">
@@ -80,7 +82,7 @@ export default function CartPage() {
                                         <button
                                             onClick={() => removeFromCart(item.id)}
                                             className="text-red-500 hover:text-red-600 transition-colors p-2"
-                                            title="Remove Item"
+                                            title={t('cart_remove_item')}
                                         >
                                             <Trash2 size={20} />
                                         </button>
@@ -92,20 +94,20 @@ export default function CartPage() {
                         {/* Order Summary */}
                         <div className="lg:col-span-1">
                             <div className="bg-white p-8 shadow-xl border-t-4 border-heritage-gold sticky top-32">
-                                <h3 className="text-xl font-serif text-emerald-royal mb-6 border-b border-emerald-royal/10 pb-4">Order Summary</h3>
+                                <h3 className="text-xl font-serif text-emerald-royal mb-6 border-b border-emerald-royal/10 pb-4">{t('cart_order_summary')}</h3>
 
                                 <div className="space-y-4 mb-6">
                                     <div className="flex justify-between text-sm text-emerald-royal/80">
-                                        <span>Subtotal</span>
-                                        <span>৳ {cartTotal.toLocaleString()}</span>
+                                        <span>{t('cart_subtotal')}</span>
+                                        <span>Tk {cartTotal.toLocaleString()}</span>
                                     </div>
                                     <div className="flex justify-between text-sm text-emerald-royal/80">
-                                        <span>Shipping</span>
-                                        <span className="text-emerald-royal/50 text-xs italic">Calculated at checkout</span>
+                                        <span>{t('cart_shipping')}</span>
+                                        <span className="text-emerald-royal/50 text-xs italic">{t('cart_shipping_disclaimer')}</span>
                                     </div>
                                     <div className="flex justify-between text-lg font-bold text-emerald-royal pt-4 border-t border-emerald-royal/10">
-                                        <span>Total</span>
-                                        <span>৳ {cartTotal.toLocaleString()}</span>
+                                        <span>{t('cart_total')}</span>
+                                        <span>Tk {cartTotal.toLocaleString()}</span>
                                     </div>
                                 </div>
 
@@ -113,12 +115,12 @@ export default function CartPage() {
                                     href="/checkout"
                                     className="w-full py-4 bg-heritage-gold text-white uppercase tracking-widest text-xs font-bold hover:bg-emerald-royal transition-all shadow-lg flex items-center justify-center gap-2 group"
                                 >
-                                    Checkout Now
+                                    {t('cart_checkout_btn')}
                                     <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                                 </Link>
 
                                 <p className="text-[10px] text-center text-emerald-royal/40 mt-4 italic">
-                                    Secure Checkout • Free Returns within 30 days
+                                    {t('cart_secure_checkout_guarantee')}
                                 </p>
                             </div>
                         </div>

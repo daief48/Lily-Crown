@@ -8,8 +8,10 @@ import { motion, AnimatePresence } from "framer-motion";
 import { api } from "@/lib/api";
 import { getOptimizedImage } from "@/lib/utils";
 import Skeleton from "@/components/ui/Skeleton";
+import { useLanguage } from "@/context/LanguageContext";
 
 export function Testimonials() {
+    const { t } = useLanguage();
     const [testimonials, setTestimonials] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
     const [activeIndex, setActiveIndex] = React.useState(0);
@@ -57,7 +59,7 @@ export function Testimonials() {
             <div className="max-w-4xl mx-auto px-4 md:px-6 text-center">
                 <div className="mb-6 md:mb-10 flex flex-col items-center">
                     <Quote size={40} className="text-heritage-gold/40 fill-current mb-4" />
-                    <span className="text-heritage-gold text-[10px] uppercase tracking-[0.4em] font-bold">Patrons of the Palace</span>
+                    <span className="text-heritage-gold text-[10px] uppercase tracking-[0.4em] font-bold">{t("testimonials_heading")}</span>
                 </div>
 
                 <div className="relative min-h-[300px] flex items-center justify-center">

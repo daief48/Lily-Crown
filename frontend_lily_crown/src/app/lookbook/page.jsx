@@ -4,7 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { Navbar, Footer, Toast, WishlistModal } from "@/components"; // Ensure these imports work/exist
+import { Navbar, Footer, WishlistModal } from "@/components"; // Ensure these imports work/exist
 import { api } from "@/lib/api";
 import Skeleton from "@/components/ui/Skeleton";
 
@@ -27,7 +27,6 @@ export default function LookbookPage() {
             <Footer />
             {/* Overlays */}
             <WishlistModal />
-            <Toast />
         </main>
     );
 }

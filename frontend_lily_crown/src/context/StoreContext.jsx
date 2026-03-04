@@ -21,10 +21,12 @@ export function StoreProvider({ children }) {
             if (savedCart) {
                 const parsedCart = JSON.parse(savedCart);
                 if (Array.isArray(parsedCart)) {
-                    // Filter valid items and deduplicate by ID (handling string/number mismatch)
-                    // Added check for image property to prevent src errors
-                    const validItems = parsedCart.filter(item => item && item.id && item.image && item.image.trim() !== "");
-                    const uniqueItems = Array.from(new Map(validItems.map(item => [Number(item.id), { ...item, id: Number(item.id) }])).values());
+                    // Filter valid items and deduplicate by ID using Number()
+                    const validItems = parsedCart.filter(item => item && item.id);
+                    const uniqueItems = Array.from(new Map(validItems.map(item => {
+                        const id = Number(item.id);
+                        return [id, { ...item, id }];
+                    })).values());
 
                     setCartItems(uniqueItems);
                 }
@@ -33,14 +35,13 @@ export function StoreProvider({ children }) {
             if (savedWishlist) {
                 const parsedWishlist = JSON.parse(savedWishlist);
                 if (Array.isArray(parsedWishlist)) {
-                    // Filter valid items similar to cart if needed
                     const validItems = parsedWishlist.filter(item => item && item.id);
-                    setWishlistItems(validItems);
+                    const normalizedItems = validItems.map(item => ({ ...item, id: Number(item.id) }));
+                    setWishlistItems(normalizedItems);
                 }
             }
         } catch (error) {
             console.error("Failed to load store data from localStorage:", error);
-            // Fallback to defaults (empty) is automatic since state already has them
         }
     }, []);
 
@@ -53,32 +54,46 @@ export function StoreProvider({ children }) {
         localStorage.setItem("lily_wishlist", JSON.stringify(wishlistItems));
     }, [wishlistItems]);
 
+    const parsePrice = (price) => {
+        if (typeof price === 'number') return price;
+        if (!price) return 0;
+        // Remove currency symbols, commas, and other non-numeric chars except decimal point
+        const sanitized = String(price).replace(/[^\d.]/g, '');
+        const parsed = parseFloat(sanitized);
+        return isNaN(parsed) ? 0 : parsed;
+    };
+
     const addToCart = (product) => {
+        const productId = Number(product.id);
         setCartItems((prev) => {
-            const existing = prev.find((item) => item.id === product.id);
+            const existing = prev.find((item) => Number(item.id) === productId);
             if (existing) {
                 return prev.map((item) =>
-                    item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+                    Number(item.id) === productId ? { ...item, quantity: item.quantity + 1 } : item
                 );
             }
-            // Ensure price is valid and parse if string
-            const price = parseFloat(product.price);
-            const validPrice = !isNaN(price) ? price : 0;
 
-            const safeProduct = { ...product, price: validPrice, quantity: 1 };
+            const safeProduct = {
+                ...product,
+                id: productId,
+                price: parsePrice(product.price),
+                quantity: 1
+            };
             return [...prev, safeProduct];
         });
         showToast(`${product.name} added to your bag.`);
     };
 
     const removeFromCart = (id) => {
-        setCartItems((prev) => prev.filter((item) => item.id !== id));
+        const productId = Number(id);
+        setCartItems((prev) => prev.filter((item) => Number(item.id) !== productId));
     };
 
     const updateQuantity = (id, delta) => {
+        const productId = Number(id);
         setCartItems((prev) =>
             prev.map((item) => {
-                if (item.id === id) {
+                if (Number(item.id) === productId) {
                     const newQty = Math.max(1, item.quantity + delta);
                     return { ...item, quantity: newQty };
                 }
@@ -88,14 +103,15 @@ export function StoreProvider({ children }) {
     };
 
     const toggleWishlist = (product) => {
+        const productId = Number(product.id);
         setWishlistItems((prev) => {
-            const exists = prev.find(item => Number(item.id) === Number(product.id));
+            const exists = prev.find(item => Number(item.id) === productId);
             if (exists) {
                 showToast(`${product.name} removed from wishlist.`);
-                return prev.filter(item => Number(item.id) !== Number(product.id));
+                return prev.filter(item => Number(item.id) !== productId);
             }
             showToast(`${product.name} saved to your wishlist.`);
-            return [...prev, product];
+            return [...prev, { ...product, id: productId }];
         });
     };
 

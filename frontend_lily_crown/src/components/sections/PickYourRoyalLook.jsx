@@ -9,8 +9,10 @@ import { api } from "@/lib/api";
 import { getOptimizedImage } from "@/lib/utils";
 import Skeleton from "@/components/ui/Skeleton";
 import { RoyalImage } from "@/components/ui/RoyalImage";
+import { useLanguage } from "@/context/LanguageContext";
 
 export function PickYourRoyalLook() {
+    const { t } = useLanguage();
     const [items, setItems] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
     const [isExpanded, setIsExpanded] = React.useState(false);
@@ -56,10 +58,10 @@ export function PickYourRoyalLook() {
             <div className="max-w-7xl mx-auto px-4 md:px-6 relative z-10">
                 <div className="text-center mb-16 space-y-4">
                     <span className="text-heritage-gold text-xs uppercase tracking-[0.3em] font-bold">
-                        Royal Wardrobe
+                        {t("pick_tagline")}
                     </span>
                     <h2 className="text-4xl md:text-5xl font-serif text-emerald-royal">
-                        Find Your Royal Style
+                        {t("pick_heading")}
                     </h2>
                     <div className="w-24 h-1 bg-heritage-gold mx-auto"></div>
                 </div>
@@ -96,7 +98,7 @@ export function PickYourRoyalLook() {
                                             </h3>
 
                                             <div className="inline-flex items-center space-x-2 text-heritage-gold text-sm font-bold border-b border-heritage-gold/50 pb-1 group-hover:border-heritage-gold transition-colors duration-300">
-                                                <span>Get This Look</span>
+                                                <span>{t("pick_get_look")}</span>
                                                 <svg className="w-4 h-4 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
                                                 </svg>
@@ -115,7 +117,7 @@ export function PickYourRoyalLook() {
                             onClick={handleSeeAll}
                             className="inline-block px-12 py-4 bg-emerald-royal text-white font-serif text-lg tracking-wider hover:bg-emerald-royal/90 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl"
                         >
-                            View All Collections
+                            {t("pick_view_all")}
                         </button>
                     </div>
                 )}

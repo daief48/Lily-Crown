@@ -2,8 +2,10 @@ import { Playfair_Display, Lato } from "next/font/google";
 import "./globals.css";
 import { StoreProvider } from "@/context/StoreContext";
 import { AuthProvider } from "@/context/AuthContext";
+import { LanguageProvider } from "@/context/LanguageContext";
 import { Preloader } from "@/components/layout/Preloader";
 import { CustomCursor } from "@/components/ui/CustomCursor";
+import { Toast } from "@/components/ui/Toast";
 import { RoyalConcierge } from "@/components/ui/RoyalConcierge";
 
 const playfair = Playfair_Display({
@@ -105,7 +107,7 @@ export default function RootLayout({ children }) {
             </head>
             <body
                 suppressHydrationWarning={true}
-                className={`${playfair.variable} ${lato.variable} font-sans antialiased bg-muslin-cream text-emerald-royal selection:bg-heritage-gold/30 selection:text-emerald-royal overflow-x-hidden cursor-none`}
+                className={`${playfair.variable} ${lato.variable} font-sans antialiased bg-muslin-cream text-emerald-royal selection:bg-heritage-gold/30 selection:text-emerald-royal overflow-x-clip cursor-none`}
             >
                 <script
                     type="application/ld+json"
@@ -144,14 +146,17 @@ export default function RootLayout({ children }) {
                         })
                     }}
                 />
-                <AuthProvider>
-                    <StoreProvider>
-                        <Preloader />
-                        <CustomCursor />
-                        <RoyalConcierge />
-                        {children}
-                    </StoreProvider>
-                </AuthProvider>
+                <LanguageProvider>
+                    <AuthProvider>
+                        <StoreProvider>
+                            <Preloader />
+                            <CustomCursor />
+                            <RoyalConcierge />
+                            <Toast />
+                            {children}
+                        </StoreProvider>
+                    </AuthProvider>
+                </LanguageProvider>
             </body>
         </html>
     );

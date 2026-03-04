@@ -6,13 +6,15 @@ import { ProductCard } from "@/components/product/ProductCard";
 
 import { api } from "@/lib/api";
 import Skeleton from "@/components/ui/Skeleton";
+import { useLanguage } from "@/context/LanguageContext";
 
 export function FeaturedProducts() {
-    const [filter, setFilter] = useState("All");
+    const { t } = useLanguage();
+    const [filter, setFilter] = useState(t("category_all"));
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [isExpanded, setIsExpanded] = useState(false);
-    const [categories, setCategories] = useState(["All"]);
+    const [categories, setCategories] = useState([t("category_all")]);
 
     React.useEffect(() => {
         const loadProducts = async () => {
@@ -22,7 +24,7 @@ export function FeaturedProducts() {
 
                 // derive categories dynamically from products
                 const cats = Array.from(new Set(data.map(p => (p.category && (p.category.name || p.category))).filter(Boolean)));
-                setCategories(["All", ...cats]);
+                setCategories([t("category_all"), ...cats]);
             }
             setLoading(false);
         };
@@ -30,7 +32,7 @@ export function FeaturedProducts() {
     }, []);
 
     const filteredProducts =
-        filter === "All"
+        filter === t("category_all")
             ? products
             : products.filter((p) => {
                 const catName = p.category?.name || p.category;
@@ -45,10 +47,10 @@ export function FeaturedProducts() {
                 <div className="flex flex-col md:flex-row items-center justify-between mb-8 md:mb-12 gap-4">
                     <div>
                         <span className="text-heritage-gold text-[10px] md:text-xs uppercase tracking-[0.3em] font-bold">
-                            Our Best Styles
+                            {t("featured_tagline")}
                         </span>
                         <h2 className="text-3xl md:text-4xl font-serif mt-1 text-emerald-royal">
-                            Handpicked For You
+                            {t("featured_heading")}
                         </h2>
                     </div>
 
@@ -79,7 +81,7 @@ export function FeaturedProducts() {
                                 onClick={() => setIsExpanded(true)}
                                 className="inline-flex items-center gap-2 px-3 py-2 bg-emerald-royal text-white text-xs rounded-full hover:bg-heritage-gold transition"
                             >
-                                See Every Royal Style
+                                {t("featured_view_all")}
                             </button>
                         </div>
                     </div>
@@ -105,7 +107,7 @@ export function FeaturedProducts() {
                     </div>
                 ) : (
                     <div className="text-center py-20 text-gray-400 italic font-light">
-                        The treasure chamber is empty for this category.
+                        {t("featured_empty_message")}
                     </div>
                 )}
 
@@ -115,7 +117,7 @@ export function FeaturedProducts() {
                             onClick={() => setIsExpanded(true)}
                             className="w-full md:w-auto px-10 py-3 bg-emerald-royal text-white uppercase tracking-widest text-[10px] md:text-xs hover:bg-heritage-gold transition-all font-bold rounded-full"
                         >
-                            View All Styles
+                            {t("featured_view_all")}
                         </button>
                     </div>
                 )}

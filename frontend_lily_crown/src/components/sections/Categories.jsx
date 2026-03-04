@@ -9,8 +9,10 @@ import { api } from "@/lib/api";
 import { getOptimizedImage } from "@/lib/utils";
 import Skeleton from "@/components/ui/Skeleton";
 import { RoyalImage } from "@/components/ui/RoyalImage";
+import { useLanguage } from "@/context/LanguageContext";
 
 export function Categories() {
+    const { t } = useLanguage();
     const [categories, setCategories] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
     const [isExpanded, setIsExpanded] = React.useState(false);
@@ -46,14 +48,14 @@ export function Categories() {
                         whileInView={{ opacity: 1 }}
                         className="text-heritage-gold text-xs uppercase tracking-[0.3em] font-bold"
                     >
-                        Hand-Made Dhaka Style
+                        {t("categories_tagline")}
                     </motion.span>
                     <motion.h2
                         initial={{ opacity: 0, y: 10 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         className="text-4xl font-serif mt-3 text-emerald-royal"
                     >
-                        Royal Collections
+                        {t("categories_heading")}
                     </motion.h2>
                     <div className="w-16 h-px bg-heritage-gold/30 mx-auto mt-6"></div>
                 </div>
@@ -108,9 +110,9 @@ export function Categories() {
                                             <h3 className="font-serif text-3xl md:text-4xl mb-2 translate-y-0 lg:translate-y-4 lg:group-hover:translate-y-0 transition-transform duration-500 [text-shadow:_0_2px_10px_rgb(0_0_0_/_40%)]">
                                                 {category.name}
                                             </h3>
-                                            <p className="text-[9px] uppercase tracking-[0.3em] font-bold text-heritage-gold mt-2 [text-shadow:_0_1px_5px_rgb(0_0_0_/_40%)]">Loyal Monarch</p>
+                                            <p className="text-[9px] uppercase tracking-[0.3em] font-bold text-heritage-gold mt-2 [text-shadow:_0_1px_5px_rgb(0_0_0_/_40%)]">{t("categories_loyal_monarch")}</p>
                                             <span className="text-xs md:text-sm uppercase tracking-widest opacity-100 lg:opacity-0 lg:group-hover:opacity-100 transition-opacity duration-500 underline underline-offset-8 decoration-heritage-gold decoration-2 font-bold [text-shadow:_0_1px_5px_rgb(0_0_0_/_40%)]">
-                                                See this story
+                                                {t("categories_explore")}
                                             </span>
                                         </div>
                                     )}
@@ -119,7 +121,7 @@ export function Categories() {
                         ))
                     ) : (
                         <div className="col-span-full text-center py-20 text-gray-400 italic font-light">
-                            The royal collections are currently being curated.
+                            {t("categories_empty_message")}
                         </div>
                     )}
                 </div>
@@ -130,7 +132,7 @@ export function Categories() {
                             onClick={() => setIsExpanded(true)}
                             className="inline-block px-12 py-4 bg-emerald-royal text-white font-serif text-lg tracking-wider hover:bg-emerald-royal/90 transition-all duration-300 transform hover:-translate-y-1 shadow-lg hover:shadow-xl"
                         >
-                            See All Collections
+                            {t("categories_view_all")}
                         </button>
                     </div>
                 )}

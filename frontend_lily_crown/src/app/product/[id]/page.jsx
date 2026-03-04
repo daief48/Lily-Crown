@@ -4,7 +4,6 @@ import { Footer } from "@/components/layout/Footer";
 import { ProductDetail } from "@/components/product/ProductDetail";
 import { RelatedProducts } from "@/components/product/RelatedProducts";
 import { WishlistModal } from "@/components/ui/WishlistModal";
-import { Toast } from "@/components/ui/Toast";
 import { notFound } from "next/navigation";
 
 export default async function ProductPage({ params }) {
@@ -24,7 +23,6 @@ export default async function ProductPage({ params }) {
 
             {/* Overlays */}
             <WishlistModal />
-            <Toast />
         </main>
     );
 }

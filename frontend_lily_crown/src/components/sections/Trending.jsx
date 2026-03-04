@@ -7,8 +7,10 @@ import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import { api } from "@/lib/api";
 import Skeleton from "@/components/ui/Skeleton";
+import { useLanguage } from "@/context/LanguageContext";
 
 export function Trending() {
+    const { t } = useLanguage();
     const scrollRef = useRef(null);
     const [activeIndex, setActiveIndex] = useState(0);
     const [products, setProducts] = useState([]);
@@ -65,10 +67,10 @@ export function Trending() {
                         viewport={{ once: true }}
                     >
                         <span className="text-heritage-gold text-[10px] md:text-xs uppercase tracking-[0.3em] font-bold">
-                            What Everyone Loves
+                            {t("trending_tagline")}
                         </span>
                         <h2 className="text-2xl sm:text-3xl md:text-4xl font-serif text-emerald-royal mt-2">
-                            Most Loved Styles
+                            {t("trending_heading")}
                         </h2>
                     </motion.div>
 
@@ -125,7 +127,7 @@ export function Trending() {
                     </div>
                 ) : (
                     <div className="text-center py-20 text-gray-400 italic font-light">
-                        No trending heirlooms at the moment.
+                        {t("trending_empty_message")}
                     </div>
                 )}
 

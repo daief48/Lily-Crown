@@ -8,8 +8,10 @@ import { api } from "@/lib/api";
 import { getOptimizedImage } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 import Skeleton from "@/components/ui/Skeleton";
+import { useLanguage } from "@/context/LanguageContext";
 
 export function BlogPreview() {
+    const { t } = useLanguage();
     const [blogs, setBlogs] = React.useState([]);
     const [loading, setLoading] = React.useState(true);
 
@@ -61,21 +63,21 @@ export function BlogPreview() {
                             whileInView={{ opacity: 1, x: 0 }}
                             className="text-heritage-gold text-xs uppercase tracking-[0.4em] font-bold mb-4 block"
                         >
-                            Royal Chronicles
+                            {t("blog_tagline")}
                         </motion.span>
                         <motion.h2
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             className="text-4xl md:text-5xl font-serif text-emerald-royal leading-tight"
                         >
-                            Stories from the <span className="italic">Lost Looms</span>
+                            {t("blog_heading")} <span className="italic">{t("blog_subheading")}</span>
                         </motion.h2>
                     </div>
                     <Link
                         href="/blog"
                         className="group flex items-center gap-3 text-emerald-royal font-bold uppercase tracking-widest text-xs hover:text-heritage-gold transition-colors"
                     >
-                        Explore All Stories
+                        {t("blog_view_all")}
                         <div className="w-10 h-10 rounded-full border border-emerald-royal/10 flex items-center justify-center group-hover:border-heritage-gold transition-colors">
                             <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                         </div>
@@ -125,7 +127,7 @@ export function BlogPreview() {
                                     href={`/blog/${blog.slug}`}
                                     className="inline-block text-[10px] uppercase tracking-widest font-bold text-heritage-gold border-b border-heritage-gold/20 pb-1 mt-4 hover:border-heritage-gold transition-all"
                                 >
-                                    Read The Story
+                                    {t("blog_read_more")}
                                 </Link>
                             </div>
                         </motion.article>

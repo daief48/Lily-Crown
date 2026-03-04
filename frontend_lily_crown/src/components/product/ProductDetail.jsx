@@ -4,13 +4,17 @@ import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingBag, Heart, ChevronLeft, ChevronRight, Star, ShieldCheck, Truck, RefreshCw, X, ZoomIn } from "lucide-react";
+import { ShoppingBag, Heart, ChevronLeft, ChevronRight, Star, ShieldCheck, Truck, RefreshCw, X, ZoomIn, CreditCard } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useStore } from "@/context/StoreContext";
+import { useLanguage } from "@/context/LanguageContext";
 import { getOptimizedImage } from "@/lib/utils";
 import { RoyalImage } from "@/components/ui/RoyalImage";
 
 export function ProductDetail({ product }) {
     const { addToCart, toggleWishlist, wishlistItems } = useStore();
+    const { t } = useLanguage();
+    const router = useRouter();
     const [activeImage, setActiveImage] = useState(0);
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
@@ -163,12 +167,12 @@ export function ProductDetail({ product }) {
                                 {product.name}
                             </h1>
                             <div className="flex flex-wrap items-center gap-6">
-                                <p className="text-3xl md:text-4xl text-emerald-royal font-bold">${product.price}</p>
+                                <p className="text-3xl md:text-4xl text-emerald-royal font-bold">৳{product.price}</p>
                                 <div className="flex items-center gap-1 text-heritage-gold pl-6 border-l border-heritage-gold/20">
                                     {[...Array(5)].map((_, i) => (
                                         <Star key={i} size={16} className="fill-current" />
                                     ))}
-                                    <span className="text-emerald-royal/40 text-[10px] md:text-xs ml-2 font-bold uppercase tracking-widest">Royal Reviews</span>
+                                    <span className="text-emerald-royal/40 text-[10px] md:text-xs ml-2 font-bold uppercase tracking-widest">{t('product_royal_reviews')}</span>
                                 </div>
                             </div>
                         </motion.div>
@@ -191,27 +195,37 @@ export function ProductDetail({ product }) {
                         >
                             <button
                                 onClick={() => addToCart(product)}
-                                className="flex-1 gold-gradient-bg text-white py-5 px-8 uppercase tracking-[0.2em] font-bold text-xs md:text-sm shadow-2xl hover:shadow-emerald-royal/20 transition-all active:scale-95 flex items-center justify-center gap-3"
+                                className="flex-1 bg-white border-2 border-emerald-royal text-emerald-royal py-5 px-8 uppercase tracking-[0.2em] font-bold text-xs md:text-sm hover:bg-emerald-royal hover:text-white transition-all active:scale-95 flex items-center justify-center gap-3"
                             >
                                 <ShoppingBag size={20} />
-                                Keep in My Bag
+                                {t('product_keep_in_bag')}
+                            </button>
+                            <button
+                                onClick={() => {
+                                    addToCart(product);
+                                    router.push('/checkout');
+                                }}
+                                className="flex-1 gold-gradient-bg text-white py-5 px-8 uppercase tracking-[0.2em] font-bold text-xs md:text-sm shadow-2xl hover:shadow-emerald-royal/20 transition-all active:scale-95 flex items-center justify-center gap-3"
+                            >
+                                <CreditCard size={20} />
+                                {t('product_buy_now')}
                             </button>
                             <button
                                 onClick={() => toggleWishlist(product)}
-                                className={`flex-1 border-2 py-5 px-8 uppercase tracking-[0.2em] font-bold text-xs md:text-sm transition-all flex items-center justify-center gap-3 ${isWishlisted
+                                className={`w-14 h-14 border-2 rounded-xl flex items-center justify-center transition-all ${isWishlisted
                                     ? "border-deep-maroon text-deep-maroon bg-deep-maroon/5 shadow-inner"
-                                    : "border-emerald-royal text-emerald-royal hover:bg-emerald-royal hover:text-white"
+                                    : "border-emerald-royal/20 text-emerald-royal/40 hover:border-emerald-royal hover:text-emerald-royal"
                                     }`}
+                                title={isWishlisted ? t('wishlist_remove_sanctuary') : t('wishlist_add_sanctuary')}
                             >
                                 <Heart size={20} className={isWishlisted ? "fill-current" : ""} />
-                                {isWishlisted ? "Saved in My Sanctuary" : "Save to My Sanctuary"}
                             </button>
                         </motion.div>
 
                         {/* Features/Details */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
                             <div className="space-y-5">
-                                <h4 className="font-serif text-xl md:text-2xl text-emerald-royal">Shundor (Beautiful) Details</h4>
+                                <h4 className="font-serif text-xl md:text-2xl text-emerald-royal">{t('product_beautiful_details')}</h4>
                                 <ul className="space-y-4">
                                     {Array.isArray(product.details) ? product.details.map((detail, idx) => (
                                         <li key={idx} className="flex items-center gap-4 text-sm md:text-base text-gray-500 font-light">
@@ -219,7 +233,7 @@ export function ProductDetail({ product }) {
                                             {detail}
                                         </li>
                                     )) : (
-                                        <li className="text-red-500 text-sm">Details unavailable (Invalid Format)</li>
+                                        <li className="text-red-500 text-sm">{t('product_details_unavailable')}</li>
                                     )}
                                 </ul>
                             </div>
@@ -227,15 +241,15 @@ export function ProductDetail({ product }) {
                             <div className="space-y-5 bg-white p-8 rounded-2xl shadow-xl border border-heritage-gold/5 flex flex-col justify-center">
                                 <div className="flex items-center gap-4 text-sm md:text-base text-emerald-royal font-bold">
                                     <ShieldCheck size={20} className="text-heritage-gold flex-shrink-0" />
-                                    <span>Real Nawabi Quality</span>
+                                    <span>{t('product_nawabi_quality')}</span>
                                 </div>
                                 <div className="flex items-center gap-4 text-sm md:text-base text-emerald-royal font-bold">
                                     <Truck size={20} className="text-heritage-gold flex-shrink-0" />
-                                    <span>Fast Royal Delivery</span>
+                                    <span>{t('product_royal_delivery')}</span>
                                 </div>
                                 <div className="flex items-center gap-4 text-sm md:text-base text-emerald-royal font-bold">
                                     <RefreshCw size={20} className="text-heritage-gold flex-shrink-0" />
-                                    <span>Easy 14-day Exchange</span>
+                                    <span>{t('product_exchange_policy')}</span>
                                 </div>
                             </div>
                         </div>

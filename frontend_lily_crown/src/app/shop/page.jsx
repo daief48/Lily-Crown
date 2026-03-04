@@ -6,7 +6,6 @@ import { Footer } from "@/components/layout/Footer";
 import { SectionHeader } from "@/components/ui/SectionHeader";
 import { ProductCard } from "@/components/product/ProductCard";
 import { WishlistModal } from "@/components/ui/WishlistModal";
-import { Toast } from "@/components/ui/Toast";
 import { ShopFilters } from "@/components/shop/ShopFilters";
 import { ShopSort } from "@/components/shop/ShopSort";
 
@@ -112,11 +111,11 @@ export default function ShopPage() {
         <main className="min-h-screen bg-[#f8f9fa]">
             <Navbar />
 
-            <div className="pt-24 md:pt-32 pb-16 px-4 md:px-10 max-w-[1700px] mx-auto relative z-10">
+            <div className="pt-[90px] md:pt-[100px] lg:pt-[110px] pb-16 px-4 md:px-10 max-w-[1700px] mx-auto relative z-10">
                 <Breadcrumbs
                     items={[
-                        { label: "Treasury", href: "/shop" },
-                        { label: filters.category || "All Collections" }
+                        { label: t('shop_treasury'), href: "/shop" },
+                        { label: filters.category || t('shop_all_collections') }
                     ]}
                     className="mb-6"
                 />
@@ -132,7 +131,7 @@ export default function ShopPage() {
                             animate={{ opacity: 1, x: 0 }}
                             className="text-4xl md:text-6xl font-serif text-white mb-4 capitalize tracking-tight"
                         >
-                            {filters.category ? filters.category.replace('-', ' ') : "The Royal Treasury"}
+                            {filters.category ? filters.category.replace('-', ' ') : t('shop_royal_treasury_title')}
                         </motion.h1>
                         <motion.p
                             initial={{ opacity: 0 }}
@@ -140,7 +139,7 @@ export default function ShopPage() {
                             transition={{ delay: 0.2 }}
                             className="text-white/60 text-sm md:text-lg max-w-xl font-light leading-relaxed font-serif italic"
                         >
-                            "Discover the eternal art of royalty in every handcrafted heirloom."
+                            "{t('shop_royal_treasury_desc')}"
                         </motion.p>
                     </div>
 
@@ -171,7 +170,7 @@ export default function ShopPage() {
                         <div className="flex flex-col sm:flex-row justify-between items-center bg-white p-3.5 rounded-2xl shadow-sm border border-black/[0.03] mb-8 gap-4">
                             <div className="flex items-center gap-4 pl-4">
                                 <p className="text-emerald-royal/40 font-bold text-[10px] uppercase tracking-[0.2em]">
-                                    <span className="text-emerald-royal mr-1">{products.length}</span> Results
+                                    <span className="text-emerald-royal mr-1">{products.length}</span> {t('shop_results')}
                                 </p>
                             </div>
 
@@ -249,13 +248,13 @@ export default function ShopPage() {
                                 className="text-center py-40 bg-white rounded-[2.5rem] border border-dashed border-heritage-gold/20"
                             >
                                 <ShoppingBag size={56} className="mx-auto text-heritage-gold/20 mb-6" />
-                                <h3 className="text-2xl font-serif text-emerald-royal italic mb-2">A Royal Absence</h3>
-                                <p className="text-gray-400 font-light max-w-xs mx-auto text-sm">Our treasury doesn't seem to hold these items yet.</p>
+                                <h3 className="text-2xl font-serif text-emerald-royal italic mb-2">{t('shop_no_results_title')}</h3>
+                                <p className="text-gray-400 font-light max-w-xs mx-auto text-sm">{t('shop_no_results_desc')}</p>
                                 <button
                                     onClick={clearAllFilters}
                                     className="mt-8 px-10 py-3.5 bg-emerald-royal text-white rounded-full text-[10px] uppercase tracking-[0.2em] font-bold shadow-xl"
                                 >
-                                    Reset Your Hunt
+                                    {t('shop_reset_hunt')}
                                 </button>
                             </motion.div>
                         )}
@@ -265,7 +264,6 @@ export default function ShopPage() {
 
             <Footer />
             <WishlistModal />
-            <Toast />
 
             {/* Mobile Filter Drawer */}
             <AnimatePresence>
@@ -288,7 +286,7 @@ export default function ShopPage() {
                             <div className="flex items-center justify-between p-8 border-b border-black/[0.05]">
                                 <div className="flex items-center gap-4 text-emerald-royal">
                                     <SlidersHorizontal size={20} className="text-heritage-gold" />
-                                    <h2 className="text-xl font-serif">Refine Selection</h2>
+                                    <h2 className="text-xl font-serif">{t('shop_refine_selection')}</h2>
                                 </div>
                                 <button onClick={() => setIsMobileFiltersOpen(false)} className="p-2"><X size={24} /></button>
                             </div>
@@ -307,7 +305,7 @@ export default function ShopPage() {
                                     onClick={() => setIsMobileFiltersOpen(false)}
                                     className="w-full bg-emerald-royal text-white py-4 rounded-xl text-xs uppercase tracking-[0.2em] font-bold shadow-xl shadow-emerald-royal/20 active:scale-95 transition-all"
                                 >
-                                    Experience Results
+                                    {t('shop_experience_results')}
                                 </button>
                             </div>
                         </motion.div>

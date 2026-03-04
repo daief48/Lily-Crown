@@ -3,8 +3,10 @@
 import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { api } from "@/lib/api";
+import { useLanguage } from "@/context/LanguageContext";
 
 export function Newsletter() {
+    const { t } = useLanguage();
     const [email, setEmail] = useState("");
     const [status, setStatus] = useState({ type: null, message: "" });
     const [submitting, setSubmitting] = useState(false);
@@ -20,7 +22,7 @@ export function Newsletter() {
                 setStatus({ type: "success", message: data.message });
                 setEmail("");
             } else {
-                setStatus({ type: "error", message: "The palace gates are temporarily unreachable." });
+                setStatus({ type: "error", message: t("newsletter_error_generic") });
             }
         } catch (error) {
             setStatus({ type: "error", message: error.message });
@@ -43,14 +45,14 @@ export function Newsletter() {
                 >
                     <div className="space-y-4">
                         <div className="w-12 h-px bg-heritage-gold/30 mx-auto mb-6"></div>
-                        <h2 className="text-3xl md:text-5xl font-serif text-white leading-tight">Join My <span className="heritage-gradient-text italic">Royal Circle</span></h2>
-                        <p className="text-muslin-cream/70 text-base md:text-lg font-light max-w-2xl mx-auto">Be honored with the first sightings of our new heritage collections and exclusive invitations.</p>
+                        <h2 className="text-3xl md:text-5xl font-serif text-white leading-tight">{t("newsletter_heading")} <span className="heritage-gradient-text italic">{t("newsletter_subheading")}</span></h2>
+                        <p className="text-muslin-cream/70 text-base md:text-lg font-light max-w-2xl mx-auto">{t("newsletter_desc")}</p>
                     </div>
 
                     <form className="flex flex-col sm:flex-row gap-0 max-w-lg mx-auto group/form shadow-2xl royal-shadow" onSubmit={handleSubmit}>
                         <input
                             type="email"
-                            placeholder="Your royal email..."
+                            placeholder={t("newsletter_placeholder")}
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             className="flex-1 bg-white/5 border border-heritage-gold/20 px-8 py-5 outline-none focus:border-heritage-gold transition-all rounded-none text-white placeholder:text-muslin-cream/20 text-sm md:text-base backdrop-blur-md disabled:opacity-50"
@@ -64,7 +66,7 @@ export function Newsletter() {
                         >
                             {submitting ? (
                                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                            ) : "Accept Invitation"}
+                            ) : t("newsletter_btn")}
                         </button>
                     </form>
                     {status.message && (
@@ -76,7 +78,7 @@ export function Newsletter() {
                             {status.message}
                         </motion.p>
                     )}
-                    <p className="text-[10px] uppercase tracking-widest text-muslin-cream/40 px-4">Experience the legacy. Unsubscribe at any time.</p>
+                    <p className="text-[10px] uppercase tracking-widest text-muslin-cream/40 px-4">{t("newsletter_footer")}</p>
                 </motion.div>
             </div>
         </section>

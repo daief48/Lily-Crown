@@ -4,19 +4,23 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useStore } from "@/context/StoreContext";
+import { useRouter } from "next/navigation";
 import { Heart, Star, Truck } from "lucide-react";
 import { motion } from "framer-motion";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 import { getOptimizedImage } from "@/lib/utils";
 import { RoyalImage } from "@/components/ui/RoyalImage";
+import { useLanguage } from "@/context/LanguageContext";
 
 function cn(...inputs) {
     return twMerge(clsx(inputs));
 }
 
 export function ProductCard({ product, index, priority = false }) {
+    const { t } = useLanguage();
     const { addToCart, toggleWishlist, wishlistItems } = useStore();
+    const router = useRouter();
     const isWishlisted = wishlistItems.some(item => Number(item.id) === Number(product.id));
     const [isHovered, setIsHovered] = React.useState(false);
 
@@ -49,7 +53,7 @@ export function ProductCard({ product, index, priority = false }) {
                     )}
                     <div className="flex items-center gap-1.5 px-2.5 py-1 text-[8px] font-bold text-heritage-gold bg-white/90 backdrop-blur-md rounded-lg shadow-sm border border-heritage-gold/10">
                         <Truck size={10} />
-                        <span>ROYAL EXPRESS</span>
+                        <span>{t("product_royal_express")}</span>
                     </div>
                 </div>
 
@@ -84,13 +88,24 @@ export function ProductCard({ product, index, priority = false }) {
                 </Link>
 
                 {/* Quick Add Overlay */}
-                <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 z-20 bg-gradient-to-t from-black/20 to-transparent">
-                    <button
-                        onClick={() => addToCart(product)}
-                        className="w-full bg-emerald-royal text-white py-3 rounded-xl text-[9px] uppercase tracking-[0.2em] font-bold shadow-2xl hover:bg-heritage-gold transition-colors active:scale-95"
-                    >
-                        Add to Selection
-                    </button>
+                <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-500 z-20 bg-gradient-to-t from-black/40 to-transparent">
+                    <div className="flex flex-col gap-2">
+                        <button
+                            onClick={() => addToCart(product)}
+                            className="w-full bg-white/10 backdrop-blur-md border border-white/20 text-white py-2.5 rounded-xl text-[9px] uppercase tracking-[0.2em] font-bold hover:bg-white hover:text-emerald-royal transition-all active:scale-95"
+                        >
+                            {t("product_add_to_bag")}
+                        </button>
+                        <button
+                            onClick={() => {
+                                addToCart(product);
+                                router.push('/checkout');
+                            }}
+                            className="w-full bg-heritage-gold text-white py-2.5 rounded-xl text-[9px] uppercase tracking-[0.2em] font-bold shadow-xl hover:bg-white hover:text-heritage-gold transition-all active:scale-95"
+                        >
+                            {t("product_buy_now")}
+                        </button>
+                    </div>
                 </div>
 
                 <button
@@ -107,7 +122,7 @@ export function ProductCard({ product, index, priority = false }) {
             <div className="p-4 flex flex-col flex-1 bg-white">
                 <div className="flex items-center justify-between mb-2">
                     <span className="text-[9px] text-emerald-royal/40 uppercase tracking-widest font-bold">
-                        {product.category?.name || "Artifact"}
+                        {product.category?.name || t("product_artifact_fallback")}
                     </span>
                     <div className="flex items-center gap-0.5 text-heritage-gold">
                         {[1, 2, 3, 4, 5].map((s) => (
@@ -131,7 +146,7 @@ export function ProductCard({ product, index, priority = false }) {
                                 <span className="text-emerald-royal/30 line-through text-xs italic">৳{product.old_price}</span>
                             )}
                         </div>
-                        <p className="text-[8px] uppercase tracking-widest text-heritage-gold font-bold">Heritage Piece</p>
+                        <p className="text-[8px] uppercase tracking-widest text-heritage-gold font-bold">{t("product_heritage_piece")}</p>
                     </div>
                 </div>
             </div>

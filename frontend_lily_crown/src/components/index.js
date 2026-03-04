@@ -2,6 +2,7 @@
 export { Navbar } from './layout/Navbar';
 export { Footer } from './layout/Footer';
 export { Preloader } from './layout/Preloader';
+export { PageWrapper } from './layout/PageWrapper';
 
 // Section components
 export { Hero } from './sections/Hero';

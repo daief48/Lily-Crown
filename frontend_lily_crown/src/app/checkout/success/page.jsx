@@ -7,9 +7,12 @@ import Link from "next/link";
 import { CheckCircle, ShoppingBag, ArrowRight } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 
+import { useLanguage } from "@/context/LanguageContext";
+
 function SuccessContent() {
     const searchParams = useSearchParams();
     const orderId = searchParams.get("order_id");
+    const { t } = useLanguage();
 
     return (
         <div className="pt-48 pb-24 max-w-2xl mx-auto px-4 text-center">
@@ -19,16 +22,16 @@ function SuccessContent() {
                 </div>
 
                 <div className="space-y-4">
-                    <h1 className="text-4xl md:text-5xl font-serif text-emerald-royal">Order of the Crown</h1>
-                    <p className="text-heritage-gold uppercase tracking-[0.3em] font-bold text-xs">Successfully Received</p>
+                    <h1 className="text-4xl md:text-5xl font-serif text-emerald-royal">{t('success_title')}</h1>
+                    <p className="text-heritage-gold uppercase tracking-[0.3em] font-bold text-xs">{t('success_subtitle')}</p>
                     {orderId && (
-                        <p className="text-emerald-royal/60 text-sm font-bold">Order ID: #{orderId}</p>
+                        <p className="text-emerald-royal/60 text-sm font-bold">{t('success_order_id')}: #{orderId}</p>
                     )}
                 </div>
 
                 <div className="text-emerald-royal/70 font-light leading-relaxed space-y-4">
-                    <p>Thank you for choosing Lily Crown, Majesty. Your order has been registered in our royal archives and is being prepared with the utmost care.</p>
-                    <p className="text-sm">We will contact you via phone shortly to confirm your delivery details. Cash on Delivery is ready for your convenience.</p>
+                    <p>{t('success_thank_you')}</p>
+                    <p className="text-sm">{t('success_contact_info')}</p>
                 </div>
 
                 <div className="pt-8 flex flex-col sm:flex-row gap-4 justify-center">
@@ -37,20 +40,20 @@ function SuccessContent() {
                         className="px-8 py-4 bg-emerald-royal text-white uppercase tracking-widest text-xs font-bold hover:bg-heritage-gold transition-colors shadow-lg flex items-center justify-center gap-2 group"
                     >
                         <ShoppingBag size={16} />
-                        Continue Shopping
+                        {t('success_continue_shopping')}
                     </Link>
                     <Link
                         href="/orders"
                         className="px-8 py-4 border border-heritage-gold text-heritage-gold uppercase tracking-widest text-xs font-bold hover:bg-heritage-gold hover:text-white transition-all flex items-center justify-center gap-2"
                     >
-                        View My Orders
+                        {t('nav_my_orders')}
                         <ShoppingBag size={16} />
                     </Link>
                     <Link
                         href="/"
                         className="px-8 py-4 border border-emerald-royal text-emerald-royal uppercase tracking-widest text-xs font-bold hover:bg-emerald-royal hover:text-white transition-all flex items-center justify-center gap-2"
                     >
-                        Return to Palace
+                        {t('success_return_home')}
                         <ArrowRight size={16} />
                     </Link>
                 </div>
@@ -60,10 +63,11 @@ function SuccessContent() {
 }
 
 export default function SuccessPage() {
+    const { t } = useLanguage();
     return (
         <main className="bg-muslin-cream min-h-screen">
             <Navbar />
-            <Suspense fallback={<div className="pt-48 text-center">Loading Royal Decree...</div>}>
+            <Suspense fallback={<div className="pt-48 text-center">{t('success_loading')}</div>}>
                 <SuccessContent />
             </Suspense>
             <Footer />

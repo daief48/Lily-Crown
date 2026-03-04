@@ -8,8 +8,10 @@ import { RoyalImage } from "@/components/ui/RoyalImage";
 
 import { api } from "@/lib/api";
 import { getOptimizedImage } from "@/lib/utils";
+import { useLanguage } from "@/context/LanguageContext";
 
 export function InstagramFeed() {
+    const { t } = useLanguage();
     const [posts, setPosts] = React.useState([]);
 
     React.useEffect(() => {
@@ -31,8 +33,8 @@ export function InstagramFeed() {
                         viewport={{ once: true }}
                     >
                         <Instagram className="mx-auto text-heritage-gold mb-4" size={32} />
-                        <h2 className="text-3xl md:text-4xl font-serif text-emerald-royal mb-2">Follow My Royal Story</h2>
-                        <p className="text-emerald-royal/60 font-medium uppercase tracking-[0.2em] text-[10px] md:text-xs">Follow us for more Dhakai love @LilyCrownDhaka</p>
+                        <h2 className="text-3xl md:text-4xl font-serif text-emerald-royal mb-2">{t("instagram_heading")}</h2>
+                        <p className="text-emerald-royal/60 font-medium uppercase tracking-[0.2em] text-[10px] md:text-xs">{t("instagram_subheading")}</p>
                     </motion.div>
                 </div>
 
@@ -49,14 +51,14 @@ export function InstagramFeed() {
                             viewport={{ once: true }}
                             className="relative aspect-square overflow-hidden group cursor-pointer rounded-xl nakshi-border block"
                         >
-                                <RoyalImage
-                                    src={getOptimizedImage(post.image)}
-                                    alt={post.caption || `Lily Crown heritage fashion style ${idx + 1}`}
-                                    fill
-                                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
-                                    className="object-contain transition-transform duration-700 group-hover:scale-105 bg-white/30 p-1"
-                                    containerClassName="bg-white/5"
-                                />
+                            <RoyalImage
+                                src={getOptimizedImage(post.image)}
+                                alt={post.caption || `${t("product_heritage_piece")} ${idx + 1}`}
+                                fill
+                                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 16vw"
+                                className="object-contain transition-transform duration-700 group-hover:scale-105 bg-white/30 p-1"
+                                containerClassName="bg-white/5"
+                            />
                             <div className="absolute inset-0 bg-emerald-royal/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center backdrop-blur-[2px]">
                                 <Instagram size={24} className="text-white opacity-80" />
                             </div>

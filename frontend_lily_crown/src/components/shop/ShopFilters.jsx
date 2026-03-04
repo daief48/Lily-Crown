@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { api } from "@/lib/api";
+import { useLanguage } from "@/context/LanguageContext";
 import { ChevronRight, Filter, X } from "lucide-react";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -13,6 +14,7 @@ const cn = (...inputs) => {
 export const ShopFilters = ({ activeFilters, onFilterChange, onClearAll, className, isMobile, disableScroll }) => {
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
+    const { t } = useLanguage();
 
     useEffect(() => {
         const loadCategories = async () => {
@@ -24,10 +26,10 @@ export const ShopFilters = ({ activeFilters, onFilterChange, onClearAll, classNa
     }, []);
 
     const priceRanges = [
-        { label: "Under ৳500", min: 0, max: 500 },
-        { label: "৳500 - ৳2000", min: 500, max: 2000 },
-        { label: "৳2000 - ৳5000", min: 2000, max: 5000 },
-        { label: "Over ৳5000", min: 5000, max: 999999 },
+        { label: t("price_under", { price: "৳500" }), min: 0, max: 500 },
+        { label: t("price_range", { min: "৳500", max: "৳2000" }), min: 500, max: 2000 },
+        { label: t("price_range", { min: "৳2000", max: "৳5000" }), min: 2000, max: 5000 },
+        { label: t("price_over", { price: "৳5000" }), min: 5000, max: 999999 },
     ];
 
     return (
@@ -41,12 +43,12 @@ export const ShopFilters = ({ activeFilters, onFilterChange, onClearAll, classNa
             {(activeFilters.category || activeFilters.min_price || activeFilters.max_price || activeFilters.search || activeFilters.in_stock || activeFilters.is_ready_to_ship) && (
                 <div className="bg-white/40 backdrop-blur-md p-5 rounded-2xl border border-heritage-gold/20 shadow-sm animate-in fade-in slide-in-from-top-4 duration-500">
                     <div className="flex items-center justify-between mb-4">
-                        <span className="text-[10px] uppercase tracking-widest font-bold text-emerald-royal/60">Refined By</span>
+                        <span className="text-[10px] uppercase tracking-widest font-bold text-emerald-royal/60">{t('shop_refined_by')}</span>
                         <button
                             onClick={onClearAll}
-                            className="text-[10px] text-heritage-gold hover:text-emerald-royal font-bold transition-colors"
+                            className="text-[10px] text-orderly-black hover:text-emerald-royal font-bold transition-colors"
                         >
-                            RESET
+                            {t('shop_reset')}
                         </button>
                     </div>
                     <div className="flex flex-wrap gap-2">
@@ -70,13 +72,13 @@ export const ShopFilters = ({ activeFilters, onFilterChange, onClearAll, classNa
                         )}
                         {activeFilters.in_stock && (
                             <div className="bg-emerald-royal/10 text-emerald-royal px-3 py-1.5 rounded-full text-[10px] flex items-center gap-2 border border-emerald-royal/20">
-                                In Stock
+                                {t('shop_in_stock')}
                                 <button onClick={() => onFilterChange({ in_stock: false })} className="hover:scale-110 transition-transform"><X size={10} /></button>
                             </div>
                         )}
                         {activeFilters.is_ready_to_ship && (
                             <div className="bg-heritage-gold/10 text-heritage-gold px-3 py-1.5 rounded-full text-[10px] flex items-center gap-2 border border-heritage-gold/20">
-                                Ready To Ship
+                                {t('shop_ready_to_ship')}
                                 <button onClick={() => onFilterChange({ is_ready_to_ship: false })} className="hover:scale-110 transition-transform"><X size={10} /></button>
                             </div>
                         )}
@@ -88,7 +90,7 @@ export const ShopFilters = ({ activeFilters, onFilterChange, onClearAll, classNa
             <div className="bg-white border border-heritage-gold/10 rounded-2xl overflow-hidden shadow-sm">
                 <div className="bg-emerald-royal/5 px-5 py-3 border-b border-heritage-gold/5 flex items-center justify-between">
                     <h3 className="text-[10px] uppercase tracking-[0.2em] font-bold text-emerald-royal">
-                        Collections
+                        {t('nav_royal_collections')}
                     </h3>
                     <div className="w-1.5 h-1.5 rounded-full bg-heritage-gold"></div>
                 </div>
@@ -104,7 +106,7 @@ export const ShopFilters = ({ activeFilters, onFilterChange, onClearAll, classNa
                                         : "text-emerald-royal/70 hover:bg-emerald-royal/5"
                                 )}
                             >
-                                <span className="font-medium">All Collections</span>
+                                <span className="font-medium">{t('shop_all_collections')}</span>
                                 <ChevronRight size={12} className={cn("transition-transform", !activeFilters.category ? "translate-x-1" : "opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0")} />
                             </button>
                         </li>
@@ -140,7 +142,7 @@ export const ShopFilters = ({ activeFilters, onFilterChange, onClearAll, classNa
             <div className="bg-white border border-heritage-gold/10 rounded-2xl overflow-hidden shadow-sm">
                 <div className="bg-emerald-royal/5 px-5 py-3 border-b border-heritage-gold/5">
                     <h3 className="text-[10px] uppercase tracking-[0.2em] font-bold text-emerald-royal">
-                        Availability
+                        {t('shop_availability')}
                     </h3>
                 </div>
                 <div className="p-4 space-y-3">
@@ -151,7 +153,7 @@ export const ShopFilters = ({ activeFilters, onFilterChange, onClearAll, classNa
                             checked={activeFilters.in_stock || false}
                             onChange={(e) => onFilterChange({ in_stock: e.target.checked })}
                         />
-                        <span className="text-xs text-emerald-royal/70 group-hover:text-emerald-royal transition-colors font-medium">In Stock Only</span>
+                        <span className="text-xs text-emerald-royal/70 group-hover:text-emerald-royal transition-colors font-medium">{t('shop_in_stock')}</span>
                     </label>
                     <label className="flex items-center gap-3 cursor-pointer group">
                         <input
@@ -160,7 +162,7 @@ export const ShopFilters = ({ activeFilters, onFilterChange, onClearAll, classNa
                             checked={activeFilters.is_ready_to_ship || false}
                             onChange={(e) => onFilterChange({ is_ready_to_ship: e.target.checked })}
                         />
-                        <span className="text-xs text-emerald-royal/70 group-hover:text-emerald-royal transition-colors font-medium">Ready to Ship</span>
+                        <span className="text-xs text-emerald-royal/70 group-hover:text-emerald-royal transition-colors font-medium">{t('shop_ready_to_ship')}</span>
                     </label>
                 </div>
             </div>
@@ -169,7 +171,7 @@ export const ShopFilters = ({ activeFilters, onFilterChange, onClearAll, classNa
             <div className="bg-white border border-heritage-gold/10 rounded-2xl overflow-hidden shadow-sm">
                 <div className="bg-emerald-royal/5 px-5 py-3 border-b border-heritage-gold/5 flex items-center justify-between">
                     <h3 className="text-[10px] uppercase tracking-[0.2em] font-bold text-emerald-royal">
-                        Value Selection
+                        {t('shop_value_selection')}
                     </h3>
                 </div>
                 <div className="p-4">
@@ -195,7 +197,7 @@ export const ShopFilters = ({ activeFilters, onFilterChange, onClearAll, classNa
                             <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[9px] text-heritage-gold font-bold">৳</span>
                             <input
                                 type="number"
-                                placeholder="Min"
+                                placeholder={t('shop_min')}
                                 value={activeFilters.min_price || ""}
                                 onChange={(e) => onFilterChange({ min_price: e.target.value })}
                                 className="w-full bg-emerald-royal/[0.02] border border-heritage-gold/10 text-[11px] py-2 pl-5 pr-1 outline-none focus:border-heritage-gold/40 rounded-lg transition-all"
@@ -206,7 +208,7 @@ export const ShopFilters = ({ activeFilters, onFilterChange, onClearAll, classNa
                             <span className="absolute left-2 top-1/2 -translate-y-1/2 text-[9px] text-heritage-gold font-bold">৳</span>
                             <input
                                 type="number"
-                                placeholder="Max"
+                                placeholder={t('shop_max')}
                                 value={activeFilters.max_price || ""}
                                 onChange={(e) => onFilterChange({ max_price: e.target.value })}
                                 className="w-full bg-emerald-royal/[0.02] border border-heritage-gold/10 text-[11px] py-2 pl-5 pr-1 outline-none focus:border-heritage-gold/40 rounded-lg transition-all"
@@ -221,7 +223,7 @@ export const ShopFilters = ({ activeFilters, onFilterChange, onClearAll, classNa
                 <div className="absolute top-0 right-0 w-20 h-20 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/2 group-hover:scale-150 transition-transform duration-1000"></div>
 
                 <h3 className="text-[10px] uppercase tracking-[0.2em] font-bold text-white/40 mb-4 relative z-10">
-                    Nawabi Choice
+                    {t('nav_royal_selection_title')}
                 </h3>
                 <div className="space-y-3 relative z-10">
                     <button
@@ -231,7 +233,7 @@ export const ShopFilters = ({ activeFilters, onFilterChange, onClearAll, classNa
                         <span className={cn(
                             "text-xs font-bold tracking-tight transition-colors",
                             activeFilters.sort === 'trending' ? "text-white" : "text-white/60"
-                        )}>Trending Artifacts</span>
+                        )}>{t('shop_trending_artifacts')}</span>
                         <div className={cn(
                             "w-4 h-4 rounded border flex items-center justify-center transition-all",
                             activeFilters.sort === 'trending' ? "bg-heritage-gold border-heritage-gold" : "border-white/20"
@@ -240,7 +242,7 @@ export const ShopFilters = ({ activeFilters, onFilterChange, onClearAll, classNa
                         </div>
                     </button>
                     <div className="h-px bg-white/10 w-full"></div>
-                    <p className="text-[9px] text-white/40 font-medium italic">Handpicked by royal connoisseurs.</p>
+                    <p className="text-[9px] text-white/40 font-medium italic">{t('shop_handpicked')}</p>
                 </div>
             </div>
         </aside>

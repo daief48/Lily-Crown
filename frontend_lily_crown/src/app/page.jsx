@@ -24,7 +24,6 @@ const InstagramFeed = dynamic(() => import('@/components').then(mod => ({ defaul
 const Newsletter = dynamic(() => import('@/components').then(mod => ({ default: mod.Newsletter })));
 const Footer = dynamic(() => import('@/components').then(mod => ({ default: mod.Footer })));
 const WishlistModal = dynamic(() => import('@/components').then(mod => ({ default: mod.WishlistModal })));
-const Toast = dynamic(() => import('@/components').then(mod => ({ default: mod.Toast })));
 
 export default function Home() {
     return (
@@ -44,7 +43,6 @@ export default function Home() {
 
             {/* Overlays */}
             <WishlistModal />
-            <Toast />
         </main>
     );
 }

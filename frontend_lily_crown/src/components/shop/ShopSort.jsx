@@ -15,10 +15,10 @@ export const ShopSort = ({ activeSort, onSortChange, totalItems, onMobileFilterC
     const dropdownRef = useRef(null);
 
     const sortOptions = [
-        { value: "newest", label: "Newest Arrivals" },
-        { value: "price_low", label: "Price: Low to High" },
-        { value: "price_high", label: "Price: High to Low" },
-        { value: "trending", label: "Trending Now" },
+        { value: "newest", label: t('sort_newest') },
+        { value: "price_low", label: t('sort_price_low') },
+        { value: "price_high", label: t('sort_price_high') },
+        { value: "trending", label: t('sort_trending') },
     ];
 
     useEffect(() => {
@@ -31,7 +31,7 @@ export const ShopSort = ({ activeSort, onSortChange, totalItems, onMobileFilterC
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, []);
 
-    const selectedLabel = sortOptions.find(opt => opt.value === activeSort)?.label || "Sort By";
+    const selectedLabel = sortOptions.find(opt => opt.value === activeSort)?.label || t('sort_by');
 
     return (
         <div className="flex items-center gap-3 w-full sm:w-auto">
@@ -41,7 +41,7 @@ export const ShopSort = ({ activeSort, onSortChange, totalItems, onMobileFilterC
                 className="flex sm:hidden items-center justify-center gap-2 flex-1 bg-emerald-royal text-white px-5 py-3 rounded-xl shadow-lg text-[10px] uppercase tracking-wider font-bold active:scale-95 transition-all"
             >
                 <SlidersHorizontal size={14} />
-                Refine
+                {t('sort_refine')}
             </button>
 
             {/* Sort Dropdown */}
