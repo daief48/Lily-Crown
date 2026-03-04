@@ -14,11 +14,8 @@ export function Preloader() {
     useEffect(() => {
         setMounted(true);
 
-        const hasVisited = sessionStorage.getItem("hasVisited");
-        if (hasVisited) {
-            setLoading(false);
-            return;
-        }
+        // Remove sessionStorage check to let the preloader stay visible
+        // as the user requested it to stay until fully loaded
 
         const handleLoad = () => setIsLoaded(true);
         if (document.readyState === "complete") {
@@ -30,11 +27,11 @@ export function Preloader() {
         const progressInterval = setInterval(() => {
             setProgress((prev) => {
                 if (isLoaded && prev >= 100) return 100;
-                if (prev < 90) return prev + 10; // Fill significantly faster
-                if (isLoaded) return prev + 25; // Complete quickly when ready
+                if (prev < 90) return prev + 2; // Fill slowly to give the frontend time to render
+                if (isLoaded) return prev + 4; // Complete smoothly when ready
                 return prev;
             });
-        }, 10); // Run more frequently
+        }, 20); // Normal pace
 
         return () => {
             clearInterval(progressInterval);
@@ -44,8 +41,7 @@ export function Preloader() {
 
     useEffect(() => {
         if (progress >= 100) {
-            sessionStorage.setItem("hasVisited", "true");
-            const timer = setTimeout(() => setLoading(false), 50);
+            const timer = setTimeout(() => setLoading(false), 400); // Give a little buffer before vanishing
             return () => clearTimeout(timer);
         }
     }, [progress]);
@@ -65,7 +61,7 @@ export function Preloader() {
                         opacity: 0,
                         scale: 1.05,
                         filter: "blur(20px)",
-                        transition: { duration: 0.5, ease: [0.7, 0, 0.3, 1] }
+                        transition: { duration: 1.2, ease: [0.7, 0, 0.3, 1] }
                     }}
                     className="fixed inset-0 bg-[#050505] z-[99999] flex flex-col justify-center items-center overflow-hidden"
                 >
