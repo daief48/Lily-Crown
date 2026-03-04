@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, ChevronLeft, ChevronRight } from "lucide-react";
 
 import { api } from "@/lib/api";
 import { getOptimizedImage } from "@/lib/utils";
@@ -38,7 +38,7 @@ export function Hero() {
         if (slides.length <= 1) return;
         const timer = setInterval(() => {
             setCurrentSlide((prev) => (prev + 1) % slides.length);
-        }, 5000);
+        }, 10000);
         return () => clearInterval(timer);
     }, [slides]);
 
@@ -237,7 +237,7 @@ export function Hero() {
                     </div>
                 )}
 
-                {/* Slide Navigation */}
+                {/* Slide Navigation Dots */}
                 <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 flex gap-3">
                     {slides.map((_, index) => (
                         <motion.button
@@ -253,6 +253,46 @@ export function Hero() {
                         />
                     ))}
                 </div>
+            </div>
+
+            {/* Next/Prev Navigation Buttons - Outside constrained container for wider placement */}
+            <div className="hidden xl:flex absolute inset-y-0 left-8 right-8 items-center justify-between pointer-events-none">
+                <motion.button
+                    onClick={prevSlide}
+                    className="pointer-events-auto p-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-luxury-black hover:bg-emerald-royal hover:text-white transition-all shadow-xl group"
+                    whileHover={{ scale: 1.1, x: -5 }}
+                    whileTap={{ scale: 0.9 }}
+                    aria-label="Previous slide"
+                >
+                    <ChevronLeft size={28} className="group-hover:-translate-x-1 transition-transform" />
+                </motion.button>
+                <motion.button
+                    onClick={nextSlide}
+                    className="pointer-events-auto p-4 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-luxury-black hover:bg-emerald-royal hover:text-white transition-all shadow-xl group"
+                    whileHover={{ scale: 1.1, x: 5 }}
+                    whileTap={{ scale: 0.9 }}
+                    aria-label="Next slide"
+                >
+                    <ChevronRight size={28} className="group-hover:translate-x-1 transition-transform" />
+                </motion.button>
+            </div>
+
+            {/* Tablet/Mobile specific navigation (keep within bounds or hidden) */}
+            <div className="hidden md:flex xl:hidden absolute inset-y-0 left-4 right-4 items-center justify-between pointer-events-none">
+                <motion.button
+                    onClick={prevSlide}
+                    className="pointer-events-auto p-2 rounded-full bg-white/40 backdrop-blur-md text-luxury-black shadow-lg"
+                    whileTap={{ scale: 0.9 }}
+                >
+                    <ChevronLeft size={20} />
+                </motion.button>
+                <motion.button
+                    onClick={nextSlide}
+                    className="pointer-events-auto p-2 rounded-full bg-white/40 backdrop-blur-md text-luxury-black shadow-lg"
+                    whileTap={{ scale: 0.9 }}
+                >
+                    <ChevronRight size={20} />
+                </motion.button>
             </div>
         </section>
     );
