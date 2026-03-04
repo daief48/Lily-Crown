@@ -57,7 +57,7 @@ export function ProductCard({ product, index, priority = false }) {
                     </div>
                 </div>
 
-                <Link href={`/product/${product.id}`} className="block h-full relative">
+                <Link href={`/products/${product.slug || product.id}`} className="block h-full relative">
                     {/* Primary Image */}
                     <Image
                         src={primaryImage}
@@ -132,7 +132,7 @@ export function ProductCard({ product, index, priority = false }) {
                     </div>
                 </div>
 
-                <Link href={`/product/${product.id}`} className="block mb-3">
+                <Link href={`/products/${product.slug || product.id}`} className="block mb-3">
                     <h3 className="font-serif text-base text-emerald-royal group-hover:text-heritage-gold transition-colors line-clamp-2 min-h-[3rem]">
                         {product.name}
                     </h3>

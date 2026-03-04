@@ -109,10 +109,10 @@ export function Preloader() {
                             />
 
                             <RoyalImage
-                                src="/img/logo.png"
+                                src="/brand-icon.png"
                                 alt="Lily Crown"
                                 fill
-                                className="object-contain drop-shadow-[0_0_30px_rgba(153,101,21,0.2)]"
+                                className="object-contain drop-shadow-[0_0_30px_rgba(153,101,21,0.2)] mix-blend-lighten"
                                 priority
                             />
                         </motion.div>

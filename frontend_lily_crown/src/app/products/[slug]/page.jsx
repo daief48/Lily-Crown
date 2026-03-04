@@ -7,8 +7,11 @@ import { WishlistModal } from "@/components/ui/WishlistModal";
 import { notFound } from "next/navigation";
 
 export default async function ProductPage({ params }) {
-    const { id } = await params;
-    const product = await api.getProduct(id);
+    // We use 'slug' as the parameter name now
+    const { slug } = await params;
+
+    // The api.getProduct function already supports both ID and Slug
+    const product = await api.getProduct(slug);
 
     if (!product) {
         notFound();
@@ -32,6 +35,6 @@ export async function generateStaticParams() {
     if (!products) return [];
 
     return products.map((product) => ({
-        id: product.id.toString(),
+        slug: product.slug || product.id.toString(),
     }));
 }

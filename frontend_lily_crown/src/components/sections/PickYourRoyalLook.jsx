@@ -78,7 +78,7 @@ export function PickYourRoyalLook() {
                                 className="group relative"
                             >
                                 <Link
-                                    href={item.product?.slug ? `/product/${item.product.slug}` : '#'}
+                                    href={item.product?.slug ? `/products/${item.product.slug}` : '#'}
                                     className="block aspect-[3/4] overflow-hidden rounded-xl shadow-lg nakshi-border bg-white relative cursor-pointer"
                                 >
                                     <RoyalImage

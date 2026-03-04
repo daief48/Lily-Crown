@@ -27,7 +27,12 @@ export const RoyalImage = ({
     const [hasError, setHasError] = useState(false);
 
     return (
-        <div className={cn("relative overflow-hidden bg-muslin-cream/50", containerClassName, fill ? "w-full h-full" : "")}>
+        <div className={cn(
+            "relative overflow-hidden transition-colors duration-500",
+            isLoading ? "bg-muslin-cream/50" : "bg-transparent",
+            containerClassName,
+            fill ? "w-full h-full" : ""
+        )}>
             {isLoading && (
                 <div className="absolute inset-0 z-10 animate-pulse bg-gradient-to-r from-muslin-cream via-heritage-gold/5 to-muslin-cream" />
             )}
