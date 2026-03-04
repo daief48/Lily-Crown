@@ -14,6 +14,12 @@ export function Preloader() {
     useEffect(() => {
         setMounted(true);
 
+        const hasVisited = sessionStorage.getItem("hasVisited");
+        if (hasVisited) {
+            setLoading(false);
+            return;
+        }
+
         const handleLoad = () => setIsLoaded(true);
         if (document.readyState === "complete") {
             handleLoad();
@@ -24,11 +30,11 @@ export function Preloader() {
         const progressInterval = setInterval(() => {
             setProgress((prev) => {
                 if (isLoaded && prev >= 100) return 100;
-                if (prev < 90) return prev + 5; // Fill significantly faster
-                if (isLoaded) return prev + 15; // Complete quickly when ready
+                if (prev < 90) return prev + 10; // Fill significantly faster
+                if (isLoaded) return prev + 25; // Complete quickly when ready
                 return prev;
             });
-        }, 15); // Run more frequently
+        }, 10); // Run more frequently
 
         return () => {
             clearInterval(progressInterval);
@@ -38,7 +44,8 @@ export function Preloader() {
 
     useEffect(() => {
         if (progress >= 100) {
-            const timer = setTimeout(() => setLoading(false), 100);
+            sessionStorage.setItem("hasVisited", "true");
+            const timer = setTimeout(() => setLoading(false), 50);
             return () => clearTimeout(timer);
         }
     }, [progress]);
@@ -58,7 +65,7 @@ export function Preloader() {
                         opacity: 0,
                         scale: 1.05,
                         filter: "blur(20px)",
-                        transition: { duration: 1.5, ease: [0.7, 0, 0.3, 1] }
+                        transition: { duration: 0.5, ease: [0.7, 0, 0.3, 1] }
                     }}
                     className="fixed inset-0 bg-[#050505] z-[99999] flex flex-col justify-center items-center overflow-hidden"
                 >
@@ -98,7 +105,7 @@ export function Preloader() {
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9, y: 30, filter: "blur(15px)" }}
                             animate={{ opacity: 1, scale: 1, y: 0, filter: "blur(0px)" }}
-                            transition={{ duration: 2, ease: [0.16, 1, 0.3, 1] }}
+                            transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                             className="relative w-64 h-24 md:w-80 md:h-32 mb-12 flex items-center justify-center"
                         >
                             {/* Inner Aura */}
@@ -122,7 +129,7 @@ export function Preloader() {
                             <motion.h1
                                 initial={{ letterSpacing: "1.2em", opacity: 0, filter: "blur(8px)" }}
                                 animate={{ letterSpacing: "0.5em", opacity: 1, filter: "blur(0px)" }}
-                                transition={{ delay: 0.4, duration: 2.2, ease: [0.16, 1, 0.3, 1] }}
+                                transition={{ delay: 0.2, duration: 1, ease: [0.16, 1, 0.3, 1] }}
                                 className="font-serif text-2xl md:text-3xl lg:text-4xl text-heritage-gold font-medium tracking-[0.5em] whitespace-nowrap text-center"
                             >
                                 {title}
@@ -133,7 +140,7 @@ export function Preloader() {
                         <motion.div
                             initial={{ opacity: 0, y: 5 }}
                             animate={{ opacity: 0.7, y: 0 }}
-                            transition={{ delay: 1.5, duration: 1.2 }}
+                            transition={{ delay: 0.5, duration: 0.8 }}
                             className="flex items-center gap-4 mb-20"
                         >
                             <div className="w-12 h-[1px] bg-gradient-to-r from-transparent to-heritage-gold/50" />
