@@ -18,10 +18,16 @@ export function Preloader() {
         // as the user requested it to stay until fully loaded
 
         const handleLoad = () => setIsLoaded(true);
+
+        // Listen for our custom event when the hero image finishes loading
+        window.addEventListener("heroImageLoaded", handleLoad);
+
+        // Fallback: If no hero image (e.g., on other pages) or if the event takes too long, 
+        // fallback to window load with a slight delay
         if (document.readyState === "complete") {
-            handleLoad();
+            setTimeout(handleLoad, 1500);
         } else {
-            window.addEventListener("load", handleLoad);
+            window.addEventListener("load", () => setTimeout(handleLoad, 1500));
         }
 
         const progressInterval = setInterval(() => {
@@ -36,12 +42,13 @@ export function Preloader() {
         return () => {
             clearInterval(progressInterval);
             window.removeEventListener("load", handleLoad);
+            window.removeEventListener("heroImageLoaded", handleLoad);
         };
     }, [isLoaded]);
 
     useEffect(() => {
         if (progress >= 100) {
-            const timer = setTimeout(() => setLoading(false), 400); // Give a little buffer before vanishing
+            const timer = setTimeout(() => setLoading(false), 200); // Give a little buffer before vanishing
             return () => clearTimeout(timer);
         }
     }, [progress]);

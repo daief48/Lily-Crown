@@ -223,6 +223,11 @@ export function Hero() {
                                         quality={90}
                                         loading={currentSlide === 0 ? "eager" : "lazy"}
                                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                        onLoad={() => {
+                                            if (currentSlide === 0) {
+                                                window.dispatchEvent(new Event("heroImageLoaded"));
+                                            }
+                                        }}
                                     />
                                     <div className="absolute inset-0 bg-gradient-to-t from-emerald-royal/20 via-transparent to-transparent group-hover:from-emerald-royal/10 transition-all duration-300"></div>
                                 </motion.div>
