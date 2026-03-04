@@ -61,6 +61,7 @@
                         <th style="width: 10px">#</th>
                         <th>Image</th>
                         <th>Title</th>
+                        <th>Highlight</th>
                         <th>Order</th>
                         <th>Status</th>
                         <th style="width: 150px">Actions</th>
@@ -81,6 +82,7 @@
                                 @endif
                             </td>
                             <td>{{ $slide->title }}</td>
+                            <td><span class="badge badge-info">{{ $slide->highlight }}</span></td>
                             <td>{{ $slide->order }}</td>
                             <td>
                                 <span class="badge {{ $slide->is_active ? 'badge-success' : 'badge-danger' }}">

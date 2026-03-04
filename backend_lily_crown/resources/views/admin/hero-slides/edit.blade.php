@@ -1,6 +1,7 @@
 @extends('adminlte::page')
 
 @section('title', 'Edit Hero Slide')
+@section('plugins.Select2', true)
 
 @section('content_header')
     <h1>Edit Hero Slide</h1>
@@ -24,12 +25,25 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="form-group mb-4">
-                        <label for="title" class="luxury-label">Title</label>
-                        <input type="text" name="title" class="form-control luxury-input @error('title') is-invalid @enderror" id="title" placeholder="Enter title" value="{{ old('title', $heroSlide->title) }}">
-                        @error('title')
-                            <span class="invalid-feedback">{{ $message }}</span>
-                        @enderror
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group mb-4">
+                                <label for="title" class="luxury-label">Title</label>
+                                <input type="text" name="title" class="form-control luxury-input @error('title') is-invalid @enderror" id="title" placeholder="Enter title" value="{{ old('title', $heroSlide->title) }}">
+                                @error('title')
+                                    <span class="invalid-feedback">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-4">
+                                <label for="highlight" class="luxury-label">Highlight Word</label>
+                                <input type="text" name="highlight" class="form-control luxury-input @error('highlight') is-invalid @enderror" id="highlight" placeholder="e.g. Royal" value="{{ old('highlight', $heroSlide->highlight) }}">
+                                @error('highlight')
+                                    <span class="invalid-feedback">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="form-group mb-4">
@@ -41,7 +55,7 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group mb-4">
                                 <label for="button_text" class="luxury-label">Button Text</label>
                                 <input type="text" name="button_text" class="form-control luxury-input @error('button_text') is-invalid @enderror" id="button_text" placeholder="Enter button text" value="{{ old('button_text', $heroSlide->button_text) }}">
@@ -50,13 +64,26 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group mb-4">
                                 <label for="button_link" class="luxury-label">Button Link</label>
                                 <input type="text" name="button_link" class="form-control luxury-input @error('button_link') is-invalid @enderror" id="button_link" placeholder="Enter button link" value="{{ old('button_link', $heroSlide->button_link) }}">
                                 @error('button_link')
                                     <span class="invalid-feedback">{{ $message }}</span>
                                 @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-4">
+                                <label for="product_id" class="luxury-label">Link to Product</label>
+                                <select name="product_id" id="product_id" class="form-control luxury-input select2">
+                                    <option value="">-- Optional: Select Product --</option>
+                                    @foreach($products as $product)
+                                        <option value="{{ $product->id }}" {{ old('product_id', $heroSlide->product_id) == $product->id ? 'selected' : '' }}>
+                                            {{ $product->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -146,6 +173,14 @@
 @section('js')
 <script>
     $(function() {
+        // Initialize Select2
+        $('.select2').select2({
+            theme: 'bootstrap4',
+            width: '100%',
+            placeholder: "-- Optional: Select Product --",
+            allowClear: true
+        });
+
         // Update file input label and show preview
         $('#image').on('change', function() {
             var fileName = $(this).val().split('\\').pop();

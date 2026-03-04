@@ -1,6 +1,7 @@
 @extends('adminlte::page')
 
 @section('title', 'Add Hero Slide')
+@section('plugins.Select2', true)
 
 @section('content_header')
     <h1>Add Hero Slide</h1>
@@ -23,12 +24,25 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="form-group mb-4">
-                        <label for="title" class="luxury-label">Title</label>
-                        <input type="text" name="title" class="form-control luxury-input @error('title') is-invalid @enderror" id="title" placeholder="Enter headline title" value="{{ old('title') }}">
-                        @error('title')
-                            <span class="error invalid-feedback">{{ $message }}</span>
-                        @enderror
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="form-group mb-4">
+                                <label for="title" class="luxury-label">Title</label>
+                                <input type="text" name="title" class="form-control luxury-input @error('title') is-invalid @enderror" id="title" placeholder="Enter headline title" value="{{ old('title') }}">
+                                @error('title')
+                                    <span class="error invalid-feedback">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-4">
+                                <label for="highlight" class="luxury-label">Highlight Word</label>
+                                <input type="text" name="highlight" class="form-control luxury-input @error('highlight') is-invalid @enderror" id="highlight" placeholder="e.g. Royal" value="{{ old('highlight') }}">
+                                @error('highlight')
+                                    <span class="error invalid-feedback">{{ $message }}</span>
+                                @enderror
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="form-group mb-4">
@@ -40,22 +54,35 @@
                     </div>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group mb-4">
-                                <label for="button_text" class="luxury-label">Call to Action Text</label>
+                                <label for="button_text" class="luxury-label">CTA Text</label>
                                 <input type="text" name="button_text" class="form-control luxury-input @error('button_text') is-invalid @enderror" id="button_text" placeholder="e.g. Explore Now" value="{{ old('button_text') }}">
                                 @error('button_text')
                                     <span class="error invalid-feedback">{{ $message }}</span>
                                 @enderror
                             </div>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <div class="form-group mb-4">
-                                <label for="button_link" class="luxury-label">Action Link Path</label>
-                                <input type="text" name="button_link" class="form-control luxury-input @error('button_link') is-invalid @enderror" id="button_link" placeholder="/shop or https://..." value="{{ old('button_link') }}">
+                                <label for="button_link" class="luxury-label">Link Path</label>
+                                <input type="text" name="button_link" class="form-control luxury-input @error('button_link') is-invalid @enderror" id="button_link" placeholder="/shop" value="{{ old('button_link') }}">
                                 @error('button_link')
                                     <span class="error invalid-feedback">{{ $message }}</span>
                                 @enderror
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group mb-4">
+                                <label for="product_id" class="luxury-label">Link to Product</label>
+                                <select name="product_id" id="product_id" class="form-control luxury-input select2">
+                                    <option value="">-- Optional: Select Product --</option>
+                                    @foreach($products as $product)
+                                        <option value="{{ $product->id }}" {{ old('product_id') == $product->id ? 'selected' : '' }}>
+                                            {{ $product->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -133,6 +160,14 @@
 @section('js')
 <script>
     $(function() {
+        // Initialize Select2
+        $('.select2').select2({
+            theme: 'bootstrap4',
+            width: '100%',
+            placeholder: "-- Optional: Select Product --",
+            allowClear: true
+        });
+
         // Update file input label and show preview
         $('#image').on('change', function() {
             var fileName = $(this).val().split('\\').pop();

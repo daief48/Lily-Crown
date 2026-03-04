@@ -142,22 +142,24 @@ export function Hero() {
                                 className="flex flex-col sm:flex-row gap-4 pt-4"
                             >
                                 <Link
-                                    href="/shop"
+                                    href={slides[currentSlide].link || "/shop"}
                                     className="group relative inline-flex items-center justify-center px-8 py-4 bg-gradient-to-r from-emerald-royal to-emerald-800 text-white font-semibold uppercase tracking-wider text-sm overflow-hidden rounded-lg transition-all duration-300 hover:shadow-xl hover:-translate-y-1"
                                 >
                                     <span className="relative z-10 flex items-center gap-2">
-                                        {t("hero_shop_btn")}
+                                        {slides[currentSlide].button_text || t("hero_shop_btn")}
                                         <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
                                     </span>
                                     <div className="absolute inset-0 bg-gradient-to-r from-heritage-gold to-emerald-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
                                 </Link>
 
-                                <Link
-                                    href="/about"
-                                    className="group relative inline-flex items-center justify-center px-8 py-4 border-2 border-luxury-black text-luxury-black font-semibold uppercase tracking-wider text-sm rounded-lg transition-all duration-300 hover:bg-luxury-black hover:text-white"
-                                >
-                                    {t("hero_story_btn")}
-                                </Link>
+                                {!slides[currentSlide].product_id && (
+                                    <Link
+                                        href="/about"
+                                        className="group relative inline-flex items-center justify-center px-8 py-4 border-2 border-luxury-black text-luxury-black font-semibold uppercase tracking-wider text-sm rounded-lg transition-all duration-300 hover:bg-luxury-black hover:text-white"
+                                    >
+                                        {t("hero_story_btn")}
+                                    </Link>
+                                )}
                             </motion.div>
 
                             {/* Stats */}
@@ -231,8 +233,8 @@ export function Hero() {
                             key={index}
                             onClick={() => setCurrentSlide(index)}
                             className={`transition-all duration-300 rounded-full ${index === currentSlide
-                                    ? "bg-luxury-black w-8 h-2"
-                                    : "bg-gray-300 hover:bg-gray-400 w-2 h-2"
+                                ? "bg-luxury-black w-8 h-2"
+                                : "bg-gray-300 hover:bg-gray-400 w-2 h-2"
                                 }`}
                             whileHover={{ scale: 1.2 }}
                             aria-label={`Go to slide ${index + 1}`}
