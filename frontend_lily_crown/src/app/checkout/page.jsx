@@ -13,7 +13,7 @@ import { getOptimizedImage } from "@/lib/utils";
 import { RoyalImage } from "@/components/ui/RoyalImage";
 
 export default function CheckoutPage() {
-    const { cartItems, cartTotal, clearCart, updateQuantity, removeFromCart, updateVariant } = useStore();
+    const { cartItems, cartTotal, clearCart, updateQuantity, removeFromCart, updateVariant, showToast } = useStore();
     const { user, loading } = useAuth();
     const { t } = useLanguage();
     const router = useRouter();
@@ -53,6 +53,19 @@ export default function CheckoutPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        // Validation: Ensure all items have variations selected
+        const incompleteItems = cartItems.filter(item => {
+            const needsSize = Array.isArray(item.sizes) && item.sizes.length > 0;
+            const needsColor = Array.isArray(item.colors) && item.colors.length > 0;
+            return (needsSize && !item.selectedSize) || (needsColor && !item.selectedColor);
+        });
+
+        if (incompleteItems.length > 0) {
+            showToast(t('product_error_incomplete_selection', { name: incompleteItems[0].name }), 'error');
+            return;
+        }
+
         setIsSubmitting(true);
 
         try {
@@ -79,11 +92,11 @@ export default function CheckoutPage() {
                 clearCart();
                 router.push(`/checkout/success?order_id=${data.order_id}`);
             } else {
-                alert(t('checkout_error_generic') || "Something went wrong. Please try again.");
+                showToast(t('checkout_error_generic') || "Something went wrong. Please try again.", "error");
             }
         } catch (error) {
             console.error("Order submission error:", error);
-            alert(t('checkout_error_connection') || "Connection error. Please try again.");
+            showToast(t('checkout_error_connection') || "Connection error. Please try again.", "error");
         } finally {
             setIsSubmitting(false);
         }

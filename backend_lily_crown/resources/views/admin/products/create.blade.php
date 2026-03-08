@@ -39,6 +39,14 @@
                             @enderror
                         </div>
 
+                        <div class="form-group mb-4">
+                            <label for="admin_product_key" class="luxury-label">Unique Product Key (Admin Only)</label>
+                            <input type="text" name="admin_product_key" class="form-control luxury-input @error('admin_product_key') is-invalid @enderror" id="admin_product_key" placeholder="Enter unique key" value="{{ old('admin_product_key') }}">
+                            @error('admin_product_key')
+                                <span class="error invalid-feedback">{{ $message }}</span>
+                            @enderror
+                        </div>
+
                         <div class="form-group">
                             <label for="category_id" class="luxury-label">Parent Collection</label>
                             <select name="category_id" id="category_id" class="form-control luxury-input @error('category_id') is-invalid @enderror" required>

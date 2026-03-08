@@ -20,6 +20,11 @@ class ProductController extends Controller
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
+        // Product Key Filter
+        if ($request->filled('admin_product_key')) {
+            $query->where('admin_product_key', 'like', '%' . $request->admin_product_key . '%');
+        }
+
         // Category Filter
         if ($request->filled('category_id')) {
             $query->where('category_id', $request->category_id);
@@ -53,6 +58,7 @@ class ProductController extends Controller
             $validated = $request->validate([
                 'name' => 'required|string|max:255',
                 'slug' => 'required|string|unique:products,slug',
+                'admin_product_key' => 'nullable|string|max:255',
                 'category_id' => 'required|exists:categories,id',
                 'description' => 'nullable|string',
                 'price' => 'required|numeric',
@@ -133,6 +139,7 @@ class ProductController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'slug' => 'required|string|unique:products,slug,'.$id,
+            'admin_product_key' => 'nullable|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
             'price' => 'required|numeric',

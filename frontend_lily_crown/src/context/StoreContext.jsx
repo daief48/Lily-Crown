@@ -12,7 +12,7 @@ export function StoreProvider({ children }) {
     const [isCartOpen, setIsCartOpen] = useState(false);
     const [isWishlistOpen, setIsWishlistOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
-    const [toast, setToast] = useState({ message: "", visible: false });
+    const [toast, setToast] = useState({ message: "", type: "success", visible: false });
 
     // Load from LocalStorage
     useEffect(() => {
@@ -131,10 +131,10 @@ export function StoreProvider({ children }) {
         setCartItems([]);
     };
 
-    const showToast = (message) => {
-        setToast({ message, visible: true });
+    const showToast = (message, type = "success") => {
+        setToast({ message, type, visible: true });
         setTimeout(() => {
-            setToast({ message: "", visible: false });
+            setToast({ message: "", type: "success", visible: false });
         }, 3000);
     };
 

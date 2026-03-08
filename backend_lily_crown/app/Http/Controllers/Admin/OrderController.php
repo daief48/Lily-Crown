@@ -20,6 +20,12 @@ class OrderController extends Controller
             });
         }
 
+        // Product Key Filter
+        if ($request->filled('product_key')) {
+            $key = $request->product_key;
+            $query->where('items', 'like', "%{$key}%");
+        }
+
         // Status Filter
         if ($request->filled('status')) {
             $query->where('status', $request->status);

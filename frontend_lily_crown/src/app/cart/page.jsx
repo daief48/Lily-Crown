@@ -13,7 +13,7 @@ import { getOptimizedImage } from "@/lib/utils";
 import { RoyalImage } from "@/components/ui/RoyalImage";
 
 export default function CartPage() {
-    const { cartItems, removeFromCart, updateQuantity, updateVariant, cartTotal } = useStore();
+    const { cartItems, removeFromCart, updateQuantity, updateVariant, cartTotal, showToast } = useStore();
     const { t } = useLanguage();
 
 
@@ -185,13 +185,25 @@ export default function CartPage() {
                                     </div>
                                 </div>
 
-                                <Link
-                                    href="/checkout"
+                                <button
+                                    onClick={() => {
+                                        const incompleteItems = cartItems.filter(item => {
+                                            const needsSize = Array.isArray(item.sizes) && item.sizes.length > 0;
+                                            const needsColor = Array.isArray(item.colors) && item.colors.length > 0;
+                                            return (needsSize && !item.selectedSize) || (needsColor && !item.selectedColor);
+                                        });
+
+                                        if (incompleteItems.length > 0) {
+                                            showToast(t('product_error_incomplete_selection', { name: incompleteItems[0].name }), 'error');
+                                            return;
+                                        }
+                                        window.location.href = "/checkout";
+                                    }}
                                     className="w-full py-4 bg-heritage-gold text-white uppercase tracking-widest text-xs font-bold hover:bg-emerald-royal transition-all shadow-lg flex items-center justify-center gap-2 group"
                                 >
                                     {t('cart_checkout_btn')}
                                     <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
-                                </Link>
+                                </button>
 
                                 <p className="text-[10px] text-center text-emerald-royal/40 mt-4 italic">
                                     {t('cart_secure_checkout_guarantee')}

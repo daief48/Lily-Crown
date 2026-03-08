@@ -31,8 +31,8 @@
                 <div class="row">
                     <div class="col-md-3">
                         <div class="form-group">
-                            <label>Search Name</label>
-                            <input type="text" name="search" class="form-control" placeholder="Product Name..." value="{{ request('search') }}">
+                            <label>Product Key</label>
+                            <input type="text" name="admin_product_key" class="form-control" placeholder="Key..." value="{{ request('admin_product_key') }}">
                         </div>
                     </div>
                     <div class="col-md-3">
@@ -86,6 +86,7 @@
                         <th style="width: 10px">#</th>
                         <th>Image</th>
                         <th>Name</th>
+                        <th>Key</th>
                         <th>Category</th>
                         <th>Price</th>
                         <th>Badge</th>
@@ -107,6 +108,7 @@
                                 @endif
                             </td>
                             <td>{{ $product->name }}</td>
+                            <td><code class="text-royal">{{ $product->admin_product_key ?? 'N/A' }}</code></td>
                             <td>{{ $product->category->name ?? 'N/A' }}</td>
                             <td>${{ number_format($product->price, 2) }}</td>
                             <td><span class="badge badge-info">{{ $product->badge }}</span></td>

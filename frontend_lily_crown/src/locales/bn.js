@@ -225,6 +225,8 @@ const bn = {
     product_error_select_size: "দয়া করে উপরের তালিকা থেকে একটি সাইজ বেছে নিন।",
     product_error_select_color: "দয়া করে উপরের তালিকা থেকে একটি রঙ বেছে নিন।",
     product_error_select_variation: "প্রথমে দয়া করে আপনার পছন্দের সাইজ এবং রঙ নির্বাচন করুন।",
+    product_error_incomplete_selection: "{{name}}-এর জন্য সাইজ এবং রঙ নির্বাচন করুন।",
+    product_added_to_list: "আপনার তালিকায় {{quantity}}টি যোগ করা হয়েছে।",
     product_added_to_list: "আপনার তালিকায় {{quantity}}টি যোগ করা হয়েছে।",
     product_added_to_bag: "{{name}} কার্টে যোগ করা হয়েছে।",
     product_original_piece: "অরিজিনাল পিস",

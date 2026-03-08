@@ -225,6 +225,8 @@ const en = {
     product_error_select_size: "Please choose a Size above.",
     product_error_select_color: "Please choose a Color above.",
     product_error_select_variation: "Please select your desired Size and Color first.",
+    product_error_incomplete_selection: "Please select Size and Color for: {{name}}",
+    product_added_to_list: "Added {{quantity}} to your selection list.",
     product_added_to_list: "Added {{quantity}} to your selection list.",
     product_added_to_bag: "{{name}} added to your bag.",
     product_original_piece: "Original Piece",

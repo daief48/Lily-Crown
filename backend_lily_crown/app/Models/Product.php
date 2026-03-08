@@ -13,6 +13,7 @@ class Product extends Model
         'category_id',
         'name',
         'slug',
+        'admin_product_key',
         'description',
         'price',
         'badge',

@@ -20,13 +20,19 @@
         <div class="card-body">
             <form method="GET" action="{{ route('orders.index') }}">
                 <div class="row">
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>Search Order</label>
-                            <input type="text" name="search" class="form-control" placeholder="Order ID or Customer Name..." value="{{ request('search') }}">
+                            <input type="text" name="search" class="form-control" placeholder="ID or Name..." value="{{ request('search') }}">
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <label>Product Key</label>
+                            <input type="text" name="product_key" class="form-control" placeholder="Key..." value="{{ request('product_key') }}">
+                        </div>
+                    </div>
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>Status</label>
                             <select name="status" class="form-control">
@@ -39,7 +45,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-3">
                         <div class="form-group">
                             <label>&nbsp;</label>
                             <div class="d-flex">
@@ -64,6 +70,7 @@
                     <tr>
                         <th style="width: 10px">#</th>
                         <th>Customer</th>
+                        <th>Product Keys</th>
                         <th>Total</th>
                         <th>Status</th>
                         <th>Date</th>
@@ -77,6 +84,15 @@
                             <td>
                                 <b>{{ $order->customer_name }}</b><br>
                                 <small>{{ $order->customer_email }}</small>
+                            </td>
+                            <td>
+                                @php
+                                    $items = is_string($order->items) ? json_decode($order->items, true) : $order->items;
+                                    $keys = collect($items)->pluck('admin_product_key')->filter()->unique();
+                                @endphp
+                                @foreach($keys as $key)
+                                    <span class="badge badge-secondary" style="font-family: monospace;">{{ $key }}</span>
+                                @endforeach
                             </td>
                             <td>${{ number_format($order->total, 2) }}</td>
                             <td>
