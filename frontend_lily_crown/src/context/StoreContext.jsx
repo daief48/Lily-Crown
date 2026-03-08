@@ -73,7 +73,8 @@ export function StoreProvider({ children }) {
 
         const colorObj = color ? {
             name: color.name,
-            hex: color.hex || color.hex_code
+            hex: color.hex || color.hex_code,
+            product_key: color.product_key || null
         } : null;
 
         setCartItems((prev) => {
@@ -147,7 +148,8 @@ export function StoreProvider({ children }) {
             const sizeStr = newSize && typeof newSize === "object" ? newSize.name : newSize;
             const colorObj = newColor ? {
                 name: newColor.name,
-                hex: newColor.hex || newColor.hex_code
+                hex: newColor.hex || newColor.hex_code,
+                product_key: newColor.product_key || null
             } : null;
 
             const newVariantId = `${productId}-${sizeStr || "any"}-${colorObj?.name || "any"}`;

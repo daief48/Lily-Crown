@@ -148,8 +148,8 @@ export function Navbar() {
             className={cn(
                 "fixed top-0 left-0 right-0 z-50 transition-all duration-500",
                 isScrolled
-                    ? "bg-white/95 backdrop-blur-md shadow-lg py-3 border-b border-heritage-gold/10"
-                    : "bg-white/85 backdrop-blur-sm py-4"
+                    ? "bg-white/95 backdrop-blur-md shadow-lg py-5 border-b border-heritage-gold/10"
+                    : "bg-white/85 backdrop-blur-sm py-7"
             )}
         >
             <div className="w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-8 lg:px-10">

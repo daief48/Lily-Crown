@@ -20,9 +20,15 @@ class ProductController extends Controller
             $query->where('name', 'like', '%' . $request->search . '%');
         }
 
-        // Product Key Filter
+        // Product Key Filter (Searches both main key and color-specific keys)
         if ($request->filled('admin_product_key')) {
-            $query->where('admin_product_key', 'like', '%' . $request->admin_product_key . '%');
+            $searchKey = $request->admin_product_key;
+            $query->where(function($q) use ($searchKey) {
+                $q->where('admin_product_key', 'like', '%' . $searchKey . '%')
+                  ->orWhereHas('colors', function($cq) use ($searchKey) {
+                      $cq->where('product_key', 'like', '%' . $searchKey . '%');
+                  });
+            });
         }
 
         // Category Filter
@@ -101,11 +107,18 @@ class ProductController extends Controller
         }
 
         try {
-            $product = Product::create($data); // Changed to use imported Product model
-
-            // Sync sizes and colors
+            // Sync sizes
             $product->sizes()->sync($request->input('sizes', []));
-            $product->colors()->sync($request->input('colors', [])); // Added
+
+            // Sync colors with product keys
+            $colors = $request->input('colors', []);
+            $colorKeys = $request->input('color_keys', []);
+            $syncData = [];
+            foreach ($colors as $colorId) {
+                $syncData[$colorId] = ['product_key' => $colorKeys[$colorId] ?? null];
+            }
+            $product->colors()->sync($syncData);
+
             \Log::info('Product created successfully', ['id' => $product->id]);
         } catch (\Exception $e) {
             \Log::error('Product creation failed in DB', ['error' => $e->getMessage()]);
@@ -171,9 +184,17 @@ class ProductController extends Controller
 
         $product->update($data);
 
-        // Sync sizes and colors
+        // Sync sizes
         $product->sizes()->sync($request->input('sizes', []));
-        $product->colors()->sync($request->input('colors', [])); // Added
+
+        // Sync colors with product keys
+        $colors = $request->input('colors', []);
+        $colorKeys = $request->input('color_keys', []);
+        $syncData = [];
+        foreach ($colors as $colorId) {
+            $syncData[$colorId] = ['product_key' => $colorKeys[$colorId] ?? null];
+        }
+        $product->colors()->sync($syncData);
 
         return redirect()->route('products.index')->with('success', 'Product updated successfully');
     }

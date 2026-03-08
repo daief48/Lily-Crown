@@ -45,7 +45,7 @@ class Product extends Model
 
     public function colors(): BelongsToMany
     {
-        return $this->belongsToMany(Color::class, 'product_colors');
+        return $this->belongsToMany(Color::class, 'product_colors')->withPivot('product_key');
     }
 
     public function variants(): HasMany

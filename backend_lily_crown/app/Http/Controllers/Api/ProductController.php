@@ -78,7 +78,11 @@ class ProductController extends Controller
 
             // Merge Colors
             $colorsFromDirect = $product->colors->map(function ($color) {
-                return ['name' => $color->name, 'hex' => $color->hex_code];
+                return [
+                    'name' => $color->name, 
+                    'hex' => $color->hex_code,
+                    'product_key' => $color->pivot->product_key ?? null
+                ];
             });
             $colorsFromVariants = $product->variants->map(function ($variant) {
                 if (!$variant->color) return null;
@@ -112,7 +116,11 @@ class ProductController extends Controller
 
         // Merge Colors
         $colorsFromDirect = $product->colors->map(function ($color) {
-            return ['name' => $color->name, 'hex' => $color->hex_code];
+            return [
+                'name' => $color->name, 
+                'hex' => $color->hex_code,
+                'product_key' => $color->pivot->product_key ?? null
+            ];
         });
         $colorsFromVariants = $product->variants->map(function ($variant) {
             if (!$variant->color) return null;

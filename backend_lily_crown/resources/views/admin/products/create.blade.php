@@ -187,6 +187,7 @@
                                             name="colors[]"
                                             value="{{ $color->id }}"
                                             class="d-none color-checkbox"
+                                            data-color-name="{{ $color->name }}"
                                             {{ in_array($color->id, old('colors', [])) ? 'checked' : '' }}
                                         >
                                         <span class="color-swatch-admin {{ in_array($color->id, old('colors', [])) ? 'active' : '' }}" style="background-color: {{ $color->hex_code }};">
@@ -194,6 +195,23 @@
                                         </span>
                                     </label>
                                 @endforeach
+                            </div>
+
+                            <div id="color-keys-container" class="mt-4" style="display: {{ (!empty(old('colors'))) ? 'block' : 'none' }};">
+                                <h4 class="section-title mb-3" style="font-size: 0.9rem;"><i class="fas fa-key mr-2"></i>Color Keys</h4>
+                                <div id="color-keys-list">
+                                    @if(!empty(old('colors')))
+                                        @foreach(old('colors') as $colorId)
+                                            @php $color = $colors->firstWhere('id', $colorId); @endphp
+                                            @if($color)
+                                                <div class="form-group mb-2 color-key-input" data-color-id="{{ $colorId }}">
+                                                    <label class="small mb-1 text-muted">{{ $color->name }} Variant Key</label>
+                                                    <input type="text" name="color_keys[{{ $colorId }}]" class="form-control luxury-input form-control-sm" placeholder="e.g. {{ strtoupper($color->name) }}-001" value="{{ old('color_keys.' . $colorId) }}">
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    @endif
+                                </div>
                             </div>
                         @endif
                     </div>
@@ -266,10 +284,28 @@
         // Color checkbox toggle
         $(document).on('change', '.color-checkbox', function() {
             var swatch = $(this).siblings('.color-swatch-admin');
+            var colorId = $(this).val();
+            var colorName = $(this).data('color-name');
+
             if ($(this).is(':checked')) {
                 swatch.addClass('active');
+                $('#color-keys-container').show();
+                
+                if ($(`.color-key-input[data-color-id="${colorId}"]`).length === 0) {
+                    $('#color-keys-list').append(`
+                        <div class="form-group mb-2 color-key-input" data-color-id="${colorId}">
+                            <label class="small mb-1 text-muted">${colorName} Variant Key</label>
+                            <input type="text" name="color_keys[${colorId}]" class="form-control luxury-input form-control-sm" placeholder="e.g. ${colorName.toUpperCase()}-001">
+                        </div>
+                    `);
+                }
             } else {
                 swatch.removeClass('active');
+                $(`.color-key-input[data-color-id="${colorId}"]`).remove();
+                
+                if ($('#color-keys-list').children().length === 0) {
+                    $('#color-keys-container').hide();
+                }
             }
         });
     });

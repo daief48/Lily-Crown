@@ -7,7 +7,7 @@ export function PageWrapper({ children, showFooter = true }) {
     return (
         <>
             <Navbar />
-            <main className="min-h-screen pt-[60px] sm:pt-[70px]">
+            <main className="min-h-screen pt-[85px] sm:pt-[95px]">
                 {children}
             </main>
             {showFooter && <Footer />}

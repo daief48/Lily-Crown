@@ -32,6 +32,14 @@ class OrderController extends Controller
             $query->where('items', 'like', "%{$key}%");
         }
 
+        // Date Filter
+        if ($request->filled('start_date')) {
+            $query->whereDate('created_at', '>=', $request->start_date);
+        }
+        if ($request->filled('end_date')) {
+            $query->whereDate('created_at', '<=', $request->end_date);
+        }
+
         // Status Filter
         if ($request->filled('status')) {
             $query->where('status', $request->status);
