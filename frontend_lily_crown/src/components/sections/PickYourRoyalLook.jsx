@@ -10,6 +10,7 @@ import { getOptimizedImage } from "@/lib/utils";
 import Skeleton from "@/components/ui/Skeleton";
 import { RoyalImage } from "@/components/ui/RoyalImage";
 import { useLanguage } from "@/context/LanguageContext";
+import { PickYourRoyalLookSkeleton } from "@/components/ui/SectionSkeletons";
 
 export function PickYourRoyalLook({ initialItems = [] }) {
     const { t } = useLanguage();
@@ -40,7 +41,7 @@ export function PickYourRoyalLook({ initialItems = [] }) {
     };
 
     if (loading && items.length === 0) {
-        return <SectionSkeleton />;
+        return <PickYourRoyalLookSkeleton />;
     }
 
     if (items.length === 0) return null;
@@ -128,23 +129,3 @@ export function PickYourRoyalLook({ initialItems = [] }) {
     );
 }
 
-function SectionSkeleton() {
-    return (
-        <section className="py-24 bg-muslin-cream">
-            <div className="max-w-7xl mx-auto px-4 md:px-6">
-                <div className="text-center mb-16 space-y-4 flex flex-col items-center">
-                    <Skeleton className="h-4 w-32" />
-                    <Skeleton className="h-12 w-64" />
-                    <Skeleton className="h-1 w-24" />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {[...Array(7)].map((_, i) => (
-                        <div key={i} className="aspect-[3/4] rounded-xl overflow-hidden">
-                            <Skeleton className="w-full h-full" />
-                        </div>
-                    ))}
-                </div>
-            </div>
-        </section>
-    );
-}

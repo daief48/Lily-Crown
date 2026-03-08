@@ -2,23 +2,39 @@ import dynamic from 'next/dynamic';
 import { Navbar, Hero } from "@/components";
 import Skeleton from "@/components/ui/Skeleton";
 
+import {
+    CategoriesSkeleton,
+    PickYourRoyalLookSkeleton,
+    TrendingSkeleton,
+    FeaturesSkeleton,
+    TestimonialsSkeleton,
+    BlogPreviewSkeleton,
+    InstagramFeedSkeleton
+} from '@/components/ui/SectionSkeletons';
+
 // Lazy load non-critical components directly from their source files to avoid barrel-file bloat
 const Categories = dynamic(() => import('@/components/sections/Categories').then(mod => ({ default: mod.Categories })), {
-    loading: () => <div className="py-24 max-w-7xl mx-auto px-4 md:px-6"><div className="grid grid-cols-2 md:grid-cols-4 gap-6">{[1, 2, 3, 4].map(i => <Skeleton key={i} className="aspect-[4/5] rounded-2xl" />)}</div></div>
+    loading: CategoriesSkeleton
 });
 const FeaturedProducts = dynamic(() => import('@/components/sections/FeaturedProducts').then(mod => ({ default: mod.FeaturedProducts })));
 const PickYourRoyalLook = dynamic(() => import('@/components/sections/PickYourRoyalLook').then(mod => ({ default: mod.PickYourRoyalLook })), {
-    loading: () => <div className="py-24 max-w-7xl mx-auto px-4 md:px-6"><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">{[1, 2, 3, 4].map(i => <Skeleton key={i} className="aspect-[3/4] rounded-xl" />)}</div></div>
+    loading: PickYourRoyalLookSkeleton
 });
 const Trending = dynamic(() => import('@/components/sections/Trending').then(mod => ({ default: mod.Trending })), {
-    loading: () => <div className="py-24 max-w-7xl mx-auto px-4 md:px-6"><div className="flex gap-6 overflow-hidden md:flex-row flex-col">{[1, 2, 3, 4].map(i => <Skeleton key={i} className="flex-shrink-0 w-full md:w-[320px] aspect-[16/9] md:aspect-[3/4] rounded-lg" />)}</div></div>
+    loading: TrendingSkeleton
 });
 const Features = dynamic(() => import('@/components/sections/Features').then(mod => ({ default: mod.Features })), {
-    loading: () => <div className="py-16 bg-white/50"><div className="max-w-7xl mx-auto px-4 md:px-6 grid grid-cols-2 md:grid-cols-4 gap-8">{[1, 2, 3, 4].map(i => <Skeleton key={i} className="h-24 rounded-2xl" />)}</div></div>
+    loading: FeaturesSkeleton
 });
-const Testimonials = dynamic(() => import('@/components/sections/Testimonials').then(mod => ({ default: mod.Testimonials })));
-const BlogPreview = dynamic(() => import('@/components/sections/BlogPreview').then(mod => ({ default: mod.BlogPreview })));
-const InstagramFeed = dynamic(() => import('@/components/sections/InstagramFeed').then(mod => ({ default: mod.InstagramFeed })));
+const Testimonials = dynamic(() => import('@/components/sections/Testimonials').then(mod => ({ default: mod.Testimonials })), {
+    loading: TestimonialsSkeleton
+});
+const BlogPreview = dynamic(() => import('@/components/sections/BlogPreview').then(mod => ({ default: mod.BlogPreview })), {
+    loading: BlogPreviewSkeleton
+});
+const InstagramFeed = dynamic(() => import('@/components/sections/InstagramFeed').then(mod => ({ default: mod.InstagramFeed })), {
+    loading: InstagramFeedSkeleton
+});
 const Newsletter = dynamic(() => import('@/components/sections/Newsletter').then(mod => ({ default: mod.Newsletter })));
 const Footer = dynamic(() => import('@/components/layout/Footer').then(mod => ({ default: mod.Footer })));
 const WishlistModal = dynamic(() => import('@/components/ui/WishlistModal').then(mod => ({ default: mod.WishlistModal })));

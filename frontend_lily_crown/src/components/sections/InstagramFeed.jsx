@@ -9,7 +9,6 @@ import { RoyalImage } from "@/components/ui/RoyalImage";
 import { api } from "@/lib/api";
 import { getOptimizedImage } from "@/lib/utils";
 import { useLanguage } from "@/context/LanguageContext";
-
 export function InstagramFeed() {
     const { t } = useLanguage();
     const [posts, setPosts] = React.useState([]);

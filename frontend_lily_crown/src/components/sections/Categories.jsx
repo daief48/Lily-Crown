@@ -62,17 +62,14 @@ export function Categories() {
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 px-4 md:px-0">
                     {loading ? (
-                        <>
+                        <div className="contents">
                             <div className="md:col-span-2 h-64 md:h-96">
                                 <Skeleton className="w-full h-full rounded-2xl" />
                             </div>
                             <div className="h-64 md:h-96">
                                 <Skeleton className="w-full h-full rounded-2xl" />
                             </div>
-                            <div className="h-64 md:h-96">
-                                <Skeleton className="w-full h-full rounded-2xl" />
-                            </div>
-                        </>
+                        </div>
                     ) : visibleCategories.length > 0 ? (
                         visibleCategories.map((category, index) => (
                             <Link

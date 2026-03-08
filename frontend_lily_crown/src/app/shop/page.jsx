@@ -209,13 +209,13 @@ export default function ShopPage() {
                         </div>
 
                         {loading ? (
-                            <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-6">
+                            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
                                 {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
-                                    <div key={i} className="space-y-4 bg-white p-5 rounded-2xl border border-black/[0.03]">
+                                    <div key={i} className="space-y-5 bg-white p-5 rounded-2xl border border-black/[0.03] shadow-sm">
                                         <Skeleton className="aspect-[3/4] w-full rounded-xl" />
                                         <div className="space-y-3">
-                                            <Skeleton className="h-4 w-3/4" />
-                                            <Skeleton className="h-4 w-1/4" />
+                                            <Skeleton className="h-5 w-3/4 rounded-md" />
+                                            <Skeleton className="h-4 w-1/4 rounded-md opacity-60" />
                                         </div>
                                     </div>
                                 ))}

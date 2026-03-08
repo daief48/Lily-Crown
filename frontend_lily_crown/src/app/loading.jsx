@@ -3,56 +3,57 @@ import Skeleton from "@/components/ui/Skeleton";
 export default function Loading() {
     return (
         <div className="min-h-screen bg-muslin-cream">
-            {/* 1. Hero Ghost */}
-            <section className="relative h-[90vh] flex items-center justify-center overflow-hidden bg-emerald-royal/5">
-                <div className="max-w-7xl mx-auto px-4 md:px-6 w-full text-center space-y-8">
-                    <Skeleton className="h-6 w-48 mx-auto opacity-50" />
-                    <Skeleton className="h-20 w-full max-w-3xl mx-auto" />
-                    <div className="flex justify-center gap-4">
-                        <Skeleton className="h-14 w-40 rounded-full" />
-                        <Skeleton className="h-14 w-40 rounded-full" />
+            {/* Minimal High-Fidelity Nav Ghost */}
+            <div className="h-20 border-b border-heritage-gold/5 bg-white/80 backdrop-blur-md flex items-center px-6 md:px-12 justify-between">
+                <Skeleton className="h-8 w-32" />
+                <div className="hidden md:flex gap-8">
+                    <Skeleton className="h-4 w-16" />
+                    <Skeleton className="h-4 w-16" />
+                    <Skeleton className="h-4 w-16" />
+                </div>
+                <div className="flex gap-4">
+                    <Skeleton className="h-8 w-8 rounded-full" />
+                    <Skeleton className="h-8 w-8 rounded-full" />
+                </div>
+            </div>
+
+            {/* Premium Hero Ghost */}
+            <section className="relative h-[80vh] flex items-center justify-center overflow-hidden bg-emerald-royal/5">
+                <div className="max-w-7xl mx-auto px-4 md:px-6 w-full text-center space-y-10">
+                    <div className="flex flex-col items-center gap-4">
+                        <Skeleton className="h-4 w-32 opacity-20" />
+                        <Skeleton className="h-16 md:h-24 w-full max-w-4xl opacity-10" />
+                        <Skeleton className="h-6 w-3/4 max-w-xl opacity-30" />
                     </div>
+                    <div className="flex justify-center gap-6">
+                        <Skeleton className="h-14 w-44 rounded-full opacity-20" />
+                        <Skeleton className="h-14 w-44 rounded-full border border-heritage-gold/20 bg-transparent" />
+                    </div>
+                </div>
+
+                {/* Decorative floating elements */}
+                <div className="absolute bottom-20 left-20 hidden lg:block">
+                    <Skeleton className="w-48 h-1" />
+                </div>
+                <div className="absolute top-1/2 right-20 -translate-y-1/2 hidden lg:flex flex-col gap-4">
+                    <Skeleton className="w-1.5 h-1.5 rounded-full" />
+                    <Skeleton className="w-1.5 h-10 rounded-full" />
+                    <Skeleton className="w-1.5 h-1.5 rounded-full" />
                 </div>
             </section>
 
-            {/* 2. Categories Ghost */}
+            {/* Subtle Content Transition Ghost */}
             <section className="py-24 max-w-7xl mx-auto px-4 md:px-6">
-                <div className="flex justify-between items-end mb-12">
-                    <div className="space-y-4">
-                        <Skeleton className="h-4 w-32" />
-                        <Skeleton className="h-10 w-64" />
-                    </div>
-                </div>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                    {[1, 2, 3, 4].map((i) => (
-                        <div key={i} className="space-y-4">
-                            <Skeleton className="aspect-[4/5] w-full rounded-2xl shadow-lg" />
-                            <Skeleton className="h-6 w-3/4 mx-auto" />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {[1, 2, 3].map((i) => (
+                        <div key={i} className="space-y-6">
+                            <Skeleton className="aspect-square w-full rounded-2xl opacity-10" />
+                            <div className="space-y-3">
+                                <Skeleton className="h-6 w-3/4 opacity-10" />
+                                <Skeleton className="h-4 w-1/2 opacity-5" />
+                            </div>
                         </div>
                     ))}
-                </div>
-            </section>
-
-            {/* 3. Featured Products Ghost */}
-            <section className="py-24 bg-white/50">
-                <div className="max-w-7xl mx-auto px-4 md:px-6">
-                    <div className="flex justify-between items-center mb-12">
-                        <div className="space-y-4">
-                            <Skeleton className="h-4 w-32" />
-                            <Skeleton className="h-10 w-64" />
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-                        {[1, 2, 3, 4].map((i) => (
-                            <div key={i} className="space-y-6">
-                                <Skeleton className="aspect-[3/4] w-full rounded-3xl" />
-                                <div className="space-y-3">
-                                    <Skeleton className="h-5 w-2/3" />
-                                    <Skeleton className="h-4 w-1/3" />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
                 </div>
             </section>
         </div>

@@ -7,9 +7,8 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { api } from "@/lib/api";
 import { getOptimizedImage } from "@/lib/utils";
-import Skeleton from "@/components/ui/Skeleton";
 import { useLanguage } from "@/context/LanguageContext";
-
+import { TestimonialsSkeleton } from "@/components/ui/SectionSkeletons";
 export function Testimonials() {
     const { t } = useLanguage();
     const [testimonials, setTestimonials] = React.useState([]);
@@ -28,27 +27,7 @@ export function Testimonials() {
     }, []);
 
     if (loading || testimonials.length === 0) {
-        return (
-            <section className="py-20 md:py-32 bg-muslin-cream border-y border-heritage-gold/5 relative overflow-hidden">
-                <div className="max-w-4xl mx-auto px-4 md:px-6 text-center">
-                    <div className="flex flex-col items-center mb-10">
-                        <Skeleton className="w-10 h-10 rounded-none mb-4 opacity-20" />
-                        <Skeleton className="w-40 h-3" />
-                    </div>
-                    <div className="space-y-4 mb-12">
-                        <Skeleton className="h-8 w-full max-w-2xl mx-auto" />
-                        <Skeleton className="h-8 w-3/4 mx-auto" />
-                    </div>
-                    <div className="flex items-center justify-center gap-5">
-                        <Skeleton className="w-16 h-16 rounded-full" />
-                        <div className="text-left space-y-2">
-                            <Skeleton className="h-4 w-32" />
-                            <Skeleton className="h-3 w-20" />
-                        </div>
-                    </div>
-                </div>
-            </section>
-        );
+        return <TestimonialsSkeleton />;
     }
 
     return (

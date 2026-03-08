@@ -7,9 +7,8 @@ import { motion } from "framer-motion";
 import { api } from "@/lib/api";
 import { getOptimizedImage } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
-import Skeleton from "@/components/ui/Skeleton";
 import { useLanguage } from "@/context/LanguageContext";
-
+import { BlogPreviewSkeleton } from "@/components/ui/SectionSkeletons";
 export function BlogPreview() {
     const { t } = useLanguage();
     const [blogs, setBlogs] = React.useState([]);
@@ -27,30 +26,7 @@ export function BlogPreview() {
     }, []);
 
     if (loading) {
-        return (
-            <section className="py-24 bg-white relative overflow-hidden">
-                <div className="max-w-7xl mx-auto px-4 md:px-6">
-                    <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-                        <div className="max-w-2xl space-y-4">
-                            <Skeleton className="h-4 w-32" />
-                            <Skeleton className="h-12 w-3/4" />
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
-                        {[1, 2, 3].map((i) => (
-                            <div key={i} className="space-y-6">
-                                <Skeleton className="aspect-[16/10] w-full rounded-2xl" />
-                                <div className="space-y-3">
-                                    <Skeleton className="h-3 w-40" />
-                                    <Skeleton className="h-8 w-full" />
-                                    <Skeleton className="h-20 w-full" />
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-            </section>
-        );
+        return <BlogPreviewSkeleton />;
     }
 
     return (
