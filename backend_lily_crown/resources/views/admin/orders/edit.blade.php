@@ -87,7 +87,17 @@
                                                         </div>
                                                         <div>
                                                             <h6 class="font-serif font-bold text-emerald-royal mb-0">{{ $item->name ?? 'Untitled Treasure' }}</h6>
-                                                            <small class="text-muted tracking-widest uppercase x-small">Original Piece</small>
+                                                            @if(isset($item->selectedSize) || isset($item->selectedColor))
+                                                                <small class="text-heritage-gold tracking-widest uppercase x-small font-bold">
+                                                                    @if(isset($item->selectedSize)) Size: {{ $item->selectedSize }} @endif
+                                                                    @if(isset($item->selectedColor)) 
+                                                                        @if(isset($item->selectedSize)) | @endif
+                                                                        Color: {{ is_string($item->selectedColor) ? $item->selectedColor : ($item->selectedColor->name ?? '') }}
+                                                                    @endif
+                                                                </small>
+                                                            @else
+                                                                <small class="text-muted tracking-widest uppercase x-small">Original Piece</small>
+                                                            @endif
                                                         </div>
                                                     </div>
                                                 </td>

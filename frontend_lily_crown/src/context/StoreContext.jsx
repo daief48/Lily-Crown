@@ -1,10 +1,12 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
+import { useLanguage } from "./LanguageContext";
 
 const StoreContext = createContext(undefined);
 
 export function StoreProvider({ children }) {
+    const { t } = useLanguage();
     const [cartItems, setCartItems] = useState([]);
     const [wishlistItems, setWishlistItems] = useState([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
@@ -22,10 +24,10 @@ export function StoreProvider({ children }) {
                 const parsedCart = JSON.parse(savedCart);
                 if (Array.isArray(parsedCart)) {
                     // Filter valid items and deduplicate by ID using Number()
-                    const validItems = parsedCart.filter(item => item && item.id);
+                    const validItems = parsedCart.filter(item => item && (item.id || item.variantId));
                     const uniqueItems = Array.from(new Map(validItems.map(item => {
-                        const id = Number(item.id);
-                        return [id, { ...item, id }];
+                        const id = item.variantId || `${item.id}-any-any`;
+                        return [id, { ...item, variantId: id }];
                     })).values());
 
                     setCartItems(uniqueItems);
@@ -63,37 +65,47 @@ export function StoreProvider({ children }) {
         return isNaN(parsed) ? 0 : parsed;
     };
 
-    const addToCart = (product) => {
+    const addToCart = (product, size = null, color = null, quantity = 1) => {
         const productId = Number(product.id);
+        const sizeStr = size && typeof size === 'object' ? size.name : size;
+        // Create a unique key for the specific variation
+        const variantId = `${productId}-${sizeStr || 'any'}-${color?.name || 'any'}`;
+
+        const colorObj = color ? {
+            name: color.name,
+            hex: color.hex || color.hex_code
+        } : null;
+
         setCartItems((prev) => {
-            const existing = prev.find((item) => Number(item.id) === productId);
+            const existing = prev.find((item) => item.variantId === variantId);
             if (existing) {
                 return prev.map((item) =>
-                    Number(item.id) === productId ? { ...item, quantity: item.quantity + 1 } : item
+                    item.variantId === variantId ? { ...item, quantity: item.quantity + quantity } : item
                 );
             }
 
             const safeProduct = {
                 ...product,
                 id: productId,
+                variantId: variantId,
+                selectedSize: sizeStr,
+                selectedColor: colorObj,
                 price: parsePrice(product.price),
-                quantity: 1
+                quantity: quantity
             };
             return [...prev, safeProduct];
         });
-        showToast(`${product.name} added to your bag.`);
+        showToast(t('product_added_to_bag', { name: product.name }));
     };
 
-    const removeFromCart = (id) => {
-        const productId = Number(id);
-        setCartItems((prev) => prev.filter((item) => Number(item.id) !== productId));
+    const removeFromCart = (variantId) => {
+        setCartItems((prev) => prev.filter((item) => item.variantId !== variantId));
     };
 
-    const updateQuantity = (id, delta) => {
-        const productId = Number(id);
+    const updateQuantity = (variantId, delta) => {
         setCartItems((prev) =>
             prev.map((item) => {
-                if (Number(item.id) === productId) {
+                if (item.variantId === variantId) {
                     const newQty = Math.max(1, item.quantity + delta);
                     return { ...item, quantity: newQty };
                 }
@@ -126,6 +138,51 @@ export function StoreProvider({ children }) {
         }, 3000);
     };
 
+    const updateVariant = (oldVariantId, newSize = null, newColor = null) => {
+        setCartItems((prev) => {
+            const item = prev.find((i) => i.variantId === oldVariantId);
+            if (!item) return prev;
+
+            const productId = Number(item.id);
+            const sizeStr = newSize && typeof newSize === "object" ? newSize.name : newSize;
+            const colorObj = newColor ? {
+                name: newColor.name,
+                hex: newColor.hex || newColor.hex_code
+            } : null;
+
+            const newVariantId = `${productId}-${sizeStr || "any"}-${colorObj?.name || "any"}`;
+
+            // If it's the same variant, do nothing
+            if (newVariantId === oldVariantId) return prev;
+
+            const existingNewVariant = prev.find((i) => i.variantId === newVariantId);
+
+            if (existingNewVariant) {
+                // Merge with existing variant and remove old one
+                return prev
+                    .map((i) => {
+                        if (i.variantId === newVariantId) {
+                            return { ...i, quantity: i.quantity + item.quantity };
+                        }
+                        return i;
+                    })
+                    .filter((i) => i.variantId !== oldVariantId);
+            }
+
+            // Update existing item to new variant
+            return prev.map((i) =>
+                i.variantId === oldVariantId
+                    ? {
+                        ...i,
+                        variantId: newVariantId,
+                        selectedSize: sizeStr,
+                        selectedColor: colorObj,
+                    }
+                    : i
+            );
+        });
+    };
+
     const cartCount = cartItems.reduce((acc, item) => acc + (item.quantity || 0), 0);
     const cartTotal = cartItems.reduce((acc, item) => acc + (item.price || 0) * (item.quantity || 1), 0);
 
@@ -139,6 +196,7 @@ export function StoreProvider({ children }) {
                 addToCart,
                 removeFromCart,
                 updateQuantity,
+                updateVariant,
                 clearCart,
                 toggleWishlist,
                 isCartOpen,
@@ -148,6 +206,7 @@ export function StoreProvider({ children }) {
                 isSearchOpen,
                 setIsSearchOpen,
                 toast,
+                showToast,
             }}
         >
             {children}

@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingBag, Heart, ChevronLeft, ChevronRight, Star, ShieldCheck, Truck, RefreshCw, X, ZoomIn, CreditCard } from "lucide-react";
+import { ShoppingBag, Heart, ChevronLeft, ChevronRight, Star, ShieldCheck, Truck, RefreshCw, X, ZoomIn, CreditCard, Plus, Minus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useStore } from "@/context/StoreContext";
 import { useLanguage } from "@/context/LanguageContext";
@@ -12,15 +12,68 @@ import { getOptimizedImage } from "@/lib/utils";
 import { RoyalImage } from "@/components/ui/RoyalImage";
 
 export function ProductDetail({ product }) {
-    const { addToCart, toggleWishlist, wishlistItems } = useStore();
+    const { addToCart, toggleWishlist, wishlistItems, showToast } = useStore();
     const { t } = useLanguage();
     const router = useRouter();
+
+    // Diagnostic log for variations
+    console.log("Product data received:", product);
     const [activeImage, setActiveImage] = useState(0);
     const [isLightboxOpen, setIsLightboxOpen] = useState(false);
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
     const [isHovering, setIsHovering] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
     const [selectedSize, setSelectedSize] = useState(null);
+    const [selectedColor, setSelectedColor] = useState(null);
+    const [selections, setSelections] = useState([]);
+    const [mainQuantity, setMainQuantity] = useState(1);
+    const [validationError, setValidationError] = useState({ size: false, color: false });
+
+    const hasSizes = Array.isArray(product.sizes) && product.sizes.length > 0;
+    const hasColors = Array.isArray(product.colors) && product.colors.length > 0;
+    const isMultiVariant = hasSizes && hasColors;
+
+    // Auto-add selection based on available variation types
+    useEffect(() => {
+        const hasSizes = Array.isArray(product.sizes) && product.sizes.length > 0;
+        const hasColors = Array.isArray(product.colors) && product.colors.length > 0;
+
+        // If no variations exist, we don't auto-add to tray (user uses main buttons)
+        if (!hasSizes && !hasColors) return;
+
+        const isSizePicked = hasSizes ? !!selectedSize : true;
+        const isColorPicked = hasColors ? !!selectedColor : true;
+        const selectionComplete = isSizePicked && isColorPicked;
+
+        const atLeastOneManualChoice = (hasSizes && !!selectedSize) || (hasColors && !!selectedColor);
+
+        if (selectionComplete && atLeastOneManualChoice) {
+            // Check if this combination already exists
+            const existingIdx = selections.findIndex(s =>
+                (hasSizes ? s.size === selectedSize : true) &&
+                (hasColors ? s.color?.name === selectedColor?.name : true)
+            );
+
+            if (existingIdx === -1) {
+                const newSelection = {
+                    id: `${Date.now()}-${selectedSize || 'none'}-${selectedColor?.name || 'none'}`,
+                    size: hasSizes ? selectedSize : null,
+                    color: hasColors ? selectedColor : null,
+                    quantity: 1,
+                    price: product.price
+                };
+                setSelections(prev => [...prev, newSelection]);
+                showToast(t('product_added_to_list', { quantity: 1 }));
+            }
+
+            // Reset local selection to allow picking again
+            const timer = setTimeout(() => {
+                setSelectedSize(null);
+                setSelectedColor(null);
+            }, 600);
+            return () => clearTimeout(timer);
+        }
+    }, [selectedSize, selectedColor, product, selections, t]);
 
     useEffect(() => {
         setIsMounted(true);
@@ -54,6 +107,68 @@ export function ProductDetail({ product }) {
         const x = ((e.pageX - left - window.scrollX) / width) * 100;
         const y = ((e.pageY - top - window.scrollY) / height) * 100;
         setMousePos({ x, y });
+    };
+
+    const updateSelectionQuantity = (selectionId, delta) => {
+        setSelections(prev => prev.map(s => {
+            if (s.id === selectionId) {
+                return { ...s, quantity: Math.max(1, s.quantity + delta) };
+            }
+            return s;
+        }));
+    };
+
+    const removeSelection = (selectionId) => {
+        setSelections(prev => prev.filter(s => s.id !== selectionId));
+    };
+
+    const handleAddToCart = (redirect = false) => {
+        if (selections.length === 0) {
+            // Fallback: If nothing in list, but something selected, add it directly
+            const hasSizes = Array.isArray(product.sizes) && product.sizes.length > 0;
+            const hasColors = Array.isArray(product.colors) && product.colors.length > 0;
+
+            let hasError = false;
+            const newError = { size: false, color: false };
+
+            if (hasSizes && !selectedSize) {
+                newError.size = true;
+                hasError = true;
+            }
+
+            if (hasColors && !selectedColor) {
+                newError.color = true;
+                hasError = true;
+            }
+
+            if (hasError) {
+                setValidationError(newError);
+                if (newError.size && newError.color) {
+                    showToast(t('product_error_select_variation'));
+                } else if (newError.size) {
+                    showToast(t('product_error_select_size'));
+                } else {
+                    showToast(t('product_error_select_color'));
+                }
+                return;
+            }
+
+            // Clear errors
+            setValidationError({ size: false, color: false });
+
+            // If a single selection is currently active but not yet in tray, add it directly
+            // For simple products, use the mainQuantity state
+            const qty = (hasSizes || hasColors) ? 1 : mainQuantity;
+            addToCart(product, hasSizes ? selectedSize : null, hasColors ? selectedColor : null, qty);
+        } else {
+            // Add all items from selection list
+            selections.forEach(sel => {
+                addToCart(product, sel.size, sel.color, sel.quantity);
+            });
+            setSelections([]);
+        }
+
+        if (redirect) router.push('/cart');
     };
 
     return (
@@ -152,7 +267,7 @@ export function ProductDetail({ product }) {
                             className="space-y-4"
                         >
                             <div className="flex items-center gap-2">
-                                <span className="text-heritage-gold text-[10px] md:text-xs uppercase tracking-[0.3em] font-bold">
+                                <span className="text-heritage-gold text-xs md:text-sm uppercase tracking-[0.3em] font-black">
                                     {product.category?.name || (typeof product.category === 'string' ? product.category : '')}
                                 </span>
                                 {product.badge && (
@@ -164,7 +279,7 @@ export function ProductDetail({ product }) {
                                     </>
                                 )}
                             </div>
-                            <h1 className="text-4xl md:text-6xl font-serif text-emerald-royal leading-tight">
+                            <h1 className="text-5xl md:text-7xl lg:text-8xl font-serif text-emerald-royal leading-[0.9] tracking-tighter">
                                 {product.name}
                             </h1>
                             <div className="flex flex-wrap items-center gap-6">
@@ -173,7 +288,7 @@ export function ProductDetail({ product }) {
                                     {[...Array(5)].map((_, i) => (
                                         <Star key={i} size={16} className="fill-current" />
                                     ))}
-                                    <span className="text-emerald-royal/40 text-[10px] md:text-xs ml-2 font-bold uppercase tracking-widest">{t('product_royal_reviews')}</span>
+                                    <span className="text-emerald-royal/60 text-xs md:text-sm ml-2 font-black uppercase tracking-widest">{t('product_royal_reviews')}</span>
                                 </div>
                             </div>
                         </motion.div>
@@ -182,45 +297,226 @@ export function ProductDetail({ product }) {
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             transition={{ delay: 0.2 }}
-                            className="text-gray-600 leading-relaxed font-light text-lg md:text-xl max-w-xl"
+                            className="text-gray-600 leading-relaxed font-normal text-lg md:text-xl max-w-xl"
                         >
                             {product.description}
                         </motion.p>
 
-                        {/* Size Selector */}
-                        {Array.isArray(product.sizes) && product.sizes.length > 0 && (
+                        {/* Selections Table - Moved up for better visibility */}
+                        <AnimatePresence>
+                            {selections.length > 0 && (
+                                <motion.div
+                                    initial={{ opacity: 0, scale: 0.95, y: -20 }}
+                                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                                    exit={{ opacity: 0, scale: 0.95, y: -20 }}
+                                    transition={{ type: "spring", stiffness: 300, damping: 25 }}
+                                    className="bg-emerald-royal/5 rounded-2xl p-6 border border-heritage-gold/20 overflow-hidden mb-8 shadow-sm"
+                                >
+                                    <h5 className="font-serif text-xl text-emerald-royal mb-4 flex items-center gap-3">
+                                        <ShoppingBag size={20} className="text-heritage-gold" />
+                                        {t('product_current_selections')}
+                                    </h5>
+                                    <div className="space-y-3">
+                                        {selections.map((sel) => (
+                                            <motion.div
+                                                layout
+                                                key={sel.id}
+                                                className="flex items-center justify-between bg-white/50 backdrop-blur-sm p-3 rounded-lg border border-heritage-gold/10"
+                                            >
+                                                <div className="flex items-center gap-4">
+                                                    <div className="w-8 h-8 rounded-full border border-black/5" style={{ backgroundColor: sel.color?.hex || sel.color?.hex_code }}></div>
+                                                    <div>
+                                                        <p className="text-xs font-black text-emerald-royal uppercase tracking-widest">
+                                                            {isMultiVariant
+                                                                ? `${sel.size} / ${sel.color?.name}`
+                                                                : (sel.size ? `${t('cart_size')}: ${sel.size}` : `${t('cart_color')}: ${sel.color?.name}`)
+                                                            }
+                                                        </p>
+                                                        <p className="text-[11px] md:text-xs text-emerald-royal/60 font-black uppercase tracking-widest">
+                                                            {t('product_qty_label')}: {sel.quantity} × ৳{sel.price}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                                <div className="flex items-center gap-6">
+                                                    <div className="flex items-center bg-emerald-royal/5 border border-emerald-royal/10 rounded-full p-0.5">
+                                                        <button
+                                                            onClick={() => updateSelectionQuantity(sel.id, -1)}
+                                                            className="w-7 h-7 flex items-center justify-center text-emerald-royal hover:bg-emerald-royal/10 rounded-full transition-colors"
+                                                        >
+                                                            <Minus size={10} />
+                                                        </button>
+                                                        <span className="w-6 text-center text-[10px] font-black text-emerald-royal">{sel.quantity}</span>
+                                                        <button
+                                                            onClick={() => updateSelectionQuantity(sel.id, 1)}
+                                                            className="w-7 h-7 flex items-center justify-center text-emerald-royal hover:bg-emerald-royal/10 rounded-full transition-colors"
+                                                        >
+                                                            <Plus size={10} />
+                                                        </button>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => removeSelection(sel.id)}
+                                                        className="p-2 text-emerald-royal/30 hover:text-red-500 transition-colors"
+                                                    >
+                                                        <Trash2 size={16} />
+                                                    </button>
+                                                </div>
+                                            </motion.div>
+                                        ))}
+                                    </div>
+                                    <div className="mt-4 pt-4 border-t border-heritage-gold/10 flex justify-between items-center px-1">
+                                        <span className="text-xs uppercase tracking-[0.2em] font-black text-emerald-royal/40">{t('product_selection_total_label')}</span>
+                                        <span className="text-lg font-black text-emerald-royal">
+                                            ৳{selections.reduce((acc, s) => acc + (s.price * s.quantity), 0).toLocaleString()}
+                                        </span>
+                                    </div>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
+
+                        {/* Simple Product Quantity - Only shown if no variations */}
+                        {!(Array.isArray(product.sizes) && product.sizes.length > 0) && !(Array.isArray(product.colors) && product.colors.length > 0) && (
                             <motion.div
                                 initial={{ opacity: 0, y: 10 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: 0.25 }}
-                                className="space-y-3"
+                                className="flex items-center gap-6 py-6 border-y border-heritage-gold/10"
                             >
-                                <div className="flex items-center justify-between">
-                                    <h4 className="text-xs uppercase tracking-[0.25em] font-bold text-emerald-royal">
-                                        {t('product_select_size') || 'Select Size'}
-                                    </h4>
-                                    {selectedSize && (
-                                        <span className="text-xs font-bold text-heritage-gold uppercase tracking-widest">
-                                            {selectedSize}
-                                        </span>
-                                    )}
-                                </div>
-                                <div className="flex flex-wrap gap-2">
-                                    {product.sizes.map((size) => (
-                                        <button
-                                            key={size}
-                                            onClick={() => setSelectedSize(selectedSize === size ? null : size)}
-                                            className={`min-w-[48px] px-4 py-2 border-2 rounded text-xs font-bold uppercase tracking-widest transition-all active:scale-95 ${selectedSize === size
-                                                    ? 'border-emerald-royal bg-emerald-royal text-white shadow-lg'
-                                                    : 'border-emerald-royal/25 text-emerald-royal/70 hover:border-emerald-royal hover:text-emerald-royal bg-white'
-                                                }`}
-                                        >
-                                            {size}
-                                        </button>
-                                    ))}
+                                <span className="text-xs uppercase tracking-[0.3em] font-black text-emerald-royal/60">
+                                    {t('product_quantity')}
+                                </span>
+                                <div className="flex items-center bg-white border border-emerald-royal/10 rounded-2xl p-1 shadow-sm">
+                                    <button
+                                        onClick={() => setMainQuantity(q => Math.max(1, q - 1))}
+                                        className="w-12 h-12 flex items-center justify-center text-emerald-royal hover:bg-emerald-royal/5 rounded-xl transition-all"
+                                    >
+                                        <Minus size={16} />
+                                    </button>
+                                    <span className="w-12 text-center text-lg font-black text-emerald-royal">
+                                        {mainQuantity}
+                                    </span>
+                                    <button
+                                        onClick={() => setMainQuantity(q => q + 1)}
+                                        className="w-12 h-12 flex items-center justify-center text-emerald-royal hover:bg-emerald-royal/5 rounded-xl transition-all"
+                                    >
+                                        <Plus size={16} />
+                                    </button>
                                 </div>
                             </motion.div>
                         )}
+
+                        {/* Sophisticated Variation Selection */}
+                        {(hasSizes || hasColors) && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.2 }}
+                                className="space-y-12 py-4"
+                            >
+                                {/* Size Choice */}
+                                {hasSizes && (
+                                    <motion.div
+                                        animate={validationError.size ? { x: [-4, 4, -4, 4, 0] } : {}}
+                                        transition={{ duration: 0.4 }}
+                                        className={`space-y-6 p-4 rounded-2xl transition-colors duration-500 ${validationError.size ? 'bg-red-50/50 ring-1 ring-red-500/20' : ''}`}
+                                    >
+                                        <div className="flex items-center justify-between border-b border-emerald-royal/10 pb-4">
+                                            <div className="flex flex-col gap-1.5">
+                                                <h4 className={`text-xs md:text-sm uppercase tracking-[0.4em] font-black transition-colors ${validationError.size ? 'text-red-500' : 'text-emerald-royal/60'}`}>
+                                                    {isMultiVariant ? t('product_step_size') : t('product_choose_size')}
+                                                </h4>
+                                                <p className="text-[11px] md:text-[13px] text-heritage-gold/80 font-medium uppercase tracking-widest">{t('product_size_guide_tip')}</p>
+                                            </div>
+                                            {selectedSize && (
+                                                <motion.span
+                                                    initial={{ opacity: 0, x: -10 }}
+                                                    animate={{ opacity: 1, x: 0 }}
+                                                    className="text-xs font-black text-heritage-gold uppercase tracking-[0.2em] bg-heritage-gold/5 px-3 py-1 rounded-full"
+                                                >
+                                                    {selectedSize}
+                                                </motion.span>
+                                            )}
+                                        </div>
+                                        <div className="flex flex-wrap gap-4 pt-4">
+                                            {product.sizes.map((size) => {
+                                                const sizeName = typeof size === 'object' ? size.name : size;
+                                                return (
+                                                    <button
+                                                        key={sizeName}
+                                                        onClick={() => {
+                                                            setSelectedSize(selectedSize === sizeName ? null : sizeName);
+                                                            if (validationError.size) setValidationError(prev => ({ ...prev, size: false }));
+                                                        }}
+                                                        className={`h-14 px-8 rounded-2xl text-[13px] md:text-[14px] font-black uppercase tracking-[0.25em] transition-all duration-500 ${selectedSize === sizeName
+                                                            ? 'bg-emerald-royal text-white shadow-[0_15px_35px_-10px_rgba(6,78,59,0.4)] scale-110 z-10'
+                                                            : 'bg-white/80 border border-emerald-royal/10 text-emerald-royal/70 hover:border-emerald-royal hover:text-emerald-royal hover:bg-white hover:shadow-xl'
+                                                            }`}
+                                                    >
+                                                        {sizeName}
+                                                    </button>
+                                                );
+                                            })}
+                                        </div>
+                                    </motion.div>
+                                )}
+
+                                {/* Color Selection */}
+                                {hasColors && (
+                                    <motion.div
+                                        animate={validationError.color ? { x: [-4, 4, -4, 4, 0] } : {}}
+                                        transition={{ duration: 0.4 }}
+                                        className={`space-y-6 p-4 rounded-2xl transition-colors duration-500 ${validationError.color ? 'bg-red-50/50 ring-1 ring-red-500/20' : ''}`}
+                                    >
+                                        <div className="flex items-center justify-between border-b border-emerald-royal/10 pb-4">
+                                            <div className="flex flex-col gap-1.5">
+                                                <h4 className={`text-xs md:text-sm uppercase tracking-[0.4em] font-black transition-colors ${validationError.color ? 'text-red-500' : 'text-emerald-royal/60'}`}>
+                                                    {isMultiVariant ? t('product_step_color') : t('product_choice_color')}
+                                                </h4>
+                                                <p className="text-[11px] md:text-[13px] text-heritage-gold/80 font-medium uppercase tracking-widest">{t('product_color_essence_tip')}</p>
+                                            </div>
+                                            {selectedColor && (
+                                                <motion.span
+                                                    initial={{ opacity: 0, x: -10 }}
+                                                    animate={{ opacity: 1, x: 0 }}
+                                                    className="text-xs font-black text-heritage-gold uppercase tracking-[0.2em] bg-heritage-gold/5 px-3 py-1 rounded-full"
+                                                >
+                                                    {selectedColor.name}
+                                                </motion.span>
+                                            )}
+                                        </div>
+                                        <div className="flex flex-wrap gap-6 pt-4">
+                                            {product.colors.map((color) => (
+                                                <button
+                                                    key={color.name}
+                                                    onClick={() => {
+                                                        setSelectedColor(selectedColor?.name === color.name ? null : color);
+                                                        if (validationError.color) setValidationError(prev => ({ ...prev, color: false }));
+                                                    }}
+                                                    className={`relative w-11 h-11 flex items-center justify-center transition-all duration-500 rounded-full p-1 border-2 ${selectedColor?.name === color.name
+                                                        ? 'border-heritage-gold scale-125 z-10 shadow-lg'
+                                                        : 'border-transparent hover:scale-110 hover:border-emerald-royal/10'
+                                                        }`}
+                                                >
+                                                    <span
+                                                        className="block w-full h-full rounded-full border border-black/5 shadow-inner"
+                                                        style={{ backgroundColor: color.hex || color.hex_code }}
+                                                    />
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </motion.div>
+                                )}
+
+                                {/* Guidance */}
+                                <div className="pt-8">
+                                    <div className="flex items-center justify-center gap-4 py-2 opacity-30 select-none">
+                                        <div className="h-px w-8 bg-emerald-royal" />
+                                        <span className="text-[9px] uppercase tracking-[0.4em] font-bold">{t('product_variation_guide')}</span>
+                                        <div className="h-px w-8 bg-emerald-royal" />
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
+
+
 
                         {/* Actions */}
                         <motion.div
@@ -230,17 +526,19 @@ export function ProductDetail({ product }) {
                             className="flex flex-col sm:flex-row gap-4 py-8 border-y border-heritage-gold/10"
                         >
                             <button
-                                onClick={() => addToCart(product)}
-                                className="flex-1 bg-white border-2 border-emerald-royal text-emerald-royal py-5 px-8 uppercase tracking-[0.2em] font-bold text-xs md:text-sm hover:bg-emerald-royal hover:text-white transition-all active:scale-95 flex items-center justify-center gap-3"
+                                onClick={() => handleAddToCart(false)}
+                                className="flex-1 bg-white border-2 border-emerald-royal text-emerald-royal py-5 px-8 uppercase tracking-[0.2em] font-bold text-xs md:text-sm hover:bg-emerald-royal hover:text-white transition-all active:scale-95 flex items-center justify-center gap-3 relative shadow-lg"
                             >
                                 <ShoppingBag size={20} />
-                                {t('product_keep_in_bag')}
+                                <span>{t('product_keep_in_bag')}</span>
+                                {selections.length > 0 && (
+                                    <span className="absolute -top-3 -right-3 w-7 h-7 bg-heritage-gold text-white rounded-full flex items-center justify-center text-[10px] font-bold shadow-xl">
+                                        {selections.length}
+                                    </span>
+                                )}
                             </button>
                             <button
-                                onClick={() => {
-                                    addToCart(product);
-                                    router.push('/checkout');
-                                }}
+                                onClick={() => handleAddToCart(true)}
                                 className="flex-1 gold-gradient-bg text-white py-5 px-8 uppercase tracking-[0.2em] font-bold text-xs md:text-sm shadow-2xl hover:shadow-emerald-royal/20 transition-all active:scale-95 flex items-center justify-center gap-3"
                             >
                                 <CreditCard size={20} />
@@ -274,17 +572,17 @@ export function ProductDetail({ product }) {
                                 </ul>
                             </div>
 
-                            <div className="space-y-5 bg-white p-8 rounded-2xl shadow-xl border border-heritage-gold/5 flex flex-col justify-center">
-                                <div className="flex items-center gap-4 text-sm md:text-base text-emerald-royal font-bold">
-                                    <ShieldCheck size={20} className="text-heritage-gold flex-shrink-0" />
+                            <div className="space-y-6 bg-white p-8 rounded-2xl shadow-xl border border-heritage-gold/5 flex flex-col justify-center">
+                                <div className="flex items-center gap-4 text-base md:text-lg text-emerald-royal font-black tracking-tight">
+                                    <ShieldCheck size={24} className="text-heritage-gold flex-shrink-0" />
                                     <span>{t('product_nawabi_quality')}</span>
                                 </div>
-                                <div className="flex items-center gap-4 text-sm md:text-base text-emerald-royal font-bold">
-                                    <Truck size={20} className="text-heritage-gold flex-shrink-0" />
+                                <div className="flex items-center gap-4 text-base md:text-lg text-emerald-royal font-black tracking-tight">
+                                    <Truck size={24} className="text-heritage-gold flex-shrink-0" />
                                     <span>{t('product_royal_delivery')}</span>
                                 </div>
-                                <div className="flex items-center gap-4 text-sm md:text-base text-emerald-royal font-bold">
-                                    <RefreshCw size={20} className="text-heritage-gold flex-shrink-0" />
+                                <div className="flex items-center gap-4 text-base md:text-lg text-emerald-royal font-black tracking-tight">
+                                    <ShieldCheck size={24} className="text-heritage-gold flex-shrink-0" />
                                     <span>{t('product_exchange_policy')}</span>
                                 </div>
                             </div>

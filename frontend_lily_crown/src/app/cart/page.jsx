@@ -6,13 +6,14 @@ import { useLanguage } from "@/context/LanguageContext";
 import Image from "next/image";
 import Link from "next/link";
 import { Trash2, Plus, Minus, ArrowRight } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import { getOptimizedImage } from "@/lib/utils";
 import { RoyalImage } from "@/components/ui/RoyalImage";
 
 export default function CartPage() {
-    const { cartItems, removeFromCart, updateQuantity, cartTotal } = useStore();
+    const { cartItems, removeFromCart, updateQuantity, updateVariant, cartTotal } = useStore();
     const { t } = useLanguage();
 
 
@@ -38,7 +39,7 @@ export default function CartPage() {
                         {/* Cart Items List */}
                         <div className="lg:col-span-2 space-y-6">
                             {cartItems.map((item) => (
-                                <div key={item.id} className="flex flex-col sm:flex-row items-center bg-white p-6 shadow-md border border-heritage-gold/10 gap-6 transition-hover hover:shadow-lg">
+                                <div key={item.variantId} className="flex flex-col sm:flex-row items-center bg-white p-6 shadow-md border border-heritage-gold/10 gap-6 transition-hover hover:shadow-lg">
                                     <div className="relative w-full sm:w-32 h-40 flex-shrink-0 bg-muslin-cream">
                                         {item.image ? (
                                             <RoyalImage
@@ -57,31 +58,104 @@ export default function CartPage() {
 
                                     <div className="flex-1 text-center sm:text-left w-full">
                                         <h3 className="text-xl font-serif text-emerald-royal">{item.name}</h3>
-                                        <p className="text-xs text-emerald-royal/50 uppercase tracking-widest mb-2">{item.category?.name || (typeof item.category === 'string' ? item.category : '')}</p>
-                                        <div className="text-lg font-bold text-heritage-gold">৳{(item.price || 0).toLocaleString()}</div>
+                                        <div className="flex flex-wrap justify-center sm:justify-start gap-x-4 gap-y-1 mt-1 mb-2">
+                                            <p className="text-[10px] text-emerald-royal/50 uppercase tracking-[0.2em]">{item.category?.name || (typeof item.category === 'string' ? item.category : '')}</p>
+                                        </div>
+
+                                        {/* Variation Selectors - Matching ProductDetail Style */}
+                                        <div className="space-y-6 mt-6 mb-6">
+                                            {/* Size Selectors */}
+                                            {Array.isArray(item.sizes) && item.sizes.length > 0 && (
+                                                <div className="space-y-3">
+                                                    <div className="flex items-center justify-between border-b border-emerald-royal/5 pb-2">
+                                                        <h4 className="text-[9px] uppercase tracking-[0.3em] font-black text-emerald-royal/40">
+                                                            {t('product_step_size')}
+                                                        </h4>
+                                                        {item.selectedSize && (
+                                                            <span className="text-[9px] font-black text-heritage-gold uppercase tracking-widest bg-heritage-gold/5 px-2 py-0.5 rounded-full">
+                                                                {item.selectedSize}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <div className="flex flex-wrap justify-center sm:justify-start gap-2">
+                                                        {item.sizes.map((size) => {
+                                                            const sizeName = typeof size === 'object' ? size.name : size;
+                                                            return (
+                                                                <button
+                                                                    key={sizeName}
+                                                                    onClick={() => updateVariant(item.variantId, sizeName, item.selectedColor)}
+                                                                    className={`h-10 px-6 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all duration-300 ${item.selectedSize === sizeName
+                                                                        ? 'bg-emerald-royal text-white shadow-lg scale-105'
+                                                                        : 'bg-white border border-emerald-royal/10 text-emerald-royal/70 hover:border-emerald-royal hover:shadow-md'
+                                                                        }`}
+                                                                >
+                                                                    {sizeName}
+                                                                </button>
+                                                            );
+                                                        })}
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Color Selectors */}
+                                            {Array.isArray(item.colors) && item.colors.length > 0 && (
+                                                <div className="space-y-3">
+                                                    <div className="flex items-center justify-between border-b border-emerald-royal/5 pb-2">
+                                                        <h4 className="text-[9px] uppercase tracking-[0.3em] font-black text-emerald-royal/40">
+                                                            {t('product_step_color')}
+                                                        </h4>
+                                                        {item.selectedColor && (
+                                                            <span className="text-[9px] font-black text-heritage-gold uppercase tracking-widest bg-heritage-gold/5 px-2 py-0.5 rounded-full">
+                                                                {item.selectedColor.name}
+                                                            </span>
+                                                        )}
+                                                    </div>
+                                                    <div className="flex flex-wrap justify-center sm:justify-start gap-3">
+                                                        {item.colors.map((color) => (
+                                                            <button
+                                                                key={color.name}
+                                                                onClick={() => updateVariant(item.variantId, item.selectedSize, color)}
+                                                                className={`relative w-8 h-8 flex items-center justify-center transition-all duration-300 rounded-full p-0.5 border-2 ${item.selectedColor?.name === color.name
+                                                                    ? 'border-heritage-gold scale-110 shadow-md'
+                                                                    : 'border-transparent hover:scale-110 hover:border-emerald-royal/20'
+                                                                    }`}
+                                                                title={color.name}
+                                                            >
+                                                                <span
+                                                                    className="block w-full h-full rounded-full border border-black/5"
+                                                                    style={{ backgroundColor: color.hex || color.hex_code }}
+                                                                />
+                                                            </button>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        <div className="text-xl font-bold text-heritage-gold mt-2">৳{(item.price || 0).toLocaleString()}</div>
                                     </div>
 
                                     <div className="flex items-center gap-6">
-                                        <div className="flex items-center border border-emerald-royal/20">
+                                        <div className="flex items-center bg-emerald-royal/5 border border-emerald-royal/10 rounded-xl p-1">
                                             <button
-                                                onClick={() => updateQuantity(item.id, -1)}
-                                                className="p-2 text-emerald-royal hover:bg-emerald-royal/5 transition-colors"
+                                                onClick={() => updateQuantity(item.variantId, -1)}
+                                                className="w-10 h-10 flex items-center justify-center text-emerald-royal hover:bg-emerald-royal/10 rounded-lg transition-colors"
                                                 disabled={item.quantity <= 1}
                                             >
-                                                <Minus size={16} />
+                                                <Minus size={14} />
                                             </button>
-                                            <span className="w-10 text-center text-sm font-bold text-emerald-royal">{item.quantity}</span>
+                                            <span className="w-10 text-center text-base font-bold text-emerald-royal">{item.quantity}</span>
                                             <button
-                                                onClick={() => updateQuantity(item.id, 1)}
-                                                className="p-2 text-emerald-royal hover:bg-emerald-royal/5 transition-colors"
+                                                onClick={() => updateQuantity(item.variantId, 1)}
+                                                className="w-10 h-10 flex items-center justify-center text-emerald-royal hover:bg-emerald-royal/10 rounded-lg transition-colors"
                                             >
-                                                <Plus size={16} />
+                                                <Plus size={14} />
                                             </button>
                                         </div>
 
                                         <button
-                                            onClick={() => removeFromCart(item.id)}
-                                            className="text-red-500 hover:text-red-600 transition-colors p-2"
+                                            onClick={() => removeFromCart(item.variantId)}
+                                            className="text-red-500 hover:text-red-600 transition-colors p-3 bg-red-50 rounded-xl"
                                             title={t('cart_remove_item')}
                                         >
                                             <Trash2 size={20} />

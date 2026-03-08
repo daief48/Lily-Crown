@@ -3,14 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Category; // Added
+use App\Models\Product; // Added
 use App\Models\Size;
+use App\Models\Color; // Added
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = \App\Models\Product::with('category');
+        $query = Product::with('category'); // Changed to use imported Product model
 
         // Search Filter
         if ($request->filled('search')) {
@@ -28,16 +31,18 @@ class ProductController extends Controller
         }
 
         $products = $query->paginate(10)->appends($request->all());
-        $categories = \App\Models\Category::all();
+        $categories = Category::all(); // Changed to use imported Category model
 
         return view('admin.products.index', compact('products', 'categories'));
     }
 
     public function create()
     {
-        $categories = \App\Models\Category::all();
+        $categories = Category::all();
         $sizes = Size::orderBy('id')->get();
-        return view('admin.products.create', compact('categories', 'sizes'));
+        $colors = Color::orderBy('name')->get(); // Added
+
+        return view('admin.products.create', compact('categories', 'sizes', 'colors')); // Updated compact
     }
 
     public function store(Request $request)
@@ -90,8 +95,11 @@ class ProductController extends Controller
         }
 
         try {
-            $product = \App\Models\Product::create($data);
+            $product = Product::create($data); // Changed to use imported Product model
+
+            // Sync sizes and colors
             $product->sizes()->sync($request->input('sizes', []));
+            $product->colors()->sync($request->input('colors', [])); // Added
             \Log::info('Product created successfully', ['id' => $product->id]);
         } catch (\Exception $e) {
             \Log::error('Product creation failed in DB', ['error' => $e->getMessage()]);
@@ -108,16 +116,19 @@ class ProductController extends Controller
 
     public function edit($id)
     {
-        $product = \App\Models\Product::with('sizes')->findOrFail($id);
-        $categories = \App\Models\Category::all();
+        $product = Product::with(['sizes', 'colors'])->findOrFail($id); // Changed to use imported Product model and eager load colors
+        $categories = Category::all(); // Changed to use imported Category model
         $sizes = Size::orderBy('id')->get();
+        $colors = Color::orderBy('name')->get(); // Added
         $selectedSizes = $product->sizes->pluck('id')->toArray();
-        return view('admin.products.edit', compact('product', 'categories', 'sizes', 'selectedSizes'));
+        $selectedColors = $product->colors->pluck('id')->toArray(); // Added
+
+        return view('admin.products.edit', compact('product', 'categories', 'sizes', 'colors', 'selectedSizes', 'selectedColors')); // Updated compact
     }
 
     public function update(Request $request, $id)
     {
-        $product = \App\Models\Product::findOrFail($id);
+        $product = Product::findOrFail($id); // Changed to use imported Product model
         
         $request->validate([
             'name' => 'required|string|max:255',
@@ -152,7 +163,10 @@ class ProductController extends Controller
         }
 
         $product->update($data);
+
+        // Sync sizes and colors
         $product->sizes()->sync($request->input('sizes', []));
+        $product->colors()->sync($request->input('colors', [])); // Added
 
         return redirect()->route('products.index')->with('success', 'Product updated successfully');
     }

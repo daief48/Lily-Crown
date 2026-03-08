@@ -13,7 +13,7 @@ import { getOptimizedImage } from "@/lib/utils";
 import { RoyalImage } from "@/components/ui/RoyalImage";
 
 export default function CheckoutPage() {
-    const { cartItems, cartTotal, clearCart, updateQuantity, removeFromCart } = useStore();
+    const { cartItems, cartTotal, clearCart, updateQuantity, removeFromCart, updateVariant } = useStore();
     const { user, loading } = useAuth();
     const { t } = useLanguage();
     const router = useRouter();
@@ -231,7 +231,7 @@ export default function CheckoutPage() {
 
                             <div className="space-y-6">
                                 {cartItems.map((item) => (
-                                    <div key={item.id} className="flex gap-4 group/item">
+                                    <div key={item.variantId} className="flex gap-4 group/item">
                                         <div className="relative w-16 h-20 flex-shrink-0 bg-white/10 rounded-sm overflow-hidden border border-white/10">
                                             {item.image && (
                                                 <RoyalImage
@@ -244,9 +244,63 @@ export default function CheckoutPage() {
                                         </div>
                                         <div className="flex-1">
                                             <div className="flex justify-between items-start">
-                                                <p className="text-sm font-serif line-clamp-1 flex-1">{item.name}</p>
+                                                <div className="flex-1">
+                                                    <p className="text-sm font-serif line-clamp-1">{item.name}</p>
+                                                    {(item.sizes?.length > 0 || item.colors?.length > 0) && (
+                                                        <div className="mt-3 space-y-4 pt-3 border-t border-white/10">
+                                                            {/* Size Selection */}
+                                                            {item.sizes?.length > 0 && (
+                                                                <div className="space-y-1.5">
+                                                                    <p className="text-[8px] uppercase tracking-[0.2em] text-white/40 font-black">{t('product_step_size')}</p>
+                                                                    <div className="flex flex-wrap gap-1">
+                                                                        {item.sizes.map((size) => {
+                                                                            const sizeName = typeof size === 'object' ? size.name : size;
+                                                                            return (
+                                                                                <button
+                                                                                    key={sizeName}
+                                                                                    onClick={() => updateVariant(item.variantId, sizeName, item.selectedColor)}
+                                                                                    className={`px-2 py-1 rounded text-[8px] font-black uppercase tracking-widest transition-all ${item.selectedSize === sizeName
+                                                                                        ? 'bg-heritage-gold text-emerald-royal shadow-lg'
+                                                                                        : 'bg-white/5 border border-white/10 text-white/60 hover:border-white/40'
+                                                                                        }`}
+                                                                                >
+                                                                                    {sizeName}
+                                                                                </button>
+                                                                            );
+                                                                        })}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+
+                                                            {/* Color Selection */}
+                                                            {item.colors?.length > 0 && (
+                                                                <div className="space-y-1.5">
+                                                                    <p className="text-[8px] uppercase tracking-[0.2em] text-white/40 font-black">{t('product_step_color')}</p>
+                                                                    <div className="flex flex-wrap gap-2">
+                                                                        {item.colors.map((color) => (
+                                                                            <button
+                                                                                key={color.name}
+                                                                                onClick={() => updateVariant(item.variantId, item.selectedSize, color)}
+                                                                                className={`relative w-5 h-5 flex items-center justify-center transition-all rounded-full p-0.5 border ${item.selectedColor?.name === color.name
+                                                                                    ? 'border-heritage-gold scale-110'
+                                                                                    : 'border-transparent hover:border-white/20'
+                                                                                    }`}
+                                                                                title={color.name}
+                                                                            >
+                                                                                <span
+                                                                                    className="block w-full h-full rounded-full border border-black/10"
+                                                                                    style={{ backgroundColor: color.hex || color.hex_code }}
+                                                                                />
+                                                                            </button>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                    )}
+                                                </div>
                                                 <button
-                                                    onClick={() => removeFromCart(item.id)}
+                                                    onClick={() => removeFromCart(item.variantId)}
                                                     className="text-white/20 hover:text-red-400 transition-colors ml-2"
                                                 >
                                                     <Trash2 size={14} />
@@ -256,7 +310,7 @@ export default function CheckoutPage() {
                                             <div className="flex items-center justify-between mt-2">
                                                 <div className="flex items-center border border-white/10 rounded-sm overflow-hidden">
                                                     <button
-                                                        onClick={() => updateQuantity(item.id, -1)}
+                                                        onClick={() => updateQuantity(item.variantId, -1)}
                                                         className="p-1 hover:bg-white/10 transition-colors"
                                                         disabled={item.quantity <= 1}
                                                     >
@@ -264,7 +318,7 @@ export default function CheckoutPage() {
                                                     </button>
                                                     <span className="px-2 text-[10px] font-bold border-x border-white/10 min-w-[1.5rem] text-center">{item.quantity}</span>
                                                     <button
-                                                        onClick={() => updateQuantity(item.id, 1)}
+                                                        onClick={() => updateQuantity(item.variantId, 1)}
                                                         className="p-1 hover:bg-white/10 transition-colors"
                                                     >
                                                         <Plus size={10} />

@@ -165,6 +165,32 @@
                     </div>
                 </div>
 
+                <div class="card card-royal mt-4 luxury-animate" style="animation-delay: 0.48s;">
+                    <div class="card-body">
+                        <h3 class="section-title"><i class="fas fa-palette mr-2"></i>Available Colors</h3>
+                        @if($colors->isEmpty())
+                            <p class="text-muted small">No colors yet. <a href="{{ route('colors.create') }}" target="_blank">Add colors</a> first.</p>
+                        @else
+                            <div class="d-flex flex-wrap" style="gap: 12px;">
+                                @foreach($colors as $color)
+                                    <label class="color-checkbox-label" style="cursor:pointer; margin-bottom:0;" title="{{ $color->name }}">
+                                        <input
+                                            type="checkbox"
+                                            name="colors[]"
+                                            value="{{ $color->id }}"
+                                            class="d-none color-checkbox"
+                                            {{ in_array($color->id, old('colors', [])) ? 'checked' : '' }}
+                                        >
+                                        <span class="color-swatch-admin {{ in_array($color->id, old('colors', [])) ? 'active' : '' }}" style="background-color: {{ $color->hex_code }};">
+                                            <i class="fas fa-check"></i>
+                                        </span>
+                                    </label>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
                 <div class="mt-4 luxury-animate" style="animation-delay: 0.5s;">
                     <button type="submit" class="btn btn-luxury btn-lg btn-block shadow-sm mb-3">
                         <i class="fas fa-save mr-2"></i>Publish Product
@@ -228,6 +254,16 @@
                 badge.removeClass('size-badge-active');
             }
         });
+
+        // Color checkbox toggle
+        $(document).on('change', '.color-checkbox', function() {
+            var swatch = $(this).siblings('.color-swatch-admin');
+            if ($(this).is(':checked')) {
+                swatch.addClass('active');
+            } else {
+                swatch.removeClass('active');
+            }
+        });
     });
 </script>
 <style>
@@ -252,6 +288,29 @@
     .size-checkbox-label:hover .size-badge:not(.size-badge-active) {
         border-color: #1a5c3a;
         color: #1a5c3a;
+    }
+
+    /* Color Swatch Admin Style */
+    .color-swatch-admin {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 50%;
+        border: 3px solid #fff;
+        box-shadow: 0 0 0 1px #ddd;
+        color: transparent;
+        transition: all 0.2s ease;
+    }
+    .color-swatch-admin.active {
+        box-shadow: 0 0 0 2px #1a5c3a;
+        color: #fff;
+        transform: scale(1.1);
+    }
+    .color-swatch-admin i {
+        font-size: 14px;
+        text-shadow: 0 1px 2px rgba(0,0,0,0.3);
     }
 </style>
 @stop

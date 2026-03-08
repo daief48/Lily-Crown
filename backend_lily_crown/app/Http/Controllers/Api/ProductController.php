@@ -10,7 +10,7 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::with(['category', 'sizes']);
+        $query = Product::with(['category', 'sizes', 'colors']);
 
         // Search filter
         if ($request->has('search')) {
@@ -69,13 +69,32 @@ class ProductController extends Controller
                 break;
         }
 
-        $products = $query->get();
+        $products = $query->get()->map(function ($product) {
+            $data = $product->toArray();
+            // Merge Sizes
+            $sizesFromDirect = $product->sizes->pluck('name');
+            $sizesFromVariants = $product->variants->pluck('size.name')->filter();
+            $data['sizes'] = $sizesFromDirect->merge($sizesFromVariants)->unique()->values()->toArray();
+
+            // Merge Colors
+            $colorsFromDirect = $product->colors->map(function ($color) {
+                return ['name' => $color->name, 'hex' => $color->hex_code];
+            });
+            $colorsFromVariants = $product->variants->map(function ($variant) {
+                if (!$variant->color) return null;
+                return ['name' => $variant->color->name, 'hex' => $variant->color->hex_code];
+            })->filter();
+            $data['colors'] = $colorsFromDirect->merge($colorsFromVariants)->unique('name')->values()->toArray();
+            
+            return $data;
+        });
+
         return response()->json(['data' => $products]);
     }
 
     public function show($id)
     {
-        $product = Product::with(['category', 'sizes'])
+        $product = Product::with(['category', 'sizes', 'colors', 'variants.size', 'variants.color'])
             ->where('id', $id)
             ->orWhere('slug', $id)
             ->first();
@@ -85,7 +104,33 @@ class ProductController extends Controller
         }
 
         $data = $product->toArray();
-        $data['sizes'] = $product->sizes->pluck('name')->values()->toArray();
+        
+        // Merge Sizes
+        $sizesFromDirect = $product->sizes->pluck('name');
+        $sizesFromVariants = $product->variants->pluck('size.name')->filter();
+        $data['sizes'] = $sizesFromDirect->merge($sizesFromVariants)->unique()->values()->toArray();
+
+        // Merge Colors
+        $colorsFromDirect = $product->colors->map(function ($color) {
+            return ['name' => $color->name, 'hex' => $color->hex_code];
+        });
+        $colorsFromVariants = $product->variants->map(function ($variant) {
+            if (!$variant->color) return null;
+            return ['name' => $variant->color->name, 'hex' => $variant->color->hex_code];
+        })->filter();
+        $data['colors'] = $colorsFromDirect->merge($colorsFromVariants)->unique('name')->values()->toArray();
+
+        $data['variants'] = $product->variants->map(function ($variant) {
+            return [
+                'id' => $variant->id,
+                'size_id' => $variant->size_id,
+                'size_name' => $variant->size?->name,
+                'color_id' => $variant->color_id,
+                'color_name' => $variant->color?->name,
+                'price' => $variant->price,
+                'stock' => $variant->stock,
+            ];
+        })->values()->toArray();
 
         return response()->json(['data' => $data]);
     }

@@ -15,6 +15,7 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::group(['middleware' => ['role:admin']], function () {
         Route::resource('roles', App\Http\Controllers\Admin\RoleController::class);
         Route::resource('permissions', App\Http\Controllers\Admin\PermissionController::class);
+        Route::resource('colors', App\Http\Controllers\Admin\ColorController::class);
     });
     Route::resource('categories', App\Http\Controllers\Admin\CategoryController::class);
     Route::resource('products', App\Http\Controllers\Admin\ProductController::class);

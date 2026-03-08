@@ -330,6 +330,11 @@ return [
             'icon' => 'fas fa-fw fa-ruler-combined',
         ],
         [
+            'text' => 'Product Colors',
+            'url'  => 'admin/colors',
+            'icon' => 'fas fa-fw fa-palette',
+        ],
+        [
             'text' => 'Customer Orders',
             'url'  => 'admin/orders',
             'icon' => 'fas fa-fw fa-shopping-bag',
