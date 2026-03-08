@@ -27,7 +27,17 @@ export function LanguageProvider({ children }) {
         });
     };
 
-    const t = (key) => translations[lang]?.[key] ?? translations["en"]?.[key] ?? key;
+    const t = (key, params = {}) => {
+        let str = translations[lang]?.[key] ?? translations["en"]?.[key] ?? key;
+
+        if (typeof str === 'string' && params && Object.keys(params).length > 0) {
+            Object.entries(params).forEach(([k, v]) => {
+                str = str.replace(new RegExp(`{{${k}}}`, 'g'), v);
+            });
+        }
+
+        return str;
+    };
 
     return (
         <LanguageContext.Provider value={{ lang, toggleLang, t }}>

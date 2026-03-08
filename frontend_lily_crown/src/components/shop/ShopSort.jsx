@@ -5,12 +5,14 @@ import { ChevronDown, SlidersHorizontal } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
+import { useLanguage } from "@/context/LanguageContext";
 
 const cn = (...inputs) => {
     return twMerge(clsx(inputs));
 };
 
 export const ShopSort = ({ activeSort, onSortChange, totalItems, onMobileFilterClick }) => {
+    const { t } = useLanguage();
     const [isOpen, setIsOpen] = useState(false);
     const dropdownRef = useRef(null);
 

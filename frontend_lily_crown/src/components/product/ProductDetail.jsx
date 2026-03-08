@@ -20,6 +20,7 @@ export function ProductDetail({ product }) {
     const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
     const [isHovering, setIsHovering] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
+    const [selectedSize, setSelectedSize] = useState(null);
 
     useEffect(() => {
         setIsMounted(true);
@@ -185,6 +186,41 @@ export function ProductDetail({ product }) {
                         >
                             {product.description}
                         </motion.p>
+
+                        {/* Size Selector */}
+                        {Array.isArray(product.sizes) && product.sizes.length > 0 && (
+                            <motion.div
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{ delay: 0.25 }}
+                                className="space-y-3"
+                            >
+                                <div className="flex items-center justify-between">
+                                    <h4 className="text-xs uppercase tracking-[0.25em] font-bold text-emerald-royal">
+                                        {t('product_select_size') || 'Select Size'}
+                                    </h4>
+                                    {selectedSize && (
+                                        <span className="text-xs font-bold text-heritage-gold uppercase tracking-widest">
+                                            {selectedSize}
+                                        </span>
+                                    )}
+                                </div>
+                                <div className="flex flex-wrap gap-2">
+                                    {product.sizes.map((size) => (
+                                        <button
+                                            key={size}
+                                            onClick={() => setSelectedSize(selectedSize === size ? null : size)}
+                                            className={`min-w-[48px] px-4 py-2 border-2 rounded text-xs font-bold uppercase tracking-widest transition-all active:scale-95 ${selectedSize === size
+                                                    ? 'border-emerald-royal bg-emerald-royal text-white shadow-lg'
+                                                    : 'border-emerald-royal/25 text-emerald-royal/70 hover:border-emerald-royal hover:text-emerald-royal bg-white'
+                                                }`}
+                                        >
+                                            {size}
+                                        </button>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        )}
 
                         {/* Actions */}
                         <motion.div

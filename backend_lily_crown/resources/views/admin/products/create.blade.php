@@ -139,6 +139,32 @@
                     </div>
                 </div>
 
+                <div class="card card-royal mt-4 luxury-animate" style="animation-delay: 0.45s;">
+                    <div class="card-body">
+                        <h3 class="section-title"><i class="fas fa-ruler mr-2"></i>Available Sizes</h3>
+                        @if($sizes->isEmpty())
+                            <p class="text-muted small">No sizes yet. <a href="{{ route('sizes.create') }}" target="_blank">Add sizes</a> first.</p>
+                        @else
+                            <div class="d-flex flex-wrap" style="gap: 10px;">
+                                @foreach($sizes as $size)
+                                    <label class="size-checkbox-label" style="cursor:pointer; margin-bottom:0;">
+                                        <input
+                                            type="checkbox"
+                                            name="sizes[]"
+                                            value="{{ $size->id }}"
+                                            class="d-none size-checkbox"
+                                            {{ in_array($size->id, old('sizes', [])) ? 'checked' : '' }}
+                                        >
+                                        <span class="size-badge {{ in_array($size->id, old('sizes', [])) ? 'size-badge-active' : '' }}">
+                                            {{ $size->name }}
+                                        </span>
+                                    </label>
+                                @endforeach
+                            </div>
+                        @endif
+                    </div>
+                </div>
+
                 <div class="mt-4 luxury-animate" style="animation-delay: 0.5s;">
                     <button type="submit" class="btn btn-luxury btn-lg btn-block shadow-sm mb-3">
                         <i class="fas fa-save mr-2"></i>Publish Product
@@ -192,6 +218,40 @@
                 $(this).next('.custom-file-label').html(files.length + ' files selected');
             }
         });
+
+        // Size checkbox toggle
+        $(document).on('change', '.size-checkbox', function() {
+            var badge = $(this).siblings('.size-badge');
+            if ($(this).is(':checked')) {
+                badge.addClass('size-badge-active');
+            } else {
+                badge.removeClass('size-badge-active');
+            }
+        });
     });
 </script>
+<style>
+    .size-badge {
+        display: inline-block;
+        padding: 6px 16px;
+        border: 2px solid #adb5bd;
+        border-radius: 4px;
+        font-weight: 700;
+        font-size: 0.8rem;
+        letter-spacing: 0.1em;
+        color: #6c757d;
+        background: #fff;
+        transition: all 0.2s ease;
+        user-select: none;
+    }
+    .size-badge-active {
+        border-color: #1a5c3a;
+        color: #fff;
+        background: #1a5c3a;
+    }
+    .size-checkbox-label:hover .size-badge:not(.size-badge-active) {
+        border-color: #1a5c3a;
+        color: #1a5c3a;
+    }
+</style>
 @stop

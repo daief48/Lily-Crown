@@ -15,6 +15,7 @@ import Skeleton from "@/components/ui/Skeleton";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, SlidersHorizontal, ShoppingBag, LayoutGrid, List } from "lucide-react";
 import { useSearchParams, useRouter } from "next/navigation";
+import { useLanguage } from "@/context/LanguageContext";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -25,6 +26,7 @@ function cn(...inputs) {
 export default function ShopPage() {
     const searchParams = useSearchParams();
     const router = useRouter();
+    const { t } = useLanguage();
 
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);

@@ -10,7 +10,7 @@ class ProductController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Product::with('category');
+        $query = Product::with(['category', 'sizes']);
 
         // Search filter
         if ($request->has('search')) {
@@ -75,7 +75,7 @@ class ProductController extends Controller
 
     public function show($id)
     {
-        $product = Product::with('category')
+        $product = Product::with(['category', 'sizes'])
             ->where('id', $id)
             ->orWhere('slug', $id)
             ->first();
@@ -84,6 +84,9 @@ class ProductController extends Controller
             return response()->json(['message' => 'Product not found'], 404);
         }
 
-        return response()->json(['data' => $product]);
+        $data = $product->toArray();
+        $data['sizes'] = $product->sizes->pluck('name')->values()->toArray();
+
+        return response()->json(['data' => $data]);
     }
 }

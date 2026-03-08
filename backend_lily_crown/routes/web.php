@@ -29,4 +29,5 @@ Route::group(['prefix' => 'admin', 'middleware' => 'auth'], function () {
     Route::resource('instagram-posts', App\Http\Controllers\Admin\InstagramPostController::class);
     Route::resource('users', App\Http\Controllers\Admin\UserController::class);
     Route::resource('contact-inquiries', App\Http\Controllers\Admin\ContactInquiryController::class);
+    Route::resource('sizes', App\Http\Controllers\Admin\SizeController::class);
 });

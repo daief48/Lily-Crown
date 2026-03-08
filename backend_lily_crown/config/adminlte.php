@@ -325,6 +325,11 @@ return [
             'icon' => 'fas fa-fw fa-tshirt',
         ],
         [
+            'text' => 'Product Sizes',
+            'url'  => 'admin/sizes',
+            'icon' => 'fas fa-fw fa-ruler-combined',
+        ],
+        [
             'text' => 'Customer Orders',
             'url'  => 'admin/orders',
             'icon' => 'fas fa-fw fa-shopping-bag',

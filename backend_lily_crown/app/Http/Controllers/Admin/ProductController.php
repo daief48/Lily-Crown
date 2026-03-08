@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Size;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -35,7 +36,8 @@ class ProductController extends Controller
     public function create()
     {
         $categories = \App\Models\Category::all();
-        return view('admin.products.create', compact('categories'));
+        $sizes = Size::orderBy('id')->get();
+        return view('admin.products.create', compact('categories', 'sizes'));
     }
 
     public function store(Request $request)
@@ -89,6 +91,7 @@ class ProductController extends Controller
 
         try {
             $product = \App\Models\Product::create($data);
+            $product->sizes()->sync($request->input('sizes', []));
             \Log::info('Product created successfully', ['id' => $product->id]);
         } catch (\Exception $e) {
             \Log::error('Product creation failed in DB', ['error' => $e->getMessage()]);
@@ -105,9 +108,11 @@ class ProductController extends Controller
 
     public function edit($id)
     {
-        $product = \App\Models\Product::findOrFail($id);
+        $product = \App\Models\Product::with('sizes')->findOrFail($id);
         $categories = \App\Models\Category::all();
-        return view('admin.products.edit', compact('product', 'categories'));
+        $sizes = Size::orderBy('id')->get();
+        $selectedSizes = $product->sizes->pluck('id')->toArray();
+        return view('admin.products.edit', compact('product', 'categories', 'sizes', 'selectedSizes'));
     }
 
     public function update(Request $request, $id)
@@ -147,6 +152,7 @@ class ProductController extends Controller
         }
 
         $product->update($data);
+        $product->sizes()->sync($request->input('sizes', []));
 
         return redirect()->route('products.index')->with('success', 'Product updated successfully');
     }
