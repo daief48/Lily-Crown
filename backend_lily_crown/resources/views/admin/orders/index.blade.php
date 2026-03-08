@@ -20,7 +20,7 @@
         <div class="card-body">
             <form method="GET" action="{{ route('orders.index') }}">
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label>Search Order</label>
                             <input type="text" name="search" class="form-control" placeholder="ID or Name..." value="{{ request('search') }}">
@@ -28,11 +28,17 @@
                     </div>
                     <div class="col-md-3">
                         <div class="form-group">
+                            <label>Product Name</label>
+                            <input type="text" name="product_name" class="form-control" placeholder="Product Name..." value="{{ request('product_name') }}">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <div class="form-group">
                             <label>Product Key</label>
                             <input type="text" name="product_key" class="form-control" placeholder="Key..." value="{{ request('product_key') }}">
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label>Status</label>
                             <select name="status" class="form-control">

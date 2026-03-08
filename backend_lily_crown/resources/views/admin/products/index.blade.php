@@ -29,7 +29,13 @@
         <div class="card-body">
             <form method="GET" action="{{ route('products.index') }}">
                 <div class="row">
-                    <div class="col-md-3">
+                    <div class="col-md-2">
+                        <div class="form-group">
+                            <label>Product Name</label>
+                            <input type="text" name="search" class="form-control" placeholder="Name..." value="{{ request('search') }}">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label>Product Key</label>
                             <input type="text" name="admin_product_key" class="form-control" placeholder="Key..." value="{{ request('admin_product_key') }}">
@@ -48,7 +54,7 @@
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-3">
+                    <div class="col-md-2">
                         <div class="form-group">
                             <label>Badge</label>
                             <select name="badge" class="form-control">

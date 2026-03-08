@@ -20,6 +20,12 @@ class OrderController extends Controller
             });
         }
 
+        // Product Name Filter
+        if ($request->filled('product_name')) {
+            $pName = $request->product_name;
+            $query->where('items', 'like', "%{$pName}%");
+        }
+
         // Product Key Filter
         if ($request->filled('product_key')) {
             $key = $request->product_key;
