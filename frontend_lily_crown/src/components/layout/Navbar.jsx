@@ -84,7 +84,8 @@ export function Navbar() {
                     setCategories(data.map(cat => ({
                         name: cat.name,
                         href: `/shop?category=${cat.slug}`,
-                        icon: cat.icon
+                        icon: cat.icon,
+                        image: cat.image
                     })));
                 }
             } catch (error) {
@@ -197,59 +198,53 @@ export function Navbar() {
                                             initial={{ opacity: 0, y: 10 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             exit={{ opacity: 0, y: 10 }}
-                                            className="absolute top-full left-0 mt-4 w-[520px] bg-white shadow-2xl border-t-2 border-heritage-gold p-8 grid grid-cols-2 gap-10 z-[100]"
+                                            className="absolute top-full left-0 mt-4 w-[650px] bg-white shadow-2xl border-t-2 border-heritage-gold p-8 grid grid-cols-5 gap-8 z-[100]"
                                         >
-                                            <div>
+                                            <div className="col-span-3">
                                                 <h4 className="text-xs uppercase tracking-widest font-bold text-heritage-gold mb-6 border-b border-heritage-gold/10 pb-2">
                                                     {t("nav_royal_collections")}
                                                 </h4>
-                                                <ul className="space-y-4 max-h-96 overflow-y-auto pr-2">
+                                                <div className="grid grid-cols-2 gap-3 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                                                     {categories.length > 0 ? (
                                                         categories.map((cat) => (
-                                                            <li key={cat.name}>
-                                                                <Link
-                                                                    href={cat.href}
-                                                                    onClick={() => setActiveDropdown(null)}
-                                                                    className="text-sm text-emerald-royal/70 hover:text-heritage-gold transition-colors font-medium flex items-center group/item"
-                                                                >
-                                                                    <span className="mr-3 flex-shrink-0">
-                                                                        {cat.icon && (cat.icon.includes('/') || cat.icon.includes('.')) ? (
-                                                                            <div className="relative w-6 h-6 rounded-full overflow-hidden border border-heritage-gold/20">
-                                                                                <Image
-                                                                                    src={cat.icon.startsWith('http') ? cat.icon : `http://localhost:8000/${cat.icon.startsWith('/') ? cat.icon.substring(1) : cat.icon}`}
-                                                                                    alt={cat.name}
-                                                                                    fill
-                                                                                    className="object-cover"
-                                                                                />
-                                                                            </div>
-                                                                        ) : (
-                                                                            cat.icon || "✨"
-                                                                        )}
-                                                                    </span>
-                                                                    <span>{cat.name}</span>
-                                                                    <div className="ml-auto w-0 h-px bg-heritage-gold group-hover/item:w-8 transition-all"></div>
-                                                                </Link>
-                                                            </li>
+                                                            <Link
+                                                                key={cat.name}
+                                                                href={cat.href}
+                                                                onClick={() => setActiveDropdown(null)}
+                                                                className="group/item flex items-center gap-3 p-2 rounded-lg hover:bg-emerald-royal/5 transition-colors border border-transparent hover:border-heritage-gold/20"
+                                                            >
+                                                                <div className="relative w-12 h-12 rounded-md overflow-hidden bg-muslin-cream flex-shrink-0 shadow-sm">
+                                                                    <RoyalImage
+                                                                        src={getOptimizedImage(cat.image || cat.icon || '/img/placeholder.png')}
+                                                                        alt={cat.name}
+                                                                        fill
+                                                                        className="object-cover group-hover/item:scale-110 transition-transform duration-500"
+                                                                    />
+                                                                </div>
+                                                                <span className="text-sm font-medium text-emerald-royal group-hover/item:text-heritage-gold transition-colors">
+                                                                    {cat.name}
+                                                                </span>
+                                                            </Link>
                                                         ))
                                                     ) : (
-                                                        [1, 2, 3].map((i) => (
-                                                            <li key={i} className="flex gap-3 items-center">
-                                                                <div className="w-6 h-6 bg-emerald-royal/5 rounded-full animate-pulse"></div>
-                                                                <div className="h-4 w-28 bg-emerald-royal/5 rounded animate-pulse"></div>
-                                                            </li>
+                                                        [1, 2, 3, 4].map((i) => (
+                                                            <div key={i} className="flex gap-3 items-center p-2">
+                                                                <div className="w-12 h-12 bg-emerald-royal/5 rounded-md animate-pulse"></div>
+                                                                <div className="h-4 w-24 bg-emerald-royal/5 rounded animate-pulse"></div>
+                                                            </div>
                                                         ))
                                                     )}
-                                                </ul>
+                                                </div>
                                             </div>
-                                            <div className="bg-emerald-royal/5 p-8 flex flex-col justify-between rounded-xl">
+                                            <div className="col-span-2 bg-emerald-royal/5 p-6 flex flex-col justify-between rounded-xl border border-emerald-royal/10">
                                                 <div>
-                                                    <p className="font-serif text-lg text-emerald-royal mb-2 italic">{t("nav_royal_selection_title")}</p>
-                                                    <p className="text-xs text-emerald-royal/50 leading-relaxed">{t("nav_royal_selection_desc")}</p>
+                                                    <p className="font-serif text-lg text-emerald-royal mb-3 italic">{t("nav_royal_selection_title")}</p>
+                                                    <p className="text-xs text-emerald-royal/60 leading-relaxed mb-6">{t("nav_royal_selection_desc")}</p>
                                                 </div>
                                                 <Link
                                                     href="/shop"
                                                     onClick={() => setActiveDropdown(null)}
-                                                    className="text-xs uppercase tracking-[0.2em] font-bold text-white bg-emerald-royal px-6 py-3 text-center hover:bg-heritage-gold transition-all"
+                                                    className="text-xs uppercase tracking-[0.15em] font-bold text-white bg-emerald-royal px-6 py-4 text-center hover:bg-heritage-gold transition-all shadow-md hover:shadow-lg w-full rounded"
                                                 >
                                                     {t("nav_view_full_palace")}
                                                 </Link>
@@ -678,16 +673,22 @@ export function Navbar() {
                                                             setMobileCategoriesOpen(false);
                                                             setIsMobileMenuOpen(false);
                                                         }}
-                                                        className="group relative h-24 overflow-hidden rounded-lg bg-muslin-cream shadow-sm flex items-center justify-between p-4"
+                                                        className="group relative h-24 overflow-hidden rounded-lg bg-muslin-cream shadow-sm flex items-center justify-between p-4 border border-emerald-royal/5"
                                                     >
-                                                        <div className="space-y-1 z-10">
-                                                            <span className="text-xl">
-                                                                {cat.icon || "✨"}
-                                                            </span>
-                                                            <h3 className="text-base font-serif text-emerald-royal group-hover:text-heritage-gold transition-colors">{cat.name}</h3>
+                                                        <div className="absolute inset-0 opacity-20 group-hover:opacity-40 transition-opacity">
+                                                            <RoyalImage
+                                                                src={getOptimizedImage(cat.image || cat.icon || '/img/placeholder.png')}
+                                                                alt={cat.name}
+                                                                fill
+                                                                className="object-cover"
+                                                            />
+                                                            <div className="absolute inset-0 bg-gradient-to-r from-white via-white/80 to-transparent"></div>
                                                         </div>
-                                                        <ChevronDown size={16} className="text-heritage-gold/50 group-hover:text-heritage-gold transition-colors transform -rotate-90" />
-                                                        <div className="absolute top-0 right-0 w-24 h-24 bg-heritage-gold/5 rounded-full -mr-12 -mt-12 group-hover:scale-150 transition-transform"></div>
+
+                                                        <div className="space-y-1 z-10 relative">
+                                                            <h3 className="text-lg font-serif text-emerald-royal group-hover:text-heritage-gold transition-colors">{cat.name}</h3>
+                                                        </div>
+                                                        <ChevronDown size={16} className="text-heritage-gold/50 group-hover:text-heritage-gold transition-colors transform -rotate-90 z-10 relative" />
                                                     </Link>
                                                 ))}
 
