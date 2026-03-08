@@ -11,10 +11,10 @@ import Skeleton from "@/components/ui/Skeleton";
 import { RoyalImage } from "@/components/ui/RoyalImage";
 import { useLanguage } from "@/context/LanguageContext";
 
-export function PickYourRoyalLook() {
+export function PickYourRoyalLook({ initialItems = [] }) {
     const { t } = useLanguage();
-    const [items, setItems] = React.useState([]);
-    const [loading, setLoading] = React.useState(true);
+    const [items, setItems] = React.useState(initialItems);
+    const [loading, setLoading] = React.useState(initialItems.length === 0);
     const [isExpanded, setIsExpanded] = React.useState(false);
 
     const loadLookbooks = async (expanded = false) => {
@@ -29,8 +29,10 @@ export function PickYourRoyalLook() {
     };
 
     React.useEffect(() => {
-        loadLookbooks(false);
-    }, []);
+        if (initialItems.length === 0) {
+            loadLookbooks(false);
+        }
+    }, [initialItems]);
 
     const handleSeeAll = () => {
         setIsExpanded(true);

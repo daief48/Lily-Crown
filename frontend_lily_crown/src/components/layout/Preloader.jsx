@@ -14,30 +14,37 @@ export function Preloader() {
     useEffect(() => {
         setMounted(true);
 
-        // Remove sessionStorage check to let the preloader stay visible
-        // as the user requested it to stay until fully loaded
+        // Session check for returning users in same session
+        const hasLoadedThisSession = sessionStorage.getItem("lily_palace_loaded");
 
-        const handleLoad = () => setIsLoaded(true);
+        const handleLoad = () => {
+            setIsLoaded(true);
+            if (hasLoadedThisSession) {
+                setProgress(100);
+            }
+        };
 
         // Listen for our custom event when the hero image finishes loading
         window.addEventListener("heroImageLoaded", handleLoad);
 
-        // Fallback: If no hero image (e.g., on other pages) or if the event takes too long, 
-        // fallback to window load with a slight delay
         if (document.readyState === "complete") {
-            setTimeout(handleLoad, 1500);
+            setTimeout(handleLoad, hasLoadedThisSession ? 200 : 800);
         } else {
-            window.addEventListener("load", () => setTimeout(handleLoad, 1500));
+            window.addEventListener("load", () => setTimeout(handleLoad, hasLoadedThisSession ? 200 : 800));
         }
 
         const progressInterval = setInterval(() => {
             setProgress((prev) => {
                 if (isLoaded && prev >= 100) return 100;
-                if (prev < 90) return prev + 2; // Fill slowly to give the frontend time to render
-                if (isLoaded) return prev + 4; // Complete smoothly when ready
+
+                // If loaded, finish quickly
+                if (isLoaded) return Math.min(100, prev + 15);
+
+                // Normal fill
+                if (prev < 90) return prev + 3;
                 return prev;
             });
-        }, 20); // Normal pace
+        }, 30);
 
         return () => {
             clearInterval(progressInterval);
@@ -48,7 +55,8 @@ export function Preloader() {
 
     useEffect(() => {
         if (progress >= 100) {
-            const timer = setTimeout(() => setLoading(false), 200); // Give a little buffer before vanishing
+            sessionStorage.setItem("lily_palace_loaded", "true");
+            const timer = setTimeout(() => setLoading(false), 100);
             return () => clearTimeout(timer);
         }
     }, [progress]);

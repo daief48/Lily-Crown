@@ -8,15 +8,23 @@ import { api } from "@/lib/api";
 import Skeleton from "@/components/ui/Skeleton";
 import { useLanguage } from "@/context/LanguageContext";
 
-export function FeaturedProducts() {
+export function FeaturedProducts({ initialProducts = [] }) {
     const { t } = useLanguage();
     const [filter, setFilter] = useState(t("category_all"));
-    const [products, setProducts] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [products, setProducts] = useState(initialProducts);
+    const [loading, setLoading] = useState(initialProducts.length === 0);
     const [isExpanded, setIsExpanded] = useState(false);
-    const [categories, setCategories] = useState([t("category_all")]);
+
+    // derive initial categories
+    const initialCats = initialProducts.length > 0
+        ? [t("category_all"), ...Array.from(new Set(initialProducts.map(p => (p.category && (p.category.name || p.category))).filter(Boolean)))]
+        : [t("category_all")];
+
+    const [categories, setCategories] = useState(initialCats);
 
     React.useEffect(() => {
+        if (initialProducts.length > 0) return;
+
         const loadProducts = async () => {
             const data = await api.getProducts();
             if (data) {
@@ -29,7 +37,7 @@ export function FeaturedProducts() {
             setLoading(false);
         };
         loadProducts();
-    }, []);
+    }, [initialProducts, t]);
 
     const filteredProducts =
         filter === t("category_all")

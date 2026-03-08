@@ -6,9 +6,7 @@ import Skeleton from "@/components/ui/Skeleton";
 const Categories = dynamic(() => import('@/components/sections/Categories').then(mod => ({ default: mod.Categories })), {
     loading: () => <div className="py-24 max-w-7xl mx-auto px-4 md:px-6"><div className="grid grid-cols-2 md:grid-cols-4 gap-6">{[1, 2, 3, 4].map(i => <Skeleton key={i} className="aspect-[4/5] rounded-2xl" />)}</div></div>
 });
-const FeaturedProducts = dynamic(() => import('@/components/sections/FeaturedProducts').then(mod => ({ default: mod.FeaturedProducts })), {
-    loading: () => <div className="py-24 max-w-7xl mx-auto px-4 md:px-6"><div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">{[1, 2, 3, 4].map(i => <div key={i} className="space-y-4"><Skeleton className="aspect-[3/4] rounded-3xl" /><Skeleton className="h-4 w-2/3" /></div>)}</div></div>
-});
+const FeaturedProducts = dynamic(() => import('@/components/sections/FeaturedProducts').then(mod => ({ default: mod.FeaturedProducts })));
 const PickYourRoyalLook = dynamic(() => import('@/components/sections/PickYourRoyalLook').then(mod => ({ default: mod.PickYourRoyalLook })), {
     loading: () => <div className="py-24 max-w-7xl mx-auto px-4 md:px-6"><div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">{[1, 2, 3, 4].map(i => <Skeleton key={i} className="aspect-[3/4] rounded-xl" />)}</div></div>
 });
@@ -25,14 +23,29 @@ const Newsletter = dynamic(() => import('@/components/sections/Newsletter').then
 const Footer = dynamic(() => import('@/components/layout/Footer').then(mod => ({ default: mod.Footer })));
 const WishlistModal = dynamic(() => import('@/components/ui/WishlistModal').then(mod => ({ default: mod.WishlistModal })));
 
-export default function Home() {
+import { api } from '@/lib/api';
+
+export default async function Home() {
+    // Parallel fetching for high-priority above-the-fold content
+    const [heroSlides, products, lookbookResponse] = await Promise.all([
+        api.getHeroSlides(),
+        api.getProducts(),
+        api.getLookbook(1, 7)
+    ]);
+
+    const mappedSlides = heroSlides ? heroSlides.map(slide => ({
+        ...slide,
+        highlight: slide.highlight || (slide.title ? slide.title.split(' ')[0] : ''),
+        description: slide.subtitle,
+    })) : [];
+
     return (
         <main className="min-h-screen">
             <Navbar />
-            <Hero />
+            <Hero initialSlides={mappedSlides} />
             <Categories />
-            <FeaturedProducts />
-            <PickYourRoyalLook />
+            <FeaturedProducts initialProducts={products || []} />
+            <PickYourRoyalLook initialItems={lookbookResponse?.data || []} />
             <Trending />
             <Features />
             <Testimonials />

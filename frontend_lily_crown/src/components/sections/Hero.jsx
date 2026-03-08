@@ -12,13 +12,15 @@ import Skeleton from "@/components/ui/Skeleton";
 import { RoyalImage } from "@/components/ui/RoyalImage";
 import { useLanguage } from "@/context/LanguageContext";
 
-export function Hero() {
+export function Hero({ initialSlides = [] }) {
     const { t } = useLanguage();
-    const [slides, setSlides] = useState([]);
+    const [slides, setSlides] = useState(initialSlides);
     const [currentSlide, setCurrentSlide] = useState(0);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(initialSlides.length === 0);
 
     useEffect(() => {
+        if (initialSlides.length > 0) return;
+
         const loadSlides = async () => {
             const data = await api.getHeroSlides();
             if (data && data.length > 0) {
@@ -32,7 +34,7 @@ export function Hero() {
             setLoading(false);
         };
         loadSlides();
-    }, []);
+    }, [initialSlides]);
 
     useEffect(() => {
         if (slides.length <= 1) return;
