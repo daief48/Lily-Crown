@@ -34,7 +34,9 @@ export const RoyalImage = ({
             fill ? "w-full h-full" : ""
         )}>
             {isLoading && (
-                <div className="absolute inset-0 z-10 animate-pulse bg-gradient-to-r from-muslin-cream via-heritage-gold/5 to-muslin-cream" />
+                <div className="absolute inset-0 z-10 transition-opacity duration-500">
+                    <Skeleton className="w-full h-full rounded-none" />
+                </div>
             )}
 
             <Image

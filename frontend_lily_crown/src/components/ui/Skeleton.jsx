@@ -10,6 +10,7 @@ const Skeleton = ({ className, variant = "default", ...props }) => {
     const variants = {
         default: "bg-neutral-200/50 dark:bg-neutral-800/50 animate-luxury-shimmer",
         gold: "bg-heritage-gold/5 animate-gold-shimmer",
+        royal: "bg-gradient-to-br from-heritage-gold/10 via-emerald-royal/5 to-rose-gold/10 animate-royal-shimmer shadow-inner",
         ivory: "bg-muslin-cream animate-luxury-shimmer",
         dark: "bg-luxury-black/60 animate-luxury-shimmer",
     };

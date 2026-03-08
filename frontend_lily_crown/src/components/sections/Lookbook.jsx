@@ -8,6 +8,7 @@ import { motion } from "framer-motion";
 import { api } from "@/lib/api";
 import { getOptimizedImage } from "@/lib/utils";
 import Skeleton from "@/components/ui/Skeleton";
+import { RoyalImage } from "@/components/ui/RoyalImage";
 
 export function Lookbook() {
     const [items, setItems] = React.useState([]);
@@ -79,11 +80,10 @@ export function Lookbook() {
                         className="relative px-4"
                     >
                         <div className="relative aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl nakshi-border">
-                            <Image
+                            <RoyalImage
                                 src={getOptimizedImage(primaryItem.image)}
                                 alt={primaryItem.title}
                                 fill
-                                loading="lazy"
                                 sizes="(max-width: 768px) 100vw, 50vw"
                                 className="object-cover"
                             />

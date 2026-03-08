@@ -9,6 +9,7 @@ import { getOptimizedImage } from "@/lib/utils";
 import { ArrowRight } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { BlogPreviewSkeleton } from "@/components/ui/SectionSkeletons";
+import { RoyalImage } from "@/components/ui/RoyalImage";
 export function BlogPreview() {
     const { t } = useLanguage();
     const [blogs, setBlogs] = React.useState([]);
@@ -71,12 +72,13 @@ export function BlogPreview() {
                             className="group"
                         >
                             <Link href={`/blog/${blog.slug}`} className="block rounded-2xl aspect-[16/10] mb-6 relative royal-shadow bg-white/5 overflow-hidden flex items-center justify-center">
-                                <Image
+                                <RoyalImage
                                     src={getOptimizedImage(blog.image)}
                                     alt={blog.title}
                                     fill
                                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 33vw, 25vw"
                                     className="object-contain transition-transform duration-700 group-hover:scale-102 p-2"
+                                    containerClassName="w-full h-full"
                                 />
                                 <div className="absolute inset-0 bg-emerald-royal/6 group-hover:bg-transparent transition-colors duration-500"></div>
                                 <div className="absolute top-4 left-4">

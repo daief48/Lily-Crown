@@ -19,26 +19,25 @@ export default function Loading() {
 
             {/* Premium Hero Ghost */}
             <section className="relative h-[80vh] flex items-center justify-center overflow-hidden bg-emerald-royal/5">
-                <div className="max-w-7xl mx-auto px-4 md:px-6 w-full text-center space-y-10">
+                {/* Ambient Vibrant Glows */}
+                <div className="absolute top-1/4 -left-20 w-96 h-96 bg-heritage-gold/10 blur-[120px] animate-pulse" />
+                <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-emerald-royal/10 blur-[120px] animate-pulse delay-700" />
+
+                <div className="max-w-7xl mx-auto px-4 md:px-6 w-full text-center space-y-10 relative z-10">
                     <div className="flex flex-col items-center gap-4">
                         <Skeleton className="h-4 w-32 opacity-20" />
-                        <Skeleton className="h-16 md:h-24 w-full max-w-4xl opacity-10" />
+                        <Skeleton variant="royal" className="h-16 md:h-24 w-full max-w-4xl" />
                         <Skeleton className="h-6 w-3/4 max-w-xl opacity-30" />
                     </div>
                     <div className="flex justify-center gap-6">
-                        <Skeleton className="h-14 w-44 rounded-full opacity-20" />
+                        <Skeleton variant="royal" className="h-14 w-44 rounded-full" />
                         <Skeleton className="h-14 w-44 rounded-full border border-heritage-gold/20 bg-transparent" />
                     </div>
                 </div>
 
                 {/* Decorative floating elements */}
                 <div className="absolute bottom-20 left-20 hidden lg:block">
-                    <Skeleton className="w-48 h-1" />
-                </div>
-                <div className="absolute top-1/2 right-20 -translate-y-1/2 hidden lg:flex flex-col gap-4">
-                    <Skeleton className="w-1.5 h-1.5 rounded-full" />
-                    <Skeleton className="w-1.5 h-10 rounded-full" />
-                    <Skeleton className="w-1.5 h-1.5 rounded-full" />
+                    <Skeleton variant="royal" className="w-48 h-1" />
                 </div>
             </section>
 
@@ -47,10 +46,10 @@ export default function Loading() {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {[1, 2, 3].map((i) => (
                         <div key={i} className="space-y-6">
-                            <Skeleton className="aspect-square w-full rounded-2xl opacity-10" />
+                            <Skeleton variant="royal" className="aspect-square w-full rounded-2xl" />
                             <div className="space-y-3">
-                                <Skeleton className="h-6 w-3/4 opacity-10" />
-                                <Skeleton className="h-4 w-1/2 opacity-5" />
+                                <Skeleton className="h-6 w-3/4 opacity-20" />
+                                <Skeleton className="h-4 w-1/2 opacity-10" />
                             </div>
                         </div>
                     ))}

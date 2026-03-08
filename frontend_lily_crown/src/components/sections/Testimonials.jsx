@@ -9,6 +9,7 @@ import { api } from "@/lib/api";
 import { getOptimizedImage } from "@/lib/utils";
 import { useLanguage } from "@/context/LanguageContext";
 import { TestimonialsSkeleton } from "@/components/ui/SectionSkeletons";
+import { RoyalImage } from "@/components/ui/RoyalImage";
 export function Testimonials() {
     const { t } = useLanguage();
     const [testimonials, setTestimonials] = React.useState([]);
@@ -59,13 +60,13 @@ export function Testimonials() {
                                 <div className="relative w-14 h-14 md:w-16 md:h-16">
                                     <div className="absolute inset-0 border border-heritage-gold/30 rounded-full scale-110"></div>
                                     <div className="relative w-full h-full rounded-full border-2 border-heritage-gold overflow-hidden shadow-2xl">
-                                        <Image
+                                        <RoyalImage
                                             src={getOptimizedImage(testimonials[activeIndex].image, `https://i.pravatar.cc/150?u=${testimonials[activeIndex].author}`)}
                                             alt={testimonials[activeIndex].author}
                                             fill
                                             sizes="64px"
-                                            loading="lazy"
                                             className="object-cover"
+                                            containerClassName="w-full h-full"
                                         />
                                     </div>
                                 </div>

@@ -10,10 +10,10 @@ export function CategoriesSkeleton() {
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 px-4 md:px-0">
                     <div className="md:col-span-2 h-64 md:h-96">
-                        <Skeleton className="w-full h-full rounded-2xl" />
+                        <Skeleton variant="royal" className="w-full h-full rounded-2xl" />
                     </div>
                     <div className="h-64 md:h-80 lg:h-96">
-                        <Skeleton className="w-full h-full rounded-2xl" />
+                        <Skeleton variant="royal" className="w-full h-full rounded-2xl" />
                     </div>
                 </div>
             </div>
@@ -34,7 +34,7 @@ export function TrendingSkeleton() {
                 <div className="flex flex-col md:flex-row gap-6 px-4 md:px-0 pb-6 overflow-hidden">
                     {[1, 2, 3, 4].map((i) => (
                         <div key={i} className="w-full md:w-[320px] md:flex-shrink-0">
-                            <Skeleton className="aspect-[3/4] w-full rounded-2xl shadow-sm" />
+                            <Skeleton variant="royal" className="aspect-[3/4] w-full rounded-2xl shadow-sm" />
                             <div className="space-y-3 mt-4">
                                 <Skeleton className="h-5 w-2/3" />
                                 <Skeleton className="h-4 w-1/3 opacity-60" />
@@ -83,7 +83,7 @@ export function PickYourRoyalLookSkeleton() {
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
                     {[1, 2, 3, 4, 5, 6, 7].map((_, i) => (
                         <div key={i} className="aspect-[3/4] rounded-xl overflow-hidden">
-                            <Skeleton className="w-full h-full" />
+                            <Skeleton variant="royal" className="w-full h-full" />
                         </div>
                     ))}
                 </div>

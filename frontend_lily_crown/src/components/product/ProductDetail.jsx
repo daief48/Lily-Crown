@@ -619,13 +619,13 @@ export function ProductDetail({ product }) {
                                         exit={{ scale: 0.9, opacity: 0 }}
                                         className="relative w-full h-full max-w-5xl"
                                     >
-                                        <Image
+                                        <RoyalImage
                                             src={getOptimizedImage(safeGallery[activeImage])}
                                             alt={product.name}
                                             fill
-                                            unoptimized
                                             className="object-contain"
                                             priority
+                                            containerClassName="w-full h-full"
                                         />
                                     </motion.div>
 

@@ -59,12 +59,11 @@ export function ProductCard({ product, index, priority = false }) {
 
                 <Link href={`/products/${product.slug || product.id}`} className="block h-full relative">
                     {/* Primary Image */}
-                    <Image
+                    <RoyalImage
                         src={primaryImage}
                         alt={product.name}
                         fill
                         priority={priority}
-                        unoptimized
                         sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                         className={cn(
                             "object-cover transition-all duration-700 ease-in-out",
@@ -73,16 +72,16 @@ export function ProductCard({ product, index, priority = false }) {
                     />
                     {/* Secondary / Hover Image */}
                     {secondaryImage && (
-                        <Image
+                        <RoyalImage
                             src={secondaryImage}
                             alt={`${product.name} - alternate view`}
                             fill
-                            unoptimized
                             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                             className={cn(
                                 "object-cover transition-all duration-700 ease-in-out absolute inset-0",
                                 isHovered ? "opacity-100 scale-100" : "opacity-0 scale-105"
                             )}
+                            containerClassName="absolute inset-0"
                         />
                     )}
                 </Link>
