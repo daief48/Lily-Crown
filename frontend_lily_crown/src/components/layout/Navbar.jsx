@@ -262,10 +262,10 @@ export function Navbar() {
                             <Image
                                 src="/img/logo.png"
                                 alt="Lily Crown Logo"
-                                width={170}
-                                height={58}
+                                width={210}
+                                height={72}
                                 priority
-                                className="object-contain drop-shadow-[0_0_25px_rgba(153,101,21,0.15)] md:w-[150px] md:h-[50px] lg:w-[170px] lg:h-[58px] w-[135px] h-[45px]"
+                                className="object-contain drop-shadow-[0_0_25px_rgba(153,101,21,0.15)] md:w-[190px] md:h-[65px] lg:w-[220px] lg:h-[75px] w-[160px] h-[55px]"
                             />
                         </Link>
                     </div>
